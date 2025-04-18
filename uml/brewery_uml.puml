@@ -1,0 +1,266 @@
+@startuml
+skinparam defaultFontName Consolas
+
+class no_class << main.py >> {
+  <font color=blue>import</font> sys, serial, logging
+  <font color=blue>from</font> time <font color=blue>import</font> QtWidgets, QtGui
+
+  <font color=blue>from</font> pots <font color=blue>import</font> Pot, TimerPot
+  <font color=blue>import</font> interface
+  <font color=blue>from</font> periodic_classes <font color=blue>import</font> PeriodHeatReg, PeriodTimePot
+  <font color=blue>from</font> thread_read_ser <font color=blue>import</font> ThreadReadSer
+  __
+  <font color=gray>### POTS</font>
+  +<font color=purple>**mash: TimerPot**</font>
+  +<font color=purple>**fill: Pot**</font>
+  +<font color=purple>**cook: TimerPot**</font>
+
+  <font color=gray>### INTERFACE</font>
+  +app: QApplication
+  +MainWindow: QMainWindow
+  +<font color=goldenrod>**ui: Ui_MainWindow**</font>
+  +string_lbl_time_state: str
+  +colors_lbl_time_state: list
+
+  <font color=gray>### LOAD IMAGE</font>
+  +icon_brewery: QtGui.QIcon
+  +alarm0: QtGui.QPixmap
+  +alarm1: QtGui.QPixmap
+  +pic_cook = QtGui.QPixmap
+  +pic_prop = QtGui.QPixmap
+  +pic_pump = QtGui.QPixmap
+
+  <font color=gray>### TIME POT PERIOD</font>
+  +<font color=green>**time_mash_thread: PeriodTimePot**</font>
+  +<font color=green>**time_cook_thread: PeriodTimePot**</font>
+
+  <font color=gray>### HEAT REGULATION PERIOD</font>
+  +<font color=green>**heat_regulate_thread: PeriodHeatReg**</font>
+
+  <font color=gray>### SERIAL READER THREAD</font>
+  +<font color=darkred>**serial_reader_thread: ThreadReadSer**</font>
+  __
+  <font color=gray>### UI CONNECT</font>
+  +mash_temp_changed(new_temp: float): void
+  +fill_temp_changed(new_temp: float): void
+  +cook_temp_changed(new_temp: float): void
+
+  +mash_heat_changed(new_temp: int): void
+  +fill_heat_changed(new_temp: int): void
+  +cook_heat_changed(new_temp: int): void
+  <font color=gray>#-- TIMER</font>
+  +mash_run_state_changed(new_state: int): void
+  +cook_run_state_changed(new_state: int): void
+
+  +mash_time_changed(act_time: float): void
+  +cook_time_changed(act_time: float): void
+
+  +mash_play_timer_state_shift(): void
+  +cook_play_timer_state_shift(): void
+
+  +mash_pause_clicked(): void
+  +cook_pause_clicked(): void
+
+  +mash_act_time_changed(): void
+  +cook_act_time_changed(): void
+  <font color=gray>#-- TEMPERATURE</font>
+  +mash_tar_temp_changed(): void
+  +fill_tar_temp_changed(): void
+  +cook_tar_temp_changed(): void
+
+  +mash_heat_regulation_shift(): void
+  +fill_heat_regulation_shift(): void
+  +cook_heat_regulation_shift(): void
+  <font color=gray>#-- ALARM</font>
+  +mash_or_cook_time_elapsed(): void
+  +every_alarm_out(): void
+  __
+  <font color=gray>### SHOWS UI</font>
+  +exit_msg: QtWidgets.QMessageBox
+}
+
+class Ui_MainWindow << interface.py >> #ffe3c4{
+  <font color=blue>from</font> PyQt5 <font color=blue>import</font> QtCore, QtGui, QtWidgets
+  __
+  +lbl_mash: QLabel
+  +lbl_fill: QLabel
+  +lbl_cook: QLabel
+  +lbl_mash_switch: QLabel
+  +lbl_fill_switch: QLabel
+  +lbl_cook_switch: QLabel
+  +lbl_prop_switch: QLabel
+  +lbl_pump_switch: QLabel
+
+  +lbl_cur_temp: QLabel
+  +lbl_temp_mash: QLabel
+  +lbl_temp_fill: QLabel
+  +lbl_temp_cook: QLabel
+  +lbl_heat_w_mash: QLabel
+  +lbl_heat_w_fill: QLabel
+  +lbl_heat_w_cook: QLabel
+
+  +lbl_tar_temp: QLabel
+  +lne_temp_mash: QLineEdit
+  +lne_temp_fill: QLineEdit
+  +lne_temp_cook: QLineEdit
+  +btn_heat_mash: QPushButton
+  +btn_heat_fill: QPushButton
+  +btn_heat_cook: QPushButton
+
+  +lbl_time_mash: QLabel
+  +lne_time_mash: QLineEdit
+  +lbl_time_mash_state: QLabel
+  +btn_play_mash: QPushButton
+  +btn_pause_mash: QPushButton
+
+  +lbl_time_cook: QLabel
+  +lne_time_cook: QLineEdit
+  +lbl_time_cook_state: QLabel
+  +btn_play_cook: QPushButton
+  +btn_pause_cook: QPushButton
+
+  +lbl_alarm_sym: QLabel
+  +btn_alarm_out: QPushButton
+
+  +li1_mash_fill: QFrame
+  +li2_mash_fill: QFrame
+  +li3_mash_fill: QFrame
+  +li4_mash_fill: QFrame
+  +li1_fill_cook: QFrame
+  +li2_fill_cook: QFrame
+  +li3_fill_cook: QFrame
+  +li4_fill_cook: QFrame
+  +li1_under_fill: QFrame
+}
+
+interface QObject {}
+
+class PeriodHeatReg << periodic_classes.py >> #d6f0da{
+  <font color=blue>from</font> PyQt5.QtCore <font color=blue>import</font> QTimer, QObject
+  __
+  +timer: QTimer
+  +interval_ms: int
+
+  +<font color=purple>**mash: TimerPot**</font>
+  +<font color=purple>**fill: Pot**</font>
+  +<font color=purple>**cook: TimerPot**</font>
+
+  +time_mash_thread: PeriodTimePot
+  +time_cook_thread: PeriodTimePot
+  __
+  +run()
+  +start()
+  +stop()
+}
+
+interface QTimer {}
+
+class PeriodTimePot << periodic_classes.py >> #d6f0da{
+  <font color=blue>from</font> PyQt5.QtCore <font color=blue>import</font> QTimer, QObject
+  __
+  +timer: QTimer
+  +<font color=purple>**pot: TimerPot**</font>
+}
+
+class ThreadReadSer << thread_read_ser.py >> #ffc2bb{
+  <font color=blue>import</font> serial, time
+  <font color=blue>from</font> PyQt5.QtCore <font color=blue>import</font> QThread
+  __
+  +logging: logging
+  +serial_port: Serial
+
+  +<font color=purple>**mash: TimerPot**</font>
+  +<font color=purple>**fill: Pot**</font>
+  +<font color=purple>**cook: TimerPot**</font>
+
+  +running: bool
+  +n_runs: int
+
+  +previousSecs: float
+  +last_heat_val: int
+  __
+  +run()
+  +stop()
+}
+
+class Pot << pot.py >> #e7d6f0{
+  <font color=blue>from</font> PyQt5.QtCore <font color=blue>import</font> QObject, pyqtSignal
+
+  <font color=blue>from</font> pid_controller <font color=blue>import</font> myPID
+  __
+  +temp_now_changed: pyqtSignal-float
+  +heat_val_changed: pyqtSignal-int
+
+  +name: str
+  #_temp_now: float
+  #_temp_tar: float
+  #_heat_val: int
+  +heat_regulation: bool
+  +pid: myPID
+  __
+  +temp_now.getter(): float
+  +temp_now.setter(new_temp: float): void
+
+  +temp_tar.getter(): float
+  +temp_tar.setter(new_temp: float): void
+
+  +heat_val.getter(): int
+  +heat_val.setter(new_temp: float): void
+}
+
+class myPID << pid_controller.py >>{
+  <font color=blue>import</font> os, sys
+  __
+  +dt: float
+  +max: float
+  +min: float
+  +kp: flaot
+  +ki: float
+  +kd: float
+  +err: float
+  +integ: float
+  +hysterese: float
+  +h_value: float
+  __
+  +calculate(set: float, act: float): output_wat
+}
+
+class TimerPot << pot.py >> #e7d6f0{
+  <font color=blue>from</font> PyQt5.QtCore <font color=blue>import</font> QObject, pyqtSignal
+
+  <font color=blue>from</font> pid_controller <font color=blue>import</font> myPID
+  __
+  +act_time_changed: pyqtSignal-float
+  +run_state_changed: pyqtSignal-int
+
+  #_act_time: float
+  +interval_ms: int
+  #_run_state: int
+  __
+  +act_time(): float
+  +act_time(new_time: float): void
+
+  +run_state(): int
+  +run_state(new_state: int): void
+}
+
+no_class  o-- "1" Ui_MainWindow: ui
+
+PeriodHeatReg --|> QObject
+no_class o-- "1" PeriodHeatReg: heat_regulate_thread
+PeriodHeatReg o-- "1" QTimer: timer
+
+PeriodTimePot --|> QObject
+no_class o-- "2" PeriodTimePot: time_mash_thread\ntime_cook_thread
+PeriodTimePot o-- "1" QTimer: timer
+
+no_class o-- "1" ThreadReadSer: serial_reader_thread
+
+Pot --|> QObject
+no_class o-- "3" Pot : mash\nfill\ncook
+Pot o-- "1" myPID: pid
+
+TimerPot --|> Pot
+
+
+@enduml

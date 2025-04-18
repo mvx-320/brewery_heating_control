@@ -8,3 +8,11 @@ sends the needed heating values back to the Arduino. The Arduino then controls t
 These heating plates are HENDI Modell 3500 M with electic power values from 500W to 3500W in 100W steps.
 They have self built in circuit boards which can decide if the plate should be controlled by the Arduino, 
 if the plate should be on/off and with how much electric power the indution plates should heat.
+
+
+---
+## Project History
+
+This project has been in development since 2022.  
+Prior to understanding version control with GitHub, versioning was managed using dated folders.  
+The first version uploaded to GitHub was created on 11th March 2024.
