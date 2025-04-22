@@ -9,6 +9,24 @@ These heating plates are HENDI Modell 3500 M with electic power values from 500W
 They have self built in circuit boards which can decide if the plate should be controlled by the Arduino, 
 if the plate should be on/off and with how much electric power the indution plates should heat.
 
+## Get Started
+### Installation
+- `pip install PyQt5`
+- `pip install pyqt5-tools`
+- `pip install pyserial`
+
+##### Create interface.py
+``` bash
+pyuic5 -x interface.ui -o interface.py
+# -d for logs
+```
+
+### Possibly occuring errors
+```
+opening serial port: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'
+```
+- Raspberry Pi couldn't connect to the Arduino
+- **Possible problem:** Arduino is not connected with USB-cable
 
 ---
 ## Project History
