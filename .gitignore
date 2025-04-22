@@ -1,0 +1,25 @@
+# Python Bytecode Files
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtuelle Umgebungen
+.env/
+venv/
+
+# Logs und temporäre Dateien
+*.log
+*.out
+
+# Test-Cache (wenn du mit pytest oder anderen Testframeworks arbeitest)
+*.pytest_cache/
+
+# IDE oder Editor-Dateien
+.vscode/
+.idea/
+*.swp
+
+# Optional: Falls du Mockups als temporäre Dateien speicherst
+*.bak
+*.tmp
+

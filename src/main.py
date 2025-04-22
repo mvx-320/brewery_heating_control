@@ -60,10 +60,16 @@ if __name__ == "__main__":
     heat_regulate_thread.start()
     
     ### SERIAL READER THREAD ##########################################################################################
+    serial_reader_thread = None
+
+    def connect2serial():
+        serial_reader_thread = ThreadReadSer(logging, mash, fill, cook)
+        serial_reader_thread.start()
+
+
     for _ in range(3):
         try:
-            serial_reader_thread = ThreadReadSer(logging, mash, fill, cook)
-            serial_reader_thread.start()
+            connect2serial()
             break
         except serial.SerialException as e:
             logging.error(f'opening serial port: {str(e)}')
