@@ -1,7 +1,8 @@
 
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import QObject, QTimer, pyqtSignal
 
 from pid_controller import myPID
+from period_heat_reg import PeriodTimePot
 
 
 class Pot(QObject):

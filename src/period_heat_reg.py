@@ -1,5 +1,6 @@
 
-from PyQt5.QtCore import QTimer, QObject
+from PyQt5.QtCore import QTimer, QObject, pyqtSignal
+import pid_controller
 
 
 class PeriodHeatReg(QObject):

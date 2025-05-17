@@ -1,19 +1,23 @@
 #! /usr/bin/python3.9
 
-import sys, serial, logging
+import sys
+import serial
+import logging
 from time import gmtime, strftime
+from datetime import datetime
 from PyQt5 import QtWidgets, QtGui
 
 from pots import Pot, TimerPot
 import interface
-from periodic_classes import PeriodHeatReg, PeriodTimePot
+from period_heat_reg import PeriodHeatReg, PeriodTimePot
 from thread_read_ser import ThreadReadSer
 
 
 if __name__ == "__main__":
     
     ### LOGGING #######################################################################################################
-    logging.basicConfig(filename='zz_sensor_errors.log', level=logging.INFO,
+    now = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
+    logging.basicConfig(filename=f'/home/raspberry/FilesBrewery/logs/{now}.log', level=logging.INFO,
                         format='%(asctime)s - %(levelname)s - %(message)s', filemode='a')
     logging.info('#################################### NEW START OF THE PROGRAM ####################################')
 
@@ -60,16 +64,10 @@ if __name__ == "__main__":
     heat_regulate_thread.start()
     
     ### SERIAL READER THREAD ##########################################################################################
-    serial_reader_thread = None
-
-    def connect2serial():
-        serial_reader_thread = ThreadReadSer(logging, mash, fill, cook)
-        serial_reader_thread.start()
-
-
     for _ in range(3):
         try:
-            connect2serial()
+            serial_reader_thread = ThreadReadSer(logging, mash, fill, cook)
+            serial_reader_thread.start()
             break
         except serial.SerialException as e:
             logging.error(f'opening serial port: {str(e)}')
