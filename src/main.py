@@ -4,6 +4,7 @@ import sys
 import serial
 import logging
 from time import gmtime, strftime
+from pathlib import Path
 from datetime import datetime
 from PyQt5 import QtWidgets, QtGui
 
@@ -15,9 +16,15 @@ from thread_read_ser import ThreadReadSer
 
 if __name__ == "__main__":
     
-    ### LOGGING #######################################################################################################
     now = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
-    logging.basicConfig(filename=f'/home/raspberry/FilesBrewery/logs/{now}.log', level=logging.INFO,
+    base_path = Path(__file__).resolve().parent # project directory
+    
+    ### LOGGING #######################################################################################################
+
+    log_path = base_path / 'logs' / f"{now}.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True) # create log directory if not existand
+
+    logging.basicConfig(filename=log_path, level=logging.INFO,
                         format='%(asctime)s - %(levelname)s - %(message)s', filemode='a')
     logging.info('#################################### NEW START OF THE PROGRAM ####################################')
 
