@@ -1,8 +1,8 @@
 #! /usr/bin/python3.9
-# Actuall Working Backup
-import sys
-import serial
-import logging
+
+import sys, serial, logging
+sys.path.append("../mockups")
+
 from time import gmtime, strftime
 from pathlib import Path
 from datetime import datetime
@@ -12,6 +12,7 @@ from pots import Pot, TimerPot
 import interface
 from period_heat_reg import PeriodHeatReg, PeriodTimePot
 from thread_read_ser import ThreadReadSer
+from thread_mockup_ser import ThreadMockupSer
 
 
 if __name__ == "__main__":
@@ -47,12 +48,14 @@ if __name__ == "__main__":
         '255, 121, 121']
     
     ### LOAD IMAGES ###################################################################################################
-    icon_brewery = QtGui.QIcon("/home/raspberry/FilesBrewery/assets/icon_brewery.png")
-    alarm0 = QtGui.QPixmap("/home/raspberry/FilesBrewery/assets/alarm0.png")
-    alarm1 = QtGui.QPixmap("/home/raspberry/FilesBrewery/assets/alarm1.png")
-    pic_cook = QtGui.QPixmap("/home/raspberry/FilesBrewery/assets/cook.png")
-    pic_prop = QtGui.QPixmap("/home/raspberry/FilesBrewery/assets/propeller.png")
-    pic_pump = QtGui.QPixmap("/home/raspberry/FilesBrewery/assets/water-pump.png")
+    
+    icon_brewery = QtGui.QIcon("assets/icon_brewery.png")
+    alarm0 = QtGui.QPixmap("assets/alarm0.png")
+    alarm1 = QtGui.QPixmap("assets/alarm1.png")
+    pic_cook = QtGui.QPixmap("assets/cook.png")
+    pic_prop = QtGui.QPixmap("assets/propeller.png")
+    pic_pump = QtGui.QPixmap("assets/water-pump.png")
+    # Old Path: /home/raspberry/FilesBrewery/assets
     app.setWindowIcon(icon_brewery)
     ui.lbl_alarm_sym.setPixmap(alarm0)
     ui.lbl_mash_switch.setPixmap(pic_cook)
@@ -71,22 +74,39 @@ if __name__ == "__main__":
     heat_regulate_thread.start()
     
     ### SERIAL READER THREAD ##########################################################################################
-    for _ in range(3):
+    def cennect2arduino():
         try:
             serial_reader_thread = ThreadReadSer(logging, mash, fill, cook)
             serial_reader_thread.start()
-            break
+            ui.lbl_connection_status.setText("Arduino ist verbunden")
+            ui.lbl_connection_status.setStyleSheet("QLabel {background-color: green; color: white;}")
+            logging.info("Arduino successfully connected")
         except serial.SerialException as e:
-            logging.error(f'opening serial port: {str(e)}')
-            print(f'opening serial port: {str(e)}')
-    else:
-        logging.error(
-            'SERIAL-THREAD IS NOT ABLE TO START\tprogram will be stopped\tMögliche Ursache: Arduino nicht angeschlossen')
-        print(
-            'SERIAL-THREAD IS NOT ABLE TO START\tprogram will be stopped\n\nMögliche Ursache: Arduino nicht angeschlossen')
-        logging.info(
-            '######################################## PROGRAM  STOPPED ########################################')
-        sys.exit(1)
+            ui.lbl_connection_status.setText("Arduino nicht verbunden. Mockup läuft ...")
+            ui.lbl_connection_status.setStyleSheet("QLabel {background-color: red; color: white;}")
+
+            serial_reader_thread = ThreadMockupSer(logging, mash, fill, cook)
+            serial_reader_thread.start()
+
+            logging.error(f"opening serial port: {str(e)}")
+            print(f"opening serial port: {str(e)}")
+
+
+    cennect2arduino()
+#    for _ in range(3):
+#        try:
+#            break
+#        except serial.SerialException as e:
+#            logging.error(f'opening serial port: {str(e)}')
+#            print(f'opening serial port: {str(e)}')
+#    else:
+#        logging.error(
+#            'SERIAL-THREAD IS NOT ABLE TO START\tprogram will be stopped\tMögliche Ursache: Arduino nicht angeschlossen')
+#        print(
+#            'SERIAL-THREAD IS NOT ABLE TO START\tprogram will be stopped\n\nMögliche Ursache: Arduino nicht angeschlossen')
+#        logging.info(
+#            '######################################## PROGRAM  STOPPED ########################################')
+#        sys.exit(1)
        
     ### UI CONNECT #################################################################################################
     def mash_temp_changed(new_temp):
