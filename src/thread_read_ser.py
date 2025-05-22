@@ -1,7 +1,9 @@
 
-import serial, time
-from PyQt5.QtCore import QThread
-
+import sys
+import serial
+import time
+from PyQt5.QtCore import QThread, pyqtSignal, Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 
 class ThreadReadSer(QThread):
 

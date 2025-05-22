@@ -1,22 +1,31 @@
 #! /usr/bin/python3.9
-# tokentest
+
 import sys, serial, logging
 sys.path.append("../mockups")
 
 from time import gmtime, strftime
+from pathlib import Path
+from datetime import datetime
 from PyQt5 import QtWidgets, QtGui
 
 from pots import Pot, TimerPot
 import interface
-from periodic_classes import PeriodHeatReg, PeriodTimePot
+from period_heat_reg import PeriodHeatReg, PeriodTimePot
 from thread_read_ser import ThreadReadSer
 from thread_mockup_ser import ThreadMockupSer
 
 
 if __name__ == "__main__":
     
+    now = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
+    base_path = Path(__file__).resolve().parent # project directory
+    
     ### LOGGING #######################################################################################################
-    logging.basicConfig(filename='zz_sensor_errors.log', level=logging.INFO,
+
+    log_path = base_path / 'logs' / f"{now}.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True) # create log directory if not existand
+
+    logging.basicConfig(filename=log_path, level=logging.INFO,
                         format='%(asctime)s - %(levelname)s - %(message)s', filemode='a')
     logging.info('#################################### NEW START OF THE PROGRAM ####################################')
 

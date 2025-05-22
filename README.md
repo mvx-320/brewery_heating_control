@@ -11,7 +11,9 @@ if the plate should be on/off and with how much electric power the indution plat
 
 ## Get Started
 ### Installation
+
 - To change the `.ui` use [Qt Creator 13.0.2](https://download.qt.io/official_releases/qtcreator/13.0/13.0.2/)
+
 - `pip install PyQt5`
 - `pip install pyqt5-tools`
 - `pip install pyserial`
