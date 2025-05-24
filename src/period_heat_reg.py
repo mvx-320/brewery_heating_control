@@ -65,7 +65,7 @@ class PeriodTimePot(QObject):
         
         
     def start(self):
-        self.timer.start(self.pot.interval_s *1000)
+        self.timer.start(int(self.pot.interval_s) *1000)
 
     def pause(self):
         self.timer.stop()
