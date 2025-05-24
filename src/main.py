@@ -1,6 +1,7 @@
 #! /usr/bin/python3.9
 import sys, serial, logging
 from time import gmtime, strftime, sleep
+
 from pathlib import Path
 from datetime import datetime
 from PyQt5 import QtWidgets, QtGui
@@ -14,6 +15,7 @@ from pots import Pot, TimerPot
 import interface
 from period_heat_reg import PeriodHeatReg, PeriodTimePot
 from thread_read_ser import ThreadReadSer
+from thread_mockup_ser import ThreadMockupSer
 
 
 if __name__ == "__main__":
