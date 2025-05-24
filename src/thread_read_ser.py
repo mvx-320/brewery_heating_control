@@ -1,15 +1,13 @@
 
-import sys
-import serial
-import time
+import sys, serial, logging, time
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 
 class ThreadReadSer(QThread):
 
-    def __init__(self, logging, mash, fill, cook):
+    def __init__(self, mash, fill, cook):
         super().__init__()
-        self.logging = logging
+        self.logger = logging.getLogger(__name__)
         self.serial_port = serial.Serial('/dev/ttyS0', 9600, timeout=1)
         time.sleep(3)
         self.serial_port.reset_input_buffer()
@@ -48,7 +46,7 @@ class ThreadReadSer(QThread):
                     self.serial_port.write(toSend_str.encode('utf-8'))
                     
             except Exception as e:
-                self.logging.warning(f"Error writing serial data: {str(e)}")
+                self.logger.warning(f"Error writing serial data: {str(e)}")
                 print(f"Error writing serial data: {str(e)}")
                 
             ### READ ##################################################################################################
@@ -56,7 +54,7 @@ class ThreadReadSer(QThread):
                 data = self.serial_port.readline().decode().strip()
                 
                 if (data == ""):
-                    self.logging.warning('Keine Sensordaten empfangen')
+                    self.logger.warning('Keine Sensordaten empfangen')
                     print('Keine Sensordaten empfangen')
                    
                 if data:
@@ -67,7 +65,7 @@ class ThreadReadSer(QThread):
                         self.mash.temp_now = float(parts[0])
                         self.fill.temp_now = float(parts[1])
                         self.cook.temp_now = float(parts[2])
-                        print(parts[3])
+                        print(f'Read Arduino data: {parts[3]}')
                     else:
                         self.n_runs += 1
                         if self.n_runs >= 5:
@@ -75,11 +73,13 @@ class ThreadReadSer(QThread):
                             raise RuntimeError(f'Thread hat für {5} Durchläufe, die Temperaturen nicht lesen können')
 
             except Exception as e:
-                self.logging.warning(f"Error reading serial data: {str(e)}")
+                self.logger.warning(f"Error reading serial data: {str(e)}")
                 print(f"Error reading serial data: {str(e)}")
 
     def stop(self):
         self.serial_port.write('0;'.encode("utf-8"))
         self.running = False
-        
-        #self.serial_port.close()
+        #self.serial_port.close()        
+
+#    def isRunning(self):
+#        retung = self.running

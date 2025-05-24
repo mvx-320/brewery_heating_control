@@ -1,5 +1,5 @@
 
-from PyQt5.QtCore import QTimer, QObject, pyqtSignal
+from PyQt5.QtCore import QThread, QTimer, QObject, pyqtSignal
 import pid_controller
 
 
@@ -41,6 +41,8 @@ class PeriodHeatReg(QObject):
         else:
             self.cook.heat_val = 0
                     
+    def isRunning(self):
+        return self.timer.isActive()
             
     def start(self):
         self.timer.start(self.interval_ms)
@@ -63,6 +65,8 @@ class PeriodTimePot(QObject):
     def run(self):
         self.pot.act_time -= self.pot.interval_s
         
+    def isRunning(self):
+        return self.timer.isActive()
         
     def start(self):
         self.timer.start(int(self.pot.interval_s) *1000)

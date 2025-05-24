@@ -47,12 +47,12 @@ if __name__ == "__main__":
             '255, 121, 121']
 
     ### LOAD IMAGES ###################################################################################################
-    icon_brewery = QtGui.QIcon("/home/raspberry/FilesBrewery/assets/icon_brewery.png")
-    alarm0 = QtGui.QPixmap("/home/raspberry/FilesBrewery/assets/alarm0.png")
-    alarm1 = QtGui.QPixmap("/home/raspberry/FilesBrewery/assets/alarm1.png")
-    pic_cook = QtGui.QPixmap("/home/raspberry/FilesBrewery/assets/cook.png")
-    pic_prop = QtGui.QPixmap("/home/raspberry/FilesBrewery/assets/propeller.png")
-    pic_pump = QtGui.QPixmap("/home/raspberry/FilesBrewery/assets/water-pump.png")
+    icon_brewery = QtGui.QIcon(str(base_path / "src/assets/icon_brewery.png"))
+    alarm0 = QtGui.QPixmap(str(base_path / "src/assets/alarm0.png"))
+    alarm1 = QtGui.QPixmap(str(base_path / "src/assets/alarm1.png"))
+    pic_cook = QtGui.QPixmap(str(base_path / "src/assets/cook.png"))
+    pic_prop = QtGui.QPixmap(str(base_path / "src/assets/propeller.png"))
+    pic_pump = QtGui.QPixmap(str(base_path / "src/assets/water-pump.png"))
     app.setWindowIcon(icon_brewery)
     ui.lbl_alarm_sym.setPixmap(alarm0)
     ui.lbl_mash_switch.setPixmap(pic_cook)
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     def connect2arduino():
         global serial_reader_thread  # Make thread accessible globally
         try:
-            serial_reader_thread = ThreadReadSer(logging, mash, fill, cook)
+            serial_reader_thread = ThreadReadSer(mash, fill, cook)
             serial_reader_thread.start()
             ui.lbl_connection_status.setText("Arduino ist verbunden")
             ui.lbl_connection_status.setStyleSheet("QLabel {background-color: green; color: white;}")
@@ -85,27 +85,17 @@ if __name__ == "__main__":
 
             # Create and start mockup thread
             serial_reader_thread = None
-            serial_reader_thread = ThreadMockupSer(logging, mash, fill, cook)
+            serial_reader_thread = ThreadMockupSer(mash, fill, cook)
             serial_reader_thread.start()
 
             logging.error(f"Opening-Serial-Port Error: {str(e)}")
             print(f"Opening-Serial-Port Error: {str(e)}")
-        finally:
-            print("Serial Reader Thread finally")
 
     # Initialize thread as None
     serial_reader_thread = None
     connect2arduino()
 
 
-    # I didn't find a way to fix this error. It occurs somewhere around here
-    # QThread: Destroyed while thread is still running
-    # Aborted (core dumped)
-
-
-    print('Serial Reader Thread started')
-
-    
     ### UI CONNECT #################################################################################################
     def mash_temp_changed(new_temp):
         ui.lbl_temp_mash.setText(f'{new_temp :.2f} °C')
@@ -270,6 +260,7 @@ if __name__ == "__main__":
                 print('cook.run_state = 0')
 
             ui.lbl_alarm_sym.setPixmap(alarm0) # sollte eigentlich unnötig sein
+
         except Exception as e:
             print(f"Exception occured wenn transfer time values to the interface: {str(e)}")
     ui.btn_alarm_out.clicked.connect(every_alarm_out)
@@ -295,14 +286,17 @@ if __name__ == "__main__":
             # Properly stop all threads
             if heat_regulate_thread.isRunning():
                 heat_regulate_thread.stop()
-                heat_regulate_thread.wait()
+                logging.info("heat_regulate_thread stopped")
             if time_mash_thread.isRunning():
                 time_mash_thread.pause()
                 time_mash_thread.wait()
+                logging.info("time_mash_thread stopped")
             if time_cook_thread.isRunning():
                 time_cook_thread.pause()
                 time_cook_thread.wait()
+                logging.info("time_cook_thread stopped")
             if serial_reader_thread and serial_reader_thread.isRunning():
                 serial_reader_thread.stop()
                 serial_reader_thread.wait()
+                logging.info("serial_reader_thread stopped")
             sys.exit(0)
