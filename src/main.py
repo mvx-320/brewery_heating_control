@@ -26,8 +26,25 @@ if __name__ == "__main__":
     log_path = base_path / 'logs' / f"{now}.log"
     log_path.parent.mkdir(parents=True, exist_ok=True) # create log directory if not existand
 
-    logging.basicConfig(filename=log_path, level=logging.INFO,
-                        format='%(asctime)s - %(levelname)s - %(message)s', filemode='a')
+    # Configure root logger to ensure all modules inherit the same configuration
+    logging.basicConfig(
+        filename=log_path, 
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
+        filemode='a',
+        force=True  # Force reconfiguration of existing loggers
+    )
+    
+    # Also configure console output for debugging
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
+    console_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    console_handler.setFormatter(console_formatter)
+    
+    # Get the root logger and add console handler
+    root_logger = logging.getLogger()
+    root_logger.addHandler(console_handler)
+    
     logging.info('#################################### NEW START OF THE PROGRAM ####################################')
 
     ### POTS ##########################################################################################################

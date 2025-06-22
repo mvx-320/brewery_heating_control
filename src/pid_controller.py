@@ -7,6 +7,7 @@
 # ------------------------------------------------------------------------------
 import os
 import sys
+import logging
 
 
 # ------------------------------------------------------------------------------
@@ -21,6 +22,7 @@ class myPID:
     integ = 0.0
 
     def __init__(self, dt, max_w, min_w, kp, ki, kd):
+        self.logger = logging.getLogger(__name__)
         self.dt = dt
         self.max = max_w
         self.min = min_w
@@ -29,14 +31,17 @@ class myPID:
         self.kd = kd
         self.hysterese = 0
         self.h_value = 0.2
+        self.logger.debug(f"PID initialized - Kp:{kp}, Ki:{ki}, Kd:{kd}, Max:{max_w}W, Min:{min_w}W")
 
     def calculate(self, set, act):
         tolerance = act * -0.008571428571428572 + 1.1857142857142857
         if (act < set - tolerance + self.hysterese):
             self.hysterese = self.h_value
+            self.logger.debug(f"PID: Heating ON - Set:{set:.1f}°C, Act:{act:.1f}°C, Tolerance:{tolerance:.1f}°C")
             return self.max, False
         elif (act > set + tolerance/2 - self.hysterese):
             self.hysterese = self.h_value
+            self.logger.debug(f"PID: Heating OFF - Set:{set:.1f}°C, Act:{act:.1f}°C, Tolerance:{tolerance:.1f}°C")
             return self.min, False
         else:
             self.hysterese = 0
@@ -64,6 +69,7 @@ class myPID:
 
             self.err = error;
             
+            self.logger.debug(f"PID: Proportional control - Set:{set:.1f}°C, Act:{act:.1f}°C, Error:{error:.1f}°C, Output:{output_watt:.0f}W")
             
             return output_watt, True
 
