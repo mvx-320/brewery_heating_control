@@ -73,6 +73,7 @@ class TimerPot(Pot):
     def __init__(self, name, interval_s= 0.1, dt= 0.1, max_w= 3500, min_w= 0, kp= 0.5, ki= 1.5, kd= 0): # ki war vorher bei 0.2
         super().__init__(name, dt= dt, max_w= max_w, min_w= min_w, kp= kp, ki= ki, kd= kd)
         self._act_time = 0
+        self.logger_time = 0
         
         self.interval_s = interval_s
         self._run_state = 0
@@ -86,18 +87,15 @@ class TimerPot(Pot):
     @act_time.setter
     def act_time(self, new_time: float):
         if (new_time <0):
-            #self.time_elapsed = True
             self.run_state = 3
-            self.logger.warning(f"{self.name} timer elapsed!")
         else:
-            #self.time_elapsed = False
             pass
             
-        old_time = self._act_time
         self._act_time = new_time
-        self.act_time_changed.emit(abs(new_time))
-        if abs(old_time - new_time) > 10:  # Only log significant time changes
-            self.logger.info(f"{self.name} time changed: {old_time/60:.1f}min -> {new_time/60:.1f}min")
+        self.act_time_changed.emit(abs(new_time)) # could be abs() if you don't like neg. numbers
+        if abs(new_time - self.logger_time) > 30:  # Only log significant time changes
+            self.logger.info(f"{self.name} timer is on: {new_time/60:.1f}min")
+            self.logger_time = new_time
         
         
     @property
@@ -112,7 +110,7 @@ class TimerPot(Pot):
         if old_state != new_state:
             states = ["Stopped", "Running", "Active", "Finished"]
             self.logger.info(f"{self.name} run state changed: {states[old_state]} -> {states[new_state]}")
-        print(f'{self.name}.run_state = {new_state}')
+        #print(f'{self.name}.run_state = {new_state}')
         
         
             

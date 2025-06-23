@@ -38,8 +38,6 @@ class PeriodHeatReg(QObject):
                 self.logger.info(f"Fill heating - Target: {self.fill.temp_tar}°C, Current: {self.fill.temp_now:.1f}°C, Heat: {self.fill.heat_val}W")
         else:
             self.fill.heat_val = 0
-
-        if self.cook.heat_regulation:
             self.cook.heat_val, pid_active = self.cook.pid.calculate(self.cook.temp_tar, self.cook.temp_now)
             if self.cook.run_state == 1 and pid_active:
                 self.time_cook_thread.start()
@@ -73,8 +71,6 @@ class PeriodTimePot(QObject):
                 
     def run(self):
         self.pot.act_time -= self.pot.interval_s
-        if self.pot.act_time <= 0:
-            self.logger.info(f"{self.pot.name} timer finished")
         
     def isRunning(self):
         return self.timer.isActive()
