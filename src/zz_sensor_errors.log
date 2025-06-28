@@ -1,0 +1,33 @@
+2025-04-23 06:30:26,492 - INFO - #################################### NEW START OF THE PROGRAM ####################################
+2025-04-23 06:30:26,597 - ERROR - opening serial port: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'
+2025-04-23 06:30:26,597 - ERROR - opening serial port: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'
+2025-04-23 06:30:26,597 - ERROR - opening serial port: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'
+2025-04-23 06:30:26,597 - ERROR - SERIAL-THREAD IS NOT ABLE TO START	program will be stopped	Mögliche Ursache: Arduino nicht angeschlossen
+2025-04-23 06:30:26,597 - INFO - ######################################## PROGRAM  STOPPED ########################################
+2025-04-23 07:50:17,016 - INFO - #################################### NEW START OF THE PROGRAM ####################################
+2025-04-23 07:50:17,076 - ERROR - opening serial port: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'
+2025-04-23 07:50:32,840 - INFO - ######################################## PROGRAM FINISHED ########################################
+2025-04-25 21:03:27,389 - INFO - #################################### NEW START OF THE PROGRAM ####################################
+2025-04-25 21:03:27,518 - ERROR - opening serial port: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'
+2025-04-25 21:03:43,685 - INFO - ######################################## PROGRAM FINISHED ########################################
+2025-04-25 21:20:34,890 - INFO - #################################### NEW START OF THE PROGRAM ####################################
+2025-04-25 21:20:34,999 - ERROR - opening serial port: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'
+2025-04-25 21:20:42,320 - INFO - ######################################## PROGRAM FINISHED ########################################
+2025-04-25 21:46:39,652 - INFO - #################################### NEW START OF THE PROGRAM ####################################
+2025-04-25 21:46:39,750 - ERROR - opening serial port: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'
+2025-04-25 21:56:41,082 - INFO - #################################### NEW START OF THE PROGRAM ####################################
+2025-04-25 21:56:41,181 - ERROR - opening serial port: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'
+2025-04-25 21:56:51,841 - INFO - #################################### NEW START OF THE PROGRAM ####################################
+2025-04-25 21:56:51,939 - ERROR - opening serial port: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'
+2025-04-25 21:57:15,122 - INFO - ######################################## PROGRAM FINISHED ########################################
+2025-04-25 21:57:16,940 - WARNING - Mock error: wrapped C/C++ object of type TimerPot has been deleted
+2025-04-25 22:00:37,729 - INFO - #################################### NEW START OF THE PROGRAM ####################################
+2025-04-25 22:00:37,828 - ERROR - opening serial port: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'
+2025-05-23 00:14:54,723 - INFO - #################################### NEW START OF THE PROGRAM ####################################
+2025-05-23 00:14:54,793 - ERROR - opening serial port: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'
+2025-06-28 19:13:39,468 - INFO - #################################### NEW START OF THE PROGRAM ####################################
+2025-06-28 19:13:39,707 - ERROR - opening serial port: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'
+2025-06-28 19:13:39,708 - ERROR - opening serial port: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'
+2025-06-28 19:13:39,708 - ERROR - opening serial port: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'
+2025-06-28 19:13:39,708 - ERROR - SERIAL-THREAD IS NOT ABLE TO START	program will be stopped	Mögliche Ursache: Arduino nicht angeschlossen
+2025-06-28 19:13:39,708 - INFO - ######################################## PROGRAM  STOPPED ########################################
