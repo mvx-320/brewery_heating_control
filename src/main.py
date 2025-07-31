@@ -64,41 +64,6 @@ if __name__ == "__main__":
     heat_regulate_thread = PeriodHeatReg(mash, fill, cook, time_mash_thread, time_cook_thread)
     heat_regulate_thread.start()
     
-    ### SERIAL READER THREAD ##########################################################################################
-    def cennect2arduino():
-        try:
-            serial_reader_thread = ThreadReadSer(logging, mash, fill, cook)
-            serial_reader_thread.start()
-            ui.lbl_connection_status.setText("Arduino ist verbunden")
-            ui.lbl_connection_status.setStyleSheet("QLabel {background-color: green; color: white;}")
-            logging.info("Arduino successfully connected")
-        except serial.SerialException as e:
-            ui.lbl_connection_status.setText("Arduino nicht verbunden. Mockup läuft ...")
-            ui.lbl_connection_status.setStyleSheet("QLabel {background-color: red; color: white;}")
-
-            serial_reader_thread = ThreadMockupSer(logging, mash, fill, cook)
-            serial_reader_thread.start()
-
-            logging.error(f"opening serial port: {str(e)}")
-            print(f"opening serial port: {str(e)}")
-
-
-    cennect2arduino()
-#    for _ in range(3):
-#        try:
-#            break
-#        except serial.SerialException as e:
-#            logging.error(f'opening serial port: {str(e)}')
-#            print(f'opening serial port: {str(e)}')
-#    else:
-#        logging.error(
-#            'SERIAL-THREAD IS NOT ABLE TO START\tprogram will be stopped\tMögliche Ursache: Arduino nicht angeschlossen')
-#        print(
-#            'SERIAL-THREAD IS NOT ABLE TO START\tprogram will be stopped\n\nMögliche Ursache: Arduino nicht angeschlossen')
-#        logging.info(
-#            '######################################## PROGRAM  STOPPED ########################################')
-#        sys.exit(1)
-       
     ### UI CONNECT #################################################################################################
     def mash_temp_changed(new_temp):
         ui.lbl_temp_mash.setText(f'{new_temp :.2f} °C')
@@ -269,6 +234,27 @@ if __name__ == "__main__":
         
     # !!! Hier sicherstellen das alles im Hintergrund funktioniert (Das die Threads laufen)
     
+    ### SERIAL READER THREAD ##########################################################################################
+    def cennect2arduino():
+        try:
+            serial_reader_thread = ThreadReadSer(logging, mash, fill, cook)
+            serial_reader_thread.start()
+            ui.lbl_connection_status.setText("Arduino ist verbunden")
+            ui.lbl_connection_status.setStyleSheet("QLabel {background-color: green; color: white;}")
+            logging.info("Arduino successfully connected")
+        except serial.SerialException as e:
+            ui.lbl_connection_status.setText("Arduino nicht verbunden. Mockup läuft ...")
+            ui.lbl_connection_status.setStyleSheet("QLabel {background-color: red; color: white;}")
+
+            serial_reader_thread = ThreadMockupSer(logging, mash, fill, cook)
+            serial_reader_thread.start()
+
+            logging.error(f"opening serial port: {str(e)}")
+            print(f"opening serial port: {str(e)}")
+
+
+    cennect2arduino()
+        
     ### SHOWS UI ######################################################################################################
     while True:
         MainWindow.show()
