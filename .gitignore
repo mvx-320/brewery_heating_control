@@ -1,4 +1,3 @@
-
 # Python Bytecode Files
 __pycache__/
 *.pyc
@@ -23,3 +22,6 @@ venv/
 # Optional: Falls du Mockups als temporäre Dateien speicherst
 *.bak
 *.tmp
+
+# Ignore experimental feature folder
+future_feature/
