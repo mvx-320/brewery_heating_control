@@ -43,8 +43,8 @@ class PeriodHeatReg(QObject):
                 self.time_cook_thread.start()
                 self.cook.run_state = 2
                 self.logger.info(f"Cook timer started - Target: {self.cook.temp_tar}°C, Current: {self.cook.temp_now:.1f}°C, Heat: {self.cook.heat_val}W")
-        else:
-            self.cook.heat_val = 0
+            else:
+                self.cook.heat_val = 0
                     
     def isRunning(self):
         return self.timer.isActive()
