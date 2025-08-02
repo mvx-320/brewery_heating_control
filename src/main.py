@@ -1,9 +1,9 @@
 #! /usr/bin/python3.9
 # tokentest
-import sys, serial, logging
+import sys, serial, logging, threading
 sys.path.append("../mockups")
 
-from time import gmtime, strftime
+from time import gmtime, strftime, sleep
 from PyQt5 import QtWidgets, QtGui
 
 from pots import Pot, TimerPot
@@ -30,6 +30,11 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = interface.Ui_MainWindow()
     ui.setupUi(MainWindow)
+    
+    # Set window size after UI setup to override the default size
+    screen_rect = QtWidgets.QDesktopWidget().availableGeometry()
+    # print(f"Screen resolution: {screen_rect}")
+    MainWindow.setGeometry(0, 0, screen_rect.width(), screen_rect.height())
     
     string_lbl_time_state = 'background: rgb(%s);border-radius: 4px;'
     colors_lbl_time_state = [
@@ -256,12 +261,8 @@ if __name__ == "__main__":
     cennect2arduino()
         
     ### SHOWS UI ######################################################################################################
-    while True:
-        MainWindow.show()
-        
-        app.exec_()
-        MainWindow.show()
-        
+    # Override closeEvent to show confirmation dialog
+    def closeEvent(event):
         exit_msg = QtWidgets.QMessageBox()
         exit_msg.setIcon(QtWidgets.QMessageBox.Warning)
         exit_msg.setWindowTitle('WARNUNG!')
@@ -269,11 +270,29 @@ if __name__ == "__main__":
         exit_msg.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
 
         return_value = exit_msg.exec()
-        #print(str(return_value))
-        if return_value == 1024:
-            logging.info('######################################## PROGRAM FINISHED ########################################')
-            heat_regulate_thread.stop()
-            time_mash_thread.pause()
-            time_cook_thread.pause()
-            serial_reader_thread.stop()
-            sys.exit(0)
+        if return_value == 1024:  # Ok button
+            # Close window immediately for better UX
+            event.accept()
+            
+            # Stop threads in background
+            def cleanup_threads():
+                logging.info('######################################## PROGRAM FINISHED ########################################')
+                heat_regulate_thread.stop()
+                time_mash_thread.pause()
+                time_cook_thread.pause()
+                serial_reader_thread.stop()
+                # Give threads a moment to finish
+                sleep(0.5)
+                sys.exit(0)
+            
+            # Start cleanup in background thread
+            cleanup_thread = threading.Thread(target=cleanup_threads, daemon=True)
+            cleanup_thread.start()
+        else:
+            event.ignore()  # Ignore the close event
+    
+    MainWindow.closeEvent = closeEvent
+    MainWindow.show()
+    
+    # Start the application event loop
+    sys.exit(app.exec_())
