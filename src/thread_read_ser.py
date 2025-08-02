@@ -8,17 +8,20 @@ class ThreadReadSer(QThread):
     def __init__(self, logging, mash, fill, cook):
         super().__init__()
         self.logging = logging
-        self.serial_port = serial.Serial('/dev/ttyS0', 9600, timeout=1)
-        time.sleep(3)
-        self.serial_port.reset_input_buffer()
         self.mash = mash
         self.fill = fill
         self.cook = cook
         self.running = True
         self.n_runs = 0 # counts temperature reading cycles
-
         self.previousSecs = 0.0
         self.interval = .5 # in s
+        self.serial_port = None
+        
+    def initialize_serial(self):
+        """Initialize serial port - can be called separately to handle exceptions"""
+        self.serial_port = serial.Serial('/dev/ttyS0', 9600, timeout=1)
+        time.sleep(3)
+        self.serial_port.reset_input_buffer()
             
     def run(self):
         while self.running:

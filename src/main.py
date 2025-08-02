@@ -10,8 +10,27 @@ from pots import Pot, TimerPot
 import interface
 from periodic_classes import PeriodHeatReg, PeriodTimePot
 from thread_read_ser import ThreadReadSer
-from thread_mockup_ser import ThreadMockupSer
 
+# Import mockup with error handling
+try:
+    from thread_mockup_ser import ThreadMockupSer
+    print("Successfully imported ThreadMockupSer")
+except ImportError as e:
+    print(f"Failed to import ThreadMockupSer: {e}")
+    # Define a fallback class
+    class ThreadMockupSer:
+        def __init__(self, logging, mash, fill, cook):
+            self.logging = logging
+            self.mash = mash
+            self.fill = fill
+            self.cook = cook
+            self.running = True
+        def start(self):
+            print("Mock thread started")
+        def stop(self):
+            self.running = False
+
+serial_reader_thread = None
 
 if __name__ == "__main__":
     
@@ -45,20 +64,20 @@ if __name__ == "__main__":
     
     ### LOAD IMAGES ###################################################################################################
     
-    icon_brewery = QtGui.QIcon("assets/icon_brewery.png")
-    alarm0 = QtGui.QPixmap("assets/alarm0.png")
-    alarm1 = QtGui.QPixmap("assets/alarm1.png")
-    pic_cook = QtGui.QPixmap("assets/cook.png")
-    pic_prop = QtGui.QPixmap("assets/propeller.png")
-    pic_pump = QtGui.QPixmap("assets/water-pump.png")
-    # Old Path: /home/raspberry/FilesBrewery/assets
-    app.setWindowIcon(icon_brewery)
-    ui.lbl_alarm_sym.setPixmap(alarm0)
-    ui.lbl_mash_switch.setPixmap(pic_cook)
-    ui.lbl_fill_switch.setPixmap(pic_cook)
-    ui.lbl_cook_switch.setPixmap(pic_cook)
-    ui.lbl_prop_switch.setPixmap(pic_prop)
-    ui.lbl_pump_switch.setPixmap(pic_pump)
+#       icon_brewery = QtGui.QIcon("assets/icon_brewery.png")
+#       alarm0 = QtGui.QPixmap("assets/alarm0.png")
+#       alarm1 = QtGui.QPixmap("assets/alarm1.png")
+#       pic_cook = QtGui.QPixmap("assets/cook.png")
+#       pic_prop = QtGui.QPixmap("assets/propeller.png")
+#       pic_pump = QtGui.QPixmap("assets/water-pump.png")
+#       # Old Path: /home/raspberry/FilesBrewery/assets
+#       app.setWindowIcon(icon_brewery)
+#       ui.lbl_alarm_sym.setPixmap(alarm0)
+#       ui.lbl_mash_switch.setPixmap(pic_cook)
+#       ui.lbl_fill_switch.setPixmap(pic_cook)
+#       ui.lbl_cook_switch.setPixmap(pic_cook)
+#       ui.lbl_prop_switch.setPixmap(pic_prop)
+#       ui.lbl_pump_switch.setPixmap(pic_pump)
     
     
     ### TIME POT PERIOD ###############################################################################################
@@ -112,26 +131,26 @@ if __name__ == "__main__":
         ui.lbl_time_cook.setText(strftime("%H:%M:%S", gmtime(act_time)) + f'.{int((act_time % 1) *10)}')
     cook.act_time_changed.connect(cook_time_changed) # connect
     # -----------------------------------------------------------------------------------------------------------------
-    def mash_play_timer_state_shift():
-        if mash.run_state == 0:
-            mash.run_state = 1
-        elif mash.run_state == 2:
-            time_mash_thread.start()
-    ui.btn_play_mash.clicked.connect(mash_play_timer_state_shift) # connect
+#       def mash_start_timer_state_shift():
+#           if mash.run_state == 0:
+#               mash.run_state = 1
+#           elif mash.run_state == 2:
+#               time_mash_thread.start()
+#       ui.btn_start_mash.clicked.connect(mash_start_timer_state_shift) # connect
     
-    def cook_play_timer_state_shift():
+    def cook_start_timer_state_shift():
         if cook.run_state == 0:
             cook.run_state = 1
         elif cook.run_state == 2:
             time_cook_thread.start()
-    ui.btn_play_cook.clicked.connect(cook_play_timer_state_shift) # connect #!!! DIESE NAMEN HIER NOCH ÄNDERN!!! DAS SIND KEINE CHECKABLE BUTTONS MEHR
+    ui.btn_start_cook.clicked.connect(cook_start_timer_state_shift) # connect #!!! DIESE NAMEN HIER NOCH ÄNDERN!!! DAS SIND KEINE CHECKABLE BUTTONS MEHR
     # -----------------------------------------------------------------------------------------------------------------
-    def mash_pause_clicked():
-        if mash.run_state == 1:
-            mash.run_state = 0
-        elif mash.run_state == 2:
-            time_mash_thread.pause()
-    ui.btn_pause_mash.clicked.connect(mash_pause_clicked) # connect
+#       def mash_pause_clicked():
+#           if mash.run_state == 1:
+#               mash.run_state = 0
+#           elif mash.run_state == 2:
+#               time_mash_thread.pause()
+#       ui.btn_pause_mash.clicked.connect(mash_pause_clicked) # connect
     
     def cook_pause_clicked():
         if cook.run_state == 1:
@@ -140,16 +159,16 @@ if __name__ == "__main__":
             time_cook_thread.pause()
     ui.btn_pause_cook.clicked.connect(cook_pause_clicked) # connect
     # -----------------------------------------------------------------------------------------------------------------
-    def mash_act_time_changed():
-        if mash.run_state != 3:
-            try:
-                mash.act_time = float(ui.lne_time_mash.text().replace(',','.')) * 60
-                #print(f'Got mash.act_time = {mash.act_time/60}')
-            except ValueError as e:
-                logging.error(f"ValueError occured from lne_time_mash: {str(e)}")
-                print(f"ValueError occured from lne_time_mash: {str(e)}")
-                mash.act_time = 0
-    ui.lne_time_mash.editingFinished.connect(mash_act_time_changed) # connect
+#       def mash_act_time_changed():
+#           if mash.run_state != 3:
+#               try:
+#                   mash.act_time = float(ui.lne_time_mash.text().replace(',','.')) * 60
+#                   #print(f'Got mash.act_time = {mash.act_time/60}')
+#               except ValueError as e:
+#                   logging.error(f"ValueError occured from lne_time_mash: {str(e)}")
+#                   print(f"ValueError occured from lne_time_mash: {str(e)}")
+#                   mash.act_time = 0
+#       ui.lne_time_mash.editingFinished.connect(mash_act_time_changed) # connect
     
     def cook_act_time_changed():
         if cook.run_state != 3:
@@ -169,7 +188,7 @@ if __name__ == "__main__":
         except ValueError as e:
             print(f"Wrong value got from lne_temp_mash: {str(e)}")
             mash.temp_tar = 0
-    ui.lne_temp_mash.textChanged.connect(mash_tar_temp_changed) # connect
+#       ui.lne_temp_mash.textChanged.connect(mash_tar_temp_changed) # connect
 
     def fill_tar_temp_changed():
         try:
@@ -192,7 +211,7 @@ if __name__ == "__main__":
     def mash_heat_regulation_shift(): # button is checkable
         mash.heat_regulation = not mash.heat_regulation
         print(mash.heat_regulation)
-    ui.btn_heat_mash.clicked.connect(mash_heat_regulation_shift) # connect
+#       ui.btn_heat_mash.clicked.connect(mash_heat_regulation_shift) # connect
 
     def fill_heat_regulation_shift(): # button is checkable
         fill.heat_regulation = not fill.heat_regulation
@@ -210,55 +229,60 @@ if __name__ == "__main__":
         else:
             ui.lbl_alarm_sym.setPixmap(alarm0)
     # -----------------------------------------------------------------------------------------------------------------
-    def every_alarm_out():
-        try:
-            if mash.act_time < 0.0:
-                time_mash_thread.pause()
-                try:
-                    new_time = float(ui.lne_time_mash.text().replace(',','.'))
-                except:
-                    new_time = 0
-                mash.act_time =  new_time * 60
-                mash.run_state = 0
-                print('mash.run_state = 0')
-            
-            if cook.act_time < 0.0:
-                time_cook_thread.pause()
-                try:
-                    new_time = float(ui.lne_time_cook.text().replace(',','.'))
-                except:
-                    new_time = 0
-                cook.act_time =  new_time * 60
-                cook.run_state = 0
-                print('cook.run_state = 0')
-                
-            ui.lbl_alarm_sym.setPixmap(alarm0) # sollte eigentlich unnötig sein
-        except Exception as e:
-            print(f"Exception occured wenn transfer time values to the interface: {str(e)}")
-    ui.btn_alarm_out.clicked.connect(every_alarm_out)
+#       def every_alarm_out():
+#           try:
+#               if mash.act_time < 0.0:
+#                   time_mash_thread.pause()
+#                   try:
+#                       new_time = float(ui.lne_time_mash.text().replace(',','.'))
+#                   except:
+#                       new_time = 0
+#                   mash.act_time =  new_time * 60
+#                   mash.run_state = 0
+#                   print('mash.run_state = 0')
+#               
+#               if cook.act_time < 0.0:
+#                   time_cook_thread.pause()
+#                   try:
+#                       new_time = float(ui.lne_time_cook.text().replace(',','.'))
+#                   except:
+#                       new_time = 0
+#                   cook.act_time =  new_time * 60
+#                   cook.run_state = 0
+#                   print('cook.run_state = 0')
+#                   
+#               ui.lbl_alarm_sym.setPixmap(alarm0) # sollte eigentlich unnötig sein
+#           except Exception as e:
+#               print(f"Exception occured wenn transfer time values to the interface: {str(e)}")
+#       ui.btn_alarm_out.clicked.connect(every_alarm_out)
         
     # !!! Hier sicherstellen das alles im Hintergrund funktioniert (Das die Threads laufen)
     
     ### SERIAL READER THREAD ##########################################################################################
-    def cennect2arduino():
+    def connect2arduino():
+        global serial_reader_thread
+        print("Starting connect2arduino()...")
         try:
+            print("Creating ThreadReadSer...")
             serial_reader_thread = ThreadReadSer(logging, mash, fill, cook)
+            print("Initializing serial port...")
+            serial_reader_thread.initialize_serial()  # Initialize serial port here
+            print("Starting serial thread...")
             serial_reader_thread.start()
             ui.lbl_connection_status.setText("Arduino ist verbunden")
             ui.lbl_connection_status.setStyleSheet("QLabel {background-color: green; color: white;}")
             logging.info("Arduino successfully connected")
-        except serial.SerialException as e:
+        except (serial.SerialException, PermissionError) as e:
+            print(f"Exception caught: {type(e).__name__}: {str(e)}")
             ui.lbl_connection_status.setText("Arduino nicht verbunden. Mockup läuft ...")
             ui.lbl_connection_status.setStyleSheet("QLabel {background-color: red; color: white;}")
-
             serial_reader_thread = ThreadMockupSer(logging, mash, fill, cook)
             serial_reader_thread.start()
-
             logging.error(f"opening serial port: {str(e)}")
             print(f"opening serial port: {str(e)}")
 
 
-    cennect2arduino()
+    connect2arduino()
         
     ### SHOWS UI ######################################################################################################
     # Override closeEvent to show confirmation dialog
@@ -276,11 +300,13 @@ if __name__ == "__main__":
             
             # Stop threads in background
             def cleanup_threads():
+                global serial_reader_thread
                 logging.info('######################################## PROGRAM FINISHED ########################################')
                 heat_regulate_thread.stop()
                 time_mash_thread.pause()
                 time_cook_thread.pause()
-                serial_reader_thread.stop()
+                if serial_reader_thread is not None:
+                    serial_reader_thread.stop()
                 # Give threads a moment to finish
                 sleep(0.5)
                 sys.exit(0)
