@@ -24,4 +24,4 @@ venv/
 *.tmp
 
 # Ignore experimental feature folder
-future_feature/
+future_features/
