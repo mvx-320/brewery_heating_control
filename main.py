@@ -1,14 +1,15 @@
 #! /usr/bin/python3.9
-# tokentest
 import sys, serial, logging, threading
-sys.path.append("../mockups")
+sys.path.extend(["src", "mockups"])
 
 from time import gmtime, strftime, sleep
 from PyQt5 import QtWidgets, QtGui
 
-from pots import Pot, TimerPot
+from components.pots import Pot, TimerPot
 import interface
-from periodic_classes import PeriodHeatReg, PeriodTimePot
+from periodics.heat_regulation import PeriodHeatReg
+from periodics.time_pot import PeriodTimePot
+# from periodic_classes import PeriodHeatReg, PeriodTimePot
 from thread_read_ser import ThreadReadSer
 
 # Import mockup with error handling
@@ -64,9 +65,9 @@ if __name__ == "__main__":
     
     ### LOAD IMAGES ###################################################################################################
     
-#       icon_brewery = QtGui.QIcon("assets/icon_brewery.png")
-#       alarm0 = QtGui.QPixmap("assets/alarm0.png")
-#       alarm1 = QtGui.QPixmap("assets/alarm1.png")
+    icon_brewery = QtGui.QIcon("src/assets/icon_brewery.png")
+    alarm0 = QtGui.QPixmap("assets/alarm0.png")
+    alarm1 = QtGui.QPixmap("assets/alarm1.png")
 #       pic_cook = QtGui.QPixmap("assets/cook.png")
 #       pic_prop = QtGui.QPixmap("assets/propeller.png")
 #       pic_pump = QtGui.QPixmap("assets/water-pump.png")

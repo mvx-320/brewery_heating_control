@@ -1,4 +1,3 @@
-
 from PyQt5.QtCore import QTimer, QObject
 
 
@@ -45,26 +44,4 @@ class PeriodHeatReg(QObject):
         self.timer.start(self.interval_ms)
                  
     def stop(self):
-        self.timer.stop()
-        
-        
-class PeriodTimePot(QObject):
-    
-    def __init__(self, pot):
-        super().__init__()        
-        
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.run)
-        
-        self.pot = pot
-        
-                
-    def run(self):
-        self.pot.act_time -= self.pot.interval_s
-        
-        
-    def start(self):
-        self.timer.start(self.pot.interval_s *1000)
-
-    def pause(self):
         self.timer.stop()

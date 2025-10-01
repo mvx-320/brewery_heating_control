@@ -1,3 +1,5 @@
+import sys
+sys.path.append("src/components")
 
 from PyQt5.QtCore import QObject, pyqtSignal
 
