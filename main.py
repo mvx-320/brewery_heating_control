@@ -1,24 +1,23 @@
 #! /usr/bin/python3.9
 import sys, serial, logging, threading
-sys.path.extend(["src", "mockups"])
+sys.path.extend(["src"])#, "mockups"])
 
 from time import gmtime, strftime, sleep
 from PyQt5 import QtWidgets, QtGui
 
 from components.pots import Pot, TimerPot
 import interface
-from periodics.heat_regulation import PeriodHeatReg
-from periodics.time_pot import PeriodTimePot
-# from periodic_classes import PeriodHeatReg, PeriodTimePot
-from thread_read_ser import ThreadReadSer
+from background_services.timer_heat_regulation import PeriodHeatReg
+from background_services.timer_pot import PeriodTimePot
+from background_services.thread_arduino import ThreadReadSer
 
-# Import mockup with error handling
+#region Import mockup
 try:
-    from thread_mockup_ser import ThreadMockupSer
+    from mockups.thread_mockup_ser import ThreadMockupSer
     print("Successfully imported ThreadMockupSer")
 except ImportError as e:
     print(f"Failed to import ThreadMockupSer: {e}")
-    # Define a fallback class
+
     class ThreadMockupSer:
         def __init__(self, logging, mash, fill, cook):
             self.logging = logging
@@ -35,25 +34,23 @@ serial_reader_thread = None
 
 if __name__ == "__main__":
     
-    ### LOGGING #######################################################################################################
+    #region LOGGING
     logging.basicConfig(filename='zz_sensor_errors.log', level=logging.INFO,
                         format='%(asctime)s - %(levelname)s - %(message)s', filemode='a')
     logging.info('#################################### NEW START OF THE PROGRAM ####################################')
 
-    ### POTS ##########################################################################################################
+    #region POTS
     mash = TimerPot('mash')
     fill = Pot('fill')
     cook = TimerPot('cook')
 
-    ### INTERFACE #####################################################################################################
+    #region INTERFACE
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = interface.Ui_MainWindow()
     ui.setupUi(MainWindow)
     
-    # Set window size after UI setup to override the default size
     screen_rect = QtWidgets.QDesktopWidget().availableGeometry()
-    # print(f"Screen resolution: {screen_rect}")
     MainWindow.setGeometry(0, 0, screen_rect.width(), screen_rect.height())
     
     string_lbl_time_state = 'background: rgb(%s);border-radius: 4px;'
@@ -63,7 +60,7 @@ if __name__ == "__main__":
         '150, 255, 150',
         '255, 121, 121']
     
-    ### LOAD IMAGES ###################################################################################################
+    #region LOAD IMAGES
     
     icon_brewery = QtGui.QIcon("src/assets/icon_brewery.png")
     alarm0 = QtGui.QPixmap("assets/alarm0.png")
@@ -81,15 +78,15 @@ if __name__ == "__main__":
 #       ui.lbl_pump_switch.setPixmap(pic_pump)
     
     
-    ### TIME POT PERIOD ###############################################################################################
+    #region TIME POT PERIOD
     time_mash_thread = PeriodTimePot(mash)
     time_cook_thread = PeriodTimePot(cook)
     
-    ### HEAT REGULATION PERIOD ########################################################################################
+    #region HEAT REGULATION PERIOD
     heat_regulate_thread = PeriodHeatReg(mash, fill, cook, time_mash_thread, time_cook_thread)
     heat_regulate_thread.start()
     
-    ### UI CONNECT #################################################################################################
+    #region UI CONNECT
     def mash_temp_changed(new_temp):
         ui.lbl_temp_mash.setText(f'{new_temp :.2f} °C')
     mash.temp_now_changed.connect(mash_temp_changed) # connect
@@ -259,7 +256,7 @@ if __name__ == "__main__":
         
     # !!! Hier sicherstellen das alles im Hintergrund funktioniert (Das die Threads laufen)
     
-    ### SERIAL READER THREAD ##########################################################################################
+    #region THREAD ARDUINO INIT
     def connect2arduino():
         global serial_reader_thread
         print("Starting connect2arduino()...")
@@ -285,7 +282,7 @@ if __name__ == "__main__":
 
     connect2arduino()
         
-    ### SHOWS UI ######################################################################################################
+    #region SHOWS UI
     # Override closeEvent to show confirmation dialog
     def closeEvent(event):
         exit_msg = QtWidgets.QMessageBox()
