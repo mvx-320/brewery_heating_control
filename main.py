@@ -10,12 +10,11 @@ now = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
 base_path = Path(__file__).resolve().parent.parent # project directory
 print(f"base_path: {base_path}")
 sys.path.append(str(base_path / 'mockups'))
-from thread_mockup_ser import ThreadMockupSer
-from pots import Pot, TimerPot
-import interface
-from period_heat_reg import PeriodHeatReg, PeriodTimePot
-from thread_read_ser import ThreadReadSer
-from thread_mockup_ser import ThreadMockupSer
+from src.pots import Pot, TimerPot
+import src.interface
+from src.period_heat_reg import PeriodHeatReg, PeriodTimePot
+from src.thread_read_ser import ThreadReadSer
+from mockups.thread_mockup_ser import ThreadMockupSer
 
 
 if __name__ == "__main__":
@@ -55,7 +54,7 @@ if __name__ == "__main__":
     ### INTERFACE #####################################################################################################
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = interface.Ui_MainWindow()
+    ui = src.interface.Ui_MainWindow()
     ui.setupUi(MainWindow)
 
     string_lbl_time_state = 'background: rgb(%s);border-radius: 4px;'
@@ -287,12 +286,8 @@ if __name__ == "__main__":
     # !!! Hier sicherstellen das alles im Hintergrund funktioniert (Das die Threads laufen)
 
     ### SHOWS UI ######################################################################################################
-    while True:
-        MainWindow.show()
 
-        app.exec_()
-        MainWindow.show()
-
+    def closeEvent(event):
         exit_msg = QtWidgets.QMessageBox()
         exit_msg.setIcon(QtWidgets.QMessageBox.Warning)
         exit_msg.setWindowTitle('WARNUNG!')
@@ -300,22 +295,48 @@ if __name__ == "__main__":
         exit_msg.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
 
         return_value = exit_msg.exec()
-        if return_value == 1024:
-            logging.info('######################################## PROGRAM FINISHED ########################################')
-            # Properly stop all threads
-            if heat_regulate_thread.isRunning():
-                heat_regulate_thread.stop()
-                logging.info("heat_regulate_thread stopped")
-            if time_mash_thread.isRunning():
-                time_mash_thread.pause()
-                time_mash_thread.wait()
-                logging.info("time_mash_thread stopped")
-            if time_cook_thread.isRunning():
-                time_cook_thread.pause()
-                time_cook_thread.wait()
-                logging.info("time_cook_thread stopped")
-            if serial_reader_thread and serial_reader_thread.isRunning():
-                serial_reader_thread.stop()
-                serial_reader_thread.wait()
-                logging.info("serial_reader_thread stopped")
-            sys.exit(0)
+        if return_value == 1024: # Ok button
+            event.accept()
+            
+            def cleanup_threads():
+                global serial_reader_thread
+                logging.info('######################################## PROGRAM FINISHED ########################################')
+                if heat_regulate_thread.isRunning():
+                    heat_regulate_thread.stop()
+                    logging.info("heat_regulate_thread stopped")
+                else:
+                    logging.warning("heat_regulate_thread didn't run!")
+
+                if time_mash_thread.isRunning():
+                    time_mash_thread.pause()
+                    time_mash_thread.wait()
+                    logging.info("time_mash_thread stopped")
+                else:
+                    logging.info("time_mash_thread was already stopped")
+
+                if time_cook_thread.isRunning():
+                    time_cook_thread.pause()
+                    time_cook_thread.wait()
+                    logging.info("time_cook_thread stopped")
+                else:
+                    logging.info("time_cook_thread was already stopped")
+
+                if serial_reader_thread and serial_reader_thread.isRunning():
+                    serial_reader_thread.stop()
+                    serial_reader_thread.wait()
+                    logging.info("serial_reader_thread stopped")
+                else:
+                    logging.warning("serial_reader_thread didn't run!")
+
+                sys.exit(0)
+                
+            cleanup_thread = thread.Thread(target=cleanup_threads, daemon=True)
+            cleanup_thread.start()
+            
+        else:
+            event.ignore()
+            
+    MainWindow.closeEvent = closeEvent
+    MainWindow.show()
+
+    sys.exit(app.exec_())

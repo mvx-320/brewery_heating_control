@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QThread, QTimer, QObject, pyqtSignal
-import pid_controller
+import src.pid_controller
 import time, logging
 
 
