@@ -148,7 +148,7 @@ if __name__ == "__main__":
         elif cook.run_state == 2:
             time_cook_thread.start()
             # ui.lbl_connection_status.setText('button wieder gedrückt')
-    ui.btn_start_cook.clicked.connect(cook_start_timer_state_shift) # connect #!!! DIESE NAMEN HIER NOCH ÄNDERN!!! DAS SIND KEINE CHECKABLE BUTTONS MEHR
+    # ui.btn_start_cook.clicked.connect(cook_start_timer_state_shift) # connect #!!! DIESE NAMEN HIER NOCH ÄNDERN!!! DAS SIND KEINE CHECKABLE BUTTONS MEHR
     # -----------------------------------------------------------------------------------------------------------------
 #       def mash_pause_clicked():
 #           if mash.run_state == 1:
