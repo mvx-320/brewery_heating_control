@@ -1,10 +1,14 @@
 #! /usr/bin/python3.9
-import sys, serial, logging
+import os, sys, serial, logging
 from time import gmtime, strftime, sleep
 
 from pathlib import Path
 from datetime import datetime
 from PyQt5 import QtWidgets, QtGui
+
+from PySide6.QtGui import QGuiApplication
+from PySide6.QtQml import QQmlApplicationEngine
+from src.components import qml_connection
 
 now = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
 base_path = Path(__file__).resolve().parent.parent # project directory
@@ -283,7 +287,20 @@ if __name__ == "__main__":
             print(f"Exception occured wenn transfer time values to the interface: {str(e)}")
     ui.btn_alarm_out.clicked.connect(every_alarm_out)
 
-    # !!! Hier sicherstellen das alles im Hintergrund funktioniert (Das die Threads laufen)
+    # !!! TODO: Hier sicherstellen das alles im Hintergrund funktioniert (Das die Threads laufen)
+
+    # QML UI
+    app = QGuiApplication(sys.argv)
+    engine = QQmlApplicationEngine()
+    
+    main = qml_connection.MainWindow()
+    engine.rootContext().setContextProperty("backend", main)
+
+    engine.load(os.path.join(os.path.dirname(__file__), "qml/main.qml"))
+
+    if not engine.rootObjects():
+        sys.exit(-1)
+    sys.exit(app.exec_())
 
     ### SHOWS UI ######################################################################################################
 

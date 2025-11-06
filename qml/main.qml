@@ -14,9 +14,28 @@ Window {
 
 	Label {
 		id: label
-		x: 510
 		y: 481
 		text: qsTr("Hallo Max!")
+		anchors.horizontalCenter: parent.horizontalCenter
 		font.pointSize: 39
+	}
+
+	Button {
+		id: button
+		x: 564
+		y: 612
+		text: qsTr("Button")
+		font.pointSize: 25
+		onClicked: {
+			backend.function(label.text)
+		}
+	}
+
+	Connections {
+		target: backend
+
+		function onSetText(text) {
+			label.text = text
+		}
 	}
 }
