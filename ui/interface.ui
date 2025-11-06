@@ -1076,7 +1076,7 @@ QLineEdit{background-color: rgb(210,255,200);}</string>
                        </property>
                        <property name="icon">
                         <iconset>
-                         <normaloff>assets/alarm1.png</normaloff>assets/alarm1.png</iconset>
+                         <normaloff>src/assets/alarm1.png</normaloff>src/assets/alarm1.png</iconset>
                        </property>
                        <property name="iconSize">
                         <size>

@@ -63,8 +63,8 @@ if __name__ == "__main__":
     #region LOAD IMAGES
     
     icon_brewery = QtGui.QIcon("src/assets/icon_brewery.png")
-    alarm0 = QtGui.QPixmap("assets/alarm0.png")
-    alarm1 = QtGui.QPixmap("assets/alarm1.png")
+    alarm0 = QtGui.QPixmap("src/assets/alarm0.png")
+    alarm1 = QtGui.QPixmap("src/assets/alarm1.png")
 #       pic_cook = QtGui.QPixmap("assets/cook.png")
 #       pic_prop = QtGui.QPixmap("assets/propeller.png")
 #       pic_pump = QtGui.QPixmap("assets/water-pump.png")
@@ -87,6 +87,11 @@ if __name__ == "__main__":
     heat_regulate_thread.start()
     
     #region UI CONNECT
+    # The Connections and the refered Methods have to stay here.
+    # Tested: 
+    # - Use connect outside of main.py with mainThread
+    # - Use the ui element outside of main.py with mainThread
+
     def mash_temp_changed(new_temp):
         ui.lbl_temp_mash.setText(f'{new_temp :.2f} °C')
     mash.temp_now_changed.connect(mash_temp_changed) # connect
@@ -139,8 +144,10 @@ if __name__ == "__main__":
     def cook_start_timer_state_shift():
         if cook.run_state == 0:
             cook.run_state = 1
+            # ui.lbl_connection_status.setText('button ist gedrückt')
         elif cook.run_state == 2:
             time_cook_thread.start()
+            # ui.lbl_connection_status.setText('button wieder gedrückt')
     ui.btn_start_cook.clicked.connect(cook_start_timer_state_shift) # connect #!!! DIESE NAMEN HIER NOCH ÄNDERN!!! DAS SIND KEINE CHECKABLE BUTTONS MEHR
     # -----------------------------------------------------------------------------------------------------------------
 #       def mash_pause_clicked():
@@ -212,6 +219,7 @@ if __name__ == "__main__":
 #       ui.btn_heat_mash.clicked.connect(mash_heat_regulation_shift) # connect
 
     def fill_heat_regulation_shift(): # button is checkable
+        ui.lbl_connection_status.setText('test')
         fill.heat_regulation = not fill.heat_regulation
         print(fill.heat_regulation)
     ui.btn_heat_fill.clicked.connect(fill_heat_regulation_shift) # connect
@@ -256,7 +264,7 @@ if __name__ == "__main__":
         
     # !!! Hier sicherstellen das alles im Hintergrund funktioniert (Das die Threads laufen)
     
-    #region THREAD ARDUINO INIT
+    #region ARDUINO INIT
     def connect2arduino():
         global serial_reader_thread
         print("Starting connect2arduino()...")
