@@ -17,6 +17,8 @@ from background_services.timer_heat_regulation import PeriodHeatReg
 from background_services.timer_pot import PeriodTimePot
 from background_services.thread_arduino import ThreadReadSer
 
+DEBUG = True # TODO: Set false in production
+
 
 if __name__ == "__main__":
     
@@ -26,20 +28,21 @@ if __name__ == "__main__":
 
     logging.basicConfig(filename=log_path,
                         level=logging.INFO,
-                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
+                        format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d | %(message)s', 
                         filemode='a',
                         force=True
     )
 
-    # console output for debugging
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.INFO)
-    console_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    console_handler.setFormatter(console_formatter)
-    
-    # Get the root logger and add console handler
-    root_logger = logging.getLogger()
-    root_logger.addHandler(console_handler)
+    if DEBUG:
+        # console output for debugging
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.INFO)
+        console_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d | %(message)s')
+        console_handler.setFormatter(console_formatter)
+        
+        # Get the root logger and add console handler
+        root_logger = logging.getLogger()
+        root_logger.addHandler(console_handler)
 
     #region Import mockup
     try:
