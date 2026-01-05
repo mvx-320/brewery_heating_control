@@ -1,4 +1,4 @@
-import sys
+import sys, logging
 sys.path.append("src/components")
 
 from PyQt5.QtCore import QObject, pyqtSignal
@@ -13,6 +13,7 @@ class Pot(QObject):
     
     def __init__(self, name, dt= 0.1, max_w= 3500, min_w= 0, kp= 5, ki= 0.1, kd= 0): # before kp= 2.9, ki= 0.3
         super().__init__()
+        self.logger = logging.getLogger(__name__)
         self.name = name
         self._temp_now = 0.0
         self._temp_tar = 0.0
@@ -42,7 +43,7 @@ class Pot(QObject):
             raise ValueError ("new target value < 0")
         if new_temp > 120:
             raise ValueError ("new target value > 120")
-        print(f'{self.name}.temp_tar = {new_temp}')
+        self.logger.info(f'{self.name}.temp_tar = {new_temp}')
         self._temp_tar = new_temp
 
 
@@ -94,7 +95,7 @@ class TimerPot(Pot):
     def run_state(self, new_state: int):
         self.run_state_changed.emit(new_state)
         self._run_state = new_state
-        print(f'{self.name}.run_state = {new_state}')
+        self.logger.info(f'{self.name}.run_state = {new_state}')
         
         
             

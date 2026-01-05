@@ -30,10 +30,9 @@ class ThreadMockupSer(QThread):
                     self.simulate_heating(self.fill)
                     self.simulate_heating(self.cook)
 
-                    print(f"Mock Temp: {self.mash.temp_now:.1f};{self.fill.temp_now:.1f};{self.cook.temp_now:.1f};OK")
+                    self.logger.info(f"Mock Temp: {self.mash.temp_now:.1f};{self.fill.temp_now:.1f};{self.cook.temp_now:.1f};OK")
             except Exception as e:
                 self.logger.warning(f"Mock error: {str(e)}")
-                print(f"Mock error: {str(e)}")
 
     def simulate_heating(self, pot):
         power_ratio = pot.heat_val / 3500.0  # normalized [0,1]

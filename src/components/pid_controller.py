@@ -1,12 +1,4 @@
-#!/usr/bin/python3
-# ------------------------------------------------------------------------------
-# Python 3.4.3
-# ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-# includes
-# ------------------------------------------------------------------------------
-import os
-import sys
+import sys, os, logging
 
 
 # ------------------------------------------------------------------------------
@@ -21,6 +13,7 @@ class myPID:
     integ = 0.0
 
     def __init__(self, dt, max_w, min_w, kp, ki, kd):
+        self.logger = logging.getLogger(__name__)
         self.dt = dt
         self.max = max_w
         self.min = min_w
@@ -55,7 +48,7 @@ class myPID:
             output_proz = P + I + D;
             output_watt = (output_proz *35)
             
-            #print(f'\t\tP:{P:>4.4f} + I:{I:>4.4f} + D:{D:>4.4f} = {output_proz:>4.4f}; integ: {self.integ:>8.4f}')
+            #self.logger.info(f'\t\tP:{P:>4.4f} + I:{I:>4.4f} + D:{D:>4.4f} = {output_proz:>4.4f}; integ: {self.integ:>8.4f}')
             
             if output_watt > self.max:
                 output_watt = self.max

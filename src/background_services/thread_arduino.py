@@ -36,7 +36,6 @@ class ThreadReadSer(QThread):
                     
             except Exception as e:
                 self.logger.warning(f"Error writing serial data: {str(e)}")
-                print(f"Error writing serial data: {str(e)}")
                 
             ### READ ##################################################################################################
             try:
@@ -45,7 +44,6 @@ class ThreadReadSer(QThread):
                 
             except Exception as e:
                 self.logger.warning(f"Error reading serial data: {str(e)}")
-                print(f"Error reading serial data: {str(e)}")
 
     def stop(self):
         self.serial_port.write('0;'.encode("utf-8"))
@@ -65,7 +63,7 @@ class ThreadReadSer(QThread):
         send |= (mash_val << 6)
         send |= (fill_val << 3)
         send |=  cook_val
-        #print(f"{bin(send|1024)}")
+        #self.logger.info(f"{bin(send|1024)}")
         
         toSend_str = str(send) + ';'
         
@@ -77,7 +75,6 @@ class ThreadReadSer(QThread):
         
         if (data == ""):
             self.logger.warning('Keine Sensordaten empfangen')
-            print('Keine Sensordaten empfangen')
            
         if data:
             parts = data.split(';')
@@ -87,7 +84,7 @@ class ThreadReadSer(QThread):
                 self.mash.temp_now = float(parts[0])
                 self.fill.temp_now = float(parts[1])
                 self.cook.temp_now = float(parts[2])
-                print(parts[3])
+                logging.info(parts[3])
             else:
                 self.n_runs += 1
                 if self.n_runs >= 5:

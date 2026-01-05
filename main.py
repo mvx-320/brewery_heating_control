@@ -202,7 +202,7 @@ if __name__ == "__main__":
         if cook.run_state != 3:
             try:
                 cook.act_time = float(ui.lne_time_cook.text().replace(',','.')) * 60
-                #print(f'Got cook.act_time = {cook.act_time/60}')
+                #print(f'Got .act_time = {cook.act_time/60}')
             except ValueError as e:
                 logging.error(f"ValueError occured from lne_time_cook: {str(e)}")
                 cook.act_time = 0
@@ -220,18 +220,18 @@ if __name__ == "__main__":
     def fill_tar_temp_changed():
         try:
             fill.temp_tar = float(ui.lne_temp_fill.text().replace(',','.'))
-            print(f'Got fill.temp_tar = {fill.temp_tar}')
+            logging.info(f'Got fill.temp_tar = {fill.temp_tar}')
         except ValueError as e:
-            print(f"Wrong value got from lne_temp_fill: {str(e)}")
+            logging.error(f"from lne_temp_fill returned {ui.lne_temp_fill}: {str(e)}")
             fill.temp_tar = 0
     ui.lne_temp_fill.textChanged.connect(fill_tar_temp_changed) # connect
 
     def cook_tar_temp_changed():
         try:
             cook.temp_tar = float(ui.lne_temp_cook.text().replace(',','.'))
-            print(f'Got cook.temp_tar = {cook.temp_tar}')
+            logging.info(f'Got cook.temp_tar = {cook.temp_tar}')
         except ValueError as e:
-            print(f"Wrong value got from lne_temp_cook: {str(e)}")
+            logging.error(f"lne_temp_cook returned {ui.lne_temp_cook}: {str(e)}")
             cook.temp_tar = 0
     ui.lne_temp_cook.textChanged.connect(cook_tar_temp_changed) # connect
     # -----------------------------------------------------------------------------------------------------------------
@@ -241,12 +241,12 @@ if __name__ == "__main__":
     def fill_heat_regulation_shift(): # button is checkable
         ui.lbl_connection_status.setText('test')
         fill.heat_regulation = not fill.heat_regulation
-        print(fill.heat_regulation)
+        logging.info(f'Fill heat regulation {fill.heat_regulation}')
     ui.btn_heat_fill.clicked.connect(fill_heat_regulation_shift) # connect
 
     def cook_heat_regulation_shift(): # button is checkable
         cook.heat_regulation = not cook.heat_regulation
-        print(cook.heat_regulation)
+        logging.info(f'Cook heat regulation {cook.heat_regulation}')
     ui.btn_heat_cook.clicked.connect(cook_heat_regulation_shift) # connect
     # --- ALARM -------------------------------------------------------------------------------------------------------
     def mash_or_cook_time_elapsed():
@@ -287,25 +287,24 @@ if __name__ == "__main__":
     #region ARDUINO INIT
     def connect2arduino():
         global serial_reader_thread
-        print("Starting connect2arduino()...")
+        logging.info("Starting connect2arduino()...")
         try:
-            print("Creating ThreadReadSer...")
+            logging.info("Creating ThreadReadSer...")
             serial_reader_thread = ThreadReadSer(mash, fill, cook)
-            print("Initializing serial port...")
+            logging.info("Initializing serial port...")
             serial_reader_thread.initialize_serial()  # Initialize serial port here
-            print("Starting serial thread...")
+            logging.info("Starting serial thread...")
             serial_reader_thread.start()
             ui.lbl_connection_status.setText("Arduino ist verbunden")
             ui.lbl_connection_status.setStyleSheet("QLabel {background-color: green; color: white;}")
             logging.info("Arduino successfully connected")
         except (serial.SerialException, PermissionError) as e:
-            print(f"Exception caught: {type(e).__name__}: {str(e)}")
+            logging.error(f"Exception caught: {type(e).__name__}: {str(e)}")
             ui.lbl_connection_status.setText("Arduino nicht verbunden. Mockup läuft ...")
             ui.lbl_connection_status.setStyleSheet("QLabel {background-color: red; color: white;}")
             serial_reader_thread = ThreadMockupSer(mash, fill, cook)
             serial_reader_thread.start()
             logging.error(f"opening serial port: {str(e)}")
-            print(f"opening serial port: {str(e)}")
 
 
     connect2arduino()
