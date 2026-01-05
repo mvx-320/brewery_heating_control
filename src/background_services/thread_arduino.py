@@ -1,13 +1,14 @@
 
-import serial, time
+import serial, time, logging
 from PyQt5.QtCore import QThread
 
 
 class ThreadReadSer(QThread):
 
-    def __init__(self, logging, mash, fill, cook):
+    def __init__(self, mash, fill, cook):
         super().__init__()
-        self.logging = logging
+        self.logger = logging.getLogger(__name__)
+        self.logger.info("ThreadArduino initializing...")
         self.mash = mash
         self.fill = fill
         self.cook = cook
@@ -34,7 +35,7 @@ class ThreadReadSer(QThread):
                     self.__writeToArd();           
                     
             except Exception as e:
-                self.logging.warning(f"Error writing serial data: {str(e)}")
+                self.logger.warning(f"Error writing serial data: {str(e)}")
                 print(f"Error writing serial data: {str(e)}")
                 
             ### READ ##################################################################################################
@@ -43,7 +44,7 @@ class ThreadReadSer(QThread):
                 self.__readFromArd()
                 
             except Exception as e:
-                self.logging.warning(f"Error reading serial data: {str(e)}")
+                self.logger.warning(f"Error reading serial data: {str(e)}")
                 print(f"Error reading serial data: {str(e)}")
 
     def stop(self):
@@ -75,7 +76,7 @@ class ThreadReadSer(QThread):
         data = self.serial_port.readline().decode().strip()
         
         if (data == ""):
-            self.logging.warning('Keine Sensordaten empfangen')
+            self.logger.warning('Keine Sensordaten empfangen')
             print('Keine Sensordaten empfangen')
            
         if data:

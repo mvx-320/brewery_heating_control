@@ -3,7 +3,13 @@ import sys, serial, logging, threading
 sys.path.extend(["src"])#, "mockups"])
 
 from time import gmtime, strftime, sleep
+from datetime import datetime
+from pathlib import Path
 from PyQt5 import QtWidgets, QtGui
+
+now = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
+base_path = Path(__file__).resolve().parent
+sys.path.append(str(base_path / 'mockups')) # TODO: Not shure why this is there
 
 from components.pots import Pot, TimerPot
 import interface
@@ -11,33 +17,50 @@ from background_services.timer_heat_regulation import PeriodHeatReg
 from background_services.timer_pot import PeriodTimePot
 from background_services.thread_arduino import ThreadReadSer
 
-#region Import mockup
-try:
-    from mockups.thread_mockup_ser import ThreadMockupSer
-    print("Successfully imported ThreadMockupSer")
-except ImportError as e:
-    print(f"Failed to import ThreadMockupSer: {e}")
-
-    class ThreadMockupSer:
-        def __init__(self, logging, mash, fill, cook):
-            self.logging = logging
-            self.mash = mash
-            self.fill = fill
-            self.cook = cook
-            self.running = True
-        def start(self):
-            print("Mock thread started")
-        def stop(self):
-            self.running = False
-
-serial_reader_thread = None
 
 if __name__ == "__main__":
     
     #region LOGGING
-    logging.basicConfig(filename='zz_sensor_errors.log', level=logging.INFO,
-                        format='%(asctime)s - %(levelname)s - %(message)s', filemode='a')
-    logging.info('#################################### NEW START OF THE PROGRAM ####################################')
+    log_path = base_path / 'logs' / f"{now}.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+
+    logging.basicConfig(filename=log_path,
+                        level=logging.INFO,
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
+                        filemode='a',
+                        force=True
+    )
+
+    # console output for debugging
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
+    console_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    console_handler.setFormatter(console_formatter)
+    
+    # Get the root logger and add console handler
+    root_logger = logging.getLogger()
+    root_logger.addHandler(console_handler)
+
+    #region Import mockup
+    try:
+        from mockups.thread_mockup_ser import ThreadMockupSer
+        logging.info("Successfully imported ThreadMockupSer")
+    except ImportError as e:
+        logging.error(f"Failed to import ThreadMockupSer: {e}")
+
+        class ThreadMockupSer:
+            def __init__(self, mash, fill, cook):
+                # TODO: I think here has to be a logger
+                self.mash = mash
+                self.fill = fill
+                self.cook = cook
+                self.running = True
+            def start(self):
+                logging.info("Mock thread started")
+            def stop(self):
+                self.running = False
+
+    serial_reader_thread = None
 
     #region POTS
     mash = TimerPot('mash')
@@ -182,18 +205,17 @@ if __name__ == "__main__":
                 #print(f'Got cook.act_time = {cook.act_time/60}')
             except ValueError as e:
                 logging.error(f"ValueError occured from lne_time_cook: {str(e)}")
-                print(f"ValueError occured from lne_time_cook: {str(e)}")
                 cook.act_time = 0
     ui.lne_time_cook.editingFinished.connect(cook_act_time_changed) # connect
     # --- TEMPERATURE -------------------------------------------------------------------------------------------------
     def mash_tar_temp_changed():
         try:
             mash.temp_tar = float(ui.lne_temp_mash.text().replace(',','.'))
-            print(f'Got mash.temp_tar = {mash.temp_tar}')
+            logging.info(f'Got mash.temp_tar = {mash.temp_tar}')
         except ValueError as e:
-            print(f"Wrong value got from lne_temp_mash: {str(e)}")
+            logging.error(f"lne_temp_mash returned {ui.lne_temp_mash}: {str(e)}")
             mash.temp_tar = 0
-#       ui.lne_temp_mash.textChanged.connect(mash_tar_temp_changed) # connect
+    ui.lne_temp_mash.textChanged.connect(mash_tar_temp_changed) # connect
 
     def fill_tar_temp_changed():
         try:
@@ -213,10 +235,8 @@ if __name__ == "__main__":
             cook.temp_tar = 0
     ui.lne_temp_cook.textChanged.connect(cook_tar_temp_changed) # connect
     # -----------------------------------------------------------------------------------------------------------------
-    def mash_heat_regulation_shift(): # button is checkable
-        mash.heat_regulation = not mash.heat_regulation
-        print(mash.heat_regulation)
-#       ui.btn_heat_mash.clicked.connect(mash_heat_regulation_shift) # connect
+
+    # TODO: Here hast to be the start button that turns on the Dwell Runtime
 
     def fill_heat_regulation_shift(): # button is checkable
         ui.lbl_connection_status.setText('test')
@@ -270,7 +290,7 @@ if __name__ == "__main__":
         print("Starting connect2arduino()...")
         try:
             print("Creating ThreadReadSer...")
-            serial_reader_thread = ThreadReadSer(logging, mash, fill, cook)
+            serial_reader_thread = ThreadReadSer(mash, fill, cook)
             print("Initializing serial port...")
             serial_reader_thread.initialize_serial()  # Initialize serial port here
             print("Starting serial thread...")
@@ -282,7 +302,7 @@ if __name__ == "__main__":
             print(f"Exception caught: {type(e).__name__}: {str(e)}")
             ui.lbl_connection_status.setText("Arduino nicht verbunden. Mockup läuft ...")
             ui.lbl_connection_status.setStyleSheet("QLabel {background-color: red; color: white;}")
-            serial_reader_thread = ThreadMockupSer(logging, mash, fill, cook)
+            serial_reader_thread = ThreadMockupSer(mash, fill, cook)
             serial_reader_thread.start()
             logging.error(f"opening serial port: {str(e)}")
             print(f"opening serial port: {str(e)}")
@@ -307,7 +327,6 @@ if __name__ == "__main__":
             # Stop threads in background
             def cleanup_threads():
                 global serial_reader_thread
-                logging.info('######################################## PROGRAM FINISHED ########################################')
                 heat_regulate_thread.stop()
                 time_mash_thread.pause()
                 time_cook_thread.pause()

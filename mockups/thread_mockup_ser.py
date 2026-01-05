@@ -1,12 +1,13 @@
-import time
+import time, logging
 from PyQt5.QtCore import QThread
 
 
 class ThreadMockupSer(QThread):
 
-    def __init__(self, logging, mash, fill, cook):
+    def __init__(self, mash, fill, cook):
         super().__init__()
-        self.logging = logging
+        self.logger = logging.getLogger(__name__)
+        self.logger.info('ThreadReadSer initializing...')
         self.mash = mash
         self.fill = fill
         self.cook = cook
@@ -31,7 +32,7 @@ class ThreadMockupSer(QThread):
 
                     print(f"Mock Temp: {self.mash.temp_now:.1f};{self.fill.temp_now:.1f};{self.cook.temp_now:.1f};OK")
             except Exception as e:
-                self.logging.warning(f"Mock error: {str(e)}")
+                self.logger.warning(f"Mock error: {str(e)}")
                 print(f"Mock error: {str(e)}")
 
     def simulate_heating(self, pot):

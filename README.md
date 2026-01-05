@@ -10,6 +10,9 @@ They have self built in circuit boards which can decide if the plate should be c
 if the plate should be on/off and with how much electric power the indution plates should heat.
 
 ## Get Started
+### Branch Info
+The `main` branch is the one that holds the current state of the brewery. **Every** change has to got through a seperate branch and pull request.
+
 ### Installation
 - To change the `.ui` use [Qt Creator 13.0.2](https://download.qt.io/official_releases/qtcreator/13.0/13.0.2/)
 - `pip install -r requirements.txt`
