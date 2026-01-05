@@ -21,8 +21,8 @@ if __name__ == "__main__":
     def update_steps(objects):
         clear_steps()
         
-        for obj in objects:
-            frame = dwell_frame.DwellFrame(obj) 
+        for i, obj in enumerate(objects):
+            frame = dwell_frame.DwellFrame(i, obj) 
             ui.dwell_layout.addWidget(frame)
 
         ui.dwell_layout.addStretch()

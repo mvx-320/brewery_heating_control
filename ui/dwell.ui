@@ -41,7 +41,7 @@ background-color: rgba(0, 0, 0, 60);
        <number>20</number>
       </property>
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="lbl_dwell_index">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -68,7 +68,7 @@ background-color: rgba(0, 0, 0, 60);
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="frm_name">
+       <widget class="QLabel" name="lbl_dwell_name">
         <property name="font">
          <font>
           <pointsize>17</pointsize>
@@ -101,7 +101,7 @@ background-color: rgba(0, 0, 0, 60);
           <widget class="QWidget" name="frm_widget_2" native="true">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QLineEdit" name="lineEdit">
+             <widget class="QLineEdit" name="lne_dwell_tar_temp">
               <property name="styleSheet">
                <string notr="true">background-color: rgba(0,0,0,60)</string>
               </property>
@@ -114,7 +114,7 @@ background-color: rgba(0, 0, 0, 60);
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="lineEdit_2">
+             <widget class="QLineEdit" name="lne_dwell_tar_time">
               <property name="styleSheet">
                <string notr="true">background-color: rgba(0,0,0,60)</string>
               </property>
@@ -144,7 +144,7 @@ background-color: rgba(0, 0, 0, 60);
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="lbl_rest_time">
+             <widget class="QLabel" name="lbl_dwell_rest_time">
               <property name="text">
                <string>4:25 min</string>
               </property>
@@ -157,20 +157,20 @@ background-color: rgba(0, 0, 0, 60);
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="btn_dwell_alarm">
         <property name="minimumSize">
          <size>
           <width>70</width>
           <height>70</height>
          </size>
         </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
         <property name="styleSheet">
          <string notr="true">background-color: rgba(0,0,0,60); 
 border: none;
 border-radius: 8px;</string>
-        </property>
-        <property name="text">
-         <string notr="true"/>
         </property>
         <property name="icon">
          <iconset>
@@ -185,19 +185,19 @@ border-radius: 8px;</string>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="btn_dwell_option">
         <property name="font">
          <font>
           <pointsize>19</pointsize>
          </font>
         </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
         <property name="styleSheet">
          <string notr="true">background-color: transparent;
 border: none;
 </string>
-        </property>
-        <property name="text">
-         <string/>
         </property>
         <property name="icon">
          <iconset>
