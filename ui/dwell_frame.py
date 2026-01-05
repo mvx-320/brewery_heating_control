@@ -16,11 +16,19 @@ class Dwell:
         # TODO: Give all the Dwell Names and a effitient way to find the correct one. Else the name ist Rast
         return dwell_names[0]
 
+    def toggleAlarm(self):
+        self.alarm = not self.alarm
+
         
 
 class DwellFrame(QtWidgets.QFrame):
+    alarm_clicked = QtCore.pyqtSignal(object)
+    option_clicked = QtCore.pyqtSignal(object) # TODO: Show Dialog of what to do with the dwell
+    
     def __init__(self, index:int, obj: Dwell):
         super().__init__()
+        self.index = index
+        self.obj = obj
 
         self.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -48,7 +56,7 @@ class DwellFrame(QtWidgets.QFrame):
         font.setPointSize(17)
         self.lbl_dwell_name.setFont(font)
         self.lbl_dwell_name.setObjectName("frm_name")
-        self.lbl_dwell_name.setText(obj.getName())
+        self.lbl_dwell_name.setText(self.obj.getName())
         self.horizontalLayout.addWidget(self.lbl_dwell_name)
         self.frm_widget = QtWidgets.QWidget(self)
         self.frm_widget.setStyleSheet("background-color: transparent")
@@ -64,13 +72,13 @@ class DwellFrame(QtWidgets.QFrame):
         self.lne_dwell_tar_temp.setStyleSheet("background-color: rgba(0,0,0,60)")
         self.lne_dwell_tar_temp.setAlignment(QtCore.Qt.AlignCenter)
         self.lne_dwell_tar_temp.setObjectName("lineEdit")
-        self.lne_dwell_tar_temp.setText(str(obj.tar_temp))
+        self.lne_dwell_tar_temp.setText(str(self.obj.tar_temp))
         self.horizontalLayout_2.addWidget(self.lne_dwell_tar_temp)
         self.lne_dwell_tar_time = QtWidgets.QLineEdit(self.frm_widget_2)
         self.lne_dwell_tar_time.setStyleSheet("background-color: rgba(0,0,0,60)")
         self.lne_dwell_tar_time.setAlignment(QtCore.Qt.AlignCenter)
         self.lne_dwell_tar_time.setObjectName("lineEdit_2")
-        self.lne_dwell_tar_time.setText(str(obj.tar_time))
+        self.lne_dwell_tar_time.setText(str(self.obj.tar_time))
         self.horizontalLayout_2.addWidget(self.lne_dwell_tar_time)
         self.verticalLayout_3.addWidget(self.frm_widget_2)
         self.widget_4 = QtWidgets.QWidget(self.frm_widget)
@@ -95,9 +103,13 @@ class DwellFrame(QtWidgets.QFrame):
         self.btn_dwell_alarm.setStyleSheet("background-color: rgba(0,0,0,60); \n"
 "border: none;\n"
 "border-radius: 8px;")
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(f'../src/assets/alarm{"1" if obj.alarm else "0"}.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btn_dwell_alarm.setIcon(icon)
+        icon0 = QtGui.QIcon()
+        icon0.addPixmap(QtGui.QPixmap(f'../src/assets/alarm0.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(f'../src/assets/alarm1.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.ico_alarm = [icon0, icon1]
+
+        self.btn_dwell_alarm.setIcon(self.ico_alarm[self.obj.alarm])
         self.btn_dwell_alarm.setIconSize(QtCore.QSize(50, 50))
         self.btn_dwell_alarm.setObjectName("btn_dwell_alarm")
         self.horizontalLayout.addWidget(self.btn_dwell_alarm)
@@ -115,3 +127,16 @@ class DwellFrame(QtWidgets.QFrame):
         self.btn_dwell_options.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_dwell_options.setObjectName("btn_dwell_options")
         self.horizontalLayout.addWidget(self.btn_dwell_options)
+
+        #region Connections
+        self.btn_dwell_alarm.clicked.connect(self._on_alarm)
+        self.btn_dwell_alarm.clicked.connect(self._on_option)
+
+    def _on_alarm(self):
+        self.obj.toggleAlarm()
+        print(f'Dwell {self.index} changes alarm to {self.obj.alarm}')
+        self.btn_dwell_alarm.setIcon(self.ico_alarm[self.obj.alarm])
+        # self.alarm_clicked.emit(self.obj)
+
+    def _on_option(self):
+        self.option_clicked.emit(self.obj)
