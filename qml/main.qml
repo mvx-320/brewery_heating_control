@@ -1,6 +1,6 @@
-import QtQuick
-import QtQuick.Window
-import QtQuick.Controls
+import QtQuicka 
+import QtQuick.Windowa 
+import QtQuick.Controlsa 
 
 Window {
 	id: mainWindow
@@ -37,5 +37,19 @@ Window {
 		function onSetText(text) {
 			label.text = text
 		}
+	}
+
+	Button {
+		id: button1
+		x: 287
+		y: 561
+		width: 64
+		height: 64
+		text: qsTr("Button")
+		icon.height: 35
+		icon.width: 38
+		icon.color: "#00000000"
+		icon.source: "assets/alarm0.png"
+		display: AbstractButton.IconOnly
 	}
 }
