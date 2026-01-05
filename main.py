@@ -312,7 +312,7 @@ if __name__ == "__main__":
 
     connect2arduino()
         
-    #region SHOWS UI
+    #region SHOW UI
     # Override closeEvent to show confirmation dialog
     def closeEvent(event):
         exit_msg = QtWidgets.QMessageBox()
