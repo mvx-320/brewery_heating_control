@@ -10,7 +10,7 @@ objects = [
     dwell_frame.Dwell(60, 20, False),
     dwell_frame.Dwell(60, 20, False),
     dwell_frame.Dwell(60, 20, False),
-    dwell_frame.Dwell(60, 20, False),
+    dwell_frame.Dwell(60, None, False),
 ]
 
 
@@ -27,21 +27,46 @@ if __name__ == "__main__":
                 widget.deleteLater()
                 
     def update_steps(objects):
+        scroll = ui.steps_scroll.verticalScrollBar()
+        print(f'Scroll-Value: {scroll.value()}')
         clear_steps()
         
         for i, obj in enumerate(objects):
+
             frame = dwell_frame.DwellFrame(i, obj) 
 
-            # frame.alarm_clicked.connect(alarm_clicked_handler)
+            frame.up_clicked.connect(up_clicked_handler)
+            frame.down_clicked.connect(down_clicked_handler)
+            frame.new_clicked.connect(new_clicked_handler)
+            frame.delete_clicked.connect(delete_clicked_handler)
             
             ui.dwell_layout.addWidget(frame)
 
         ui.dwell_layout.addStretch()
         
-    # def alarm_clicked_handler(obj):
-    #     # print(obj)
-    #     # obj.toggleAlarm()
-    #     update_steps(objects)
+    def up_clicked_handler(obj):
+        index = next(i for i, x in enumerate(objects) if x is obj)
+        if index != 0:
+            del objects[index]
+            objects.insert(index -1, obj)
+            update_steps(objects)
+
+    def down_clicked_handler(obj):
+        index = next(i for i, x in enumerate(objects) if x is obj)
+        if index < len(objects) -1:
+            del objects[index]
+            objects.insert(index +1, obj)
+            update_steps(objects)
+        
+    def new_clicked_handler(obj):
+        index = next(i for i, x in enumerate(objects) if x is obj)
+        objects.insert(index +1, dwell_frame.Dwell(None, None, False))
+        update_steps(objects)
+
+    def delete_clicked_handler(obj):
+        index = next(i for i, x in enumerate(objects) if x is obj)
+        del objects[index]
+        update_steps(objects)
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -51,6 +76,7 @@ if __name__ == "__main__":
 
     MainWindow.show()
 
+    # TODO: I should clean up the dwells from the interface.ui
     # clear_steps()
     update_steps(objects)
 

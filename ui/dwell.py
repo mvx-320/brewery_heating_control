@@ -117,6 +117,12 @@ class Ui_Form(object):
         self.btn_dwell_option.setIconSize(QtCore.QSize(30, 30))
         self.btn_dwell_option.setObjectName("btn_dwell_option")
         self.horizontalLayout.addWidget(self.btn_dwell_option)
+        self.toolButton = QtWidgets.QToolButton(self.frame)
+        self.toolButton.setStyleSheet("background-color: transparent; border: none;")
+        self.toolButton.setIcon(icon1)
+        self.toolButton.setIconSize(QtCore.QSize(30, 30))
+        self.toolButton.setObjectName("toolButton")
+        self.horizontalLayout.addWidget(self.toolButton)
         self.verticalLayout.addWidget(self.frame)
 
         self.retranslateUi(Form)

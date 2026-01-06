@@ -22,8 +22,10 @@ class Dwell:
         
 
 class DwellFrame(QtWidgets.QFrame):
-    alarm_clicked = QtCore.pyqtSignal(object)
-    option_clicked = QtCore.pyqtSignal(object) # TODO: Show Dialog of what to do with the dwell
+    up_clicked = QtCore.pyqtSignal(object)
+    down_clicked = QtCore.pyqtSignal(object)
+    new_clicked = QtCore.pyqtSignal(object)
+    delete_clicked = QtCore.pyqtSignal(object)
     
     def __init__(self, index:int, obj: Dwell):
         super().__init__()
@@ -90,6 +92,7 @@ class DwellFrame(QtWidgets.QFrame):
 "")
         self.progressBar.setProperty("value", 70)
         self.progressBar.setObjectName("progressBar")
+        # TODO: Find a way to talk to the active dwell and update the progressBar
         self.horizontalLayout_3.addWidget(self.progressBar)
         self.lbl_dwell_rest_time = QtWidgets.QLabel(self.widget_4)
         self.lbl_dwell_rest_time.setObjectName("lbl_rest_time")
@@ -113,10 +116,7 @@ class DwellFrame(QtWidgets.QFrame):
         self.btn_dwell_alarm.setIconSize(QtCore.QSize(50, 50))
         self.btn_dwell_alarm.setObjectName("btn_dwell_alarm")
         self.horizontalLayout.addWidget(self.btn_dwell_alarm)
-        self.btn_dwell_options = QtWidgets.QPushButton(self)
-        font = QtGui.QFont()
-        font.setPointSize(19)
-        self.btn_dwell_options.setFont(font)
+        self.btn_dwell_options = QtWidgets.QToolButton(self)
         self.btn_dwell_options.setStyleSheet("background-color: transparent;\n"
 "border: none;\n"
 "")
@@ -126,6 +126,19 @@ class DwellFrame(QtWidgets.QFrame):
         self.btn_dwell_options.setIconSize(QtCore.QSize(30, 30))
         self.btn_dwell_options.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_dwell_options.setObjectName("btn_dwell_options")
+        # TODO: Make it more beautiful with icons in a own QFrame using QtCore.Qt.Popup and move it to the right location
+        menu = QtWidgets.QMenu(self)
+        act_up = QtWidgets.QAction("hoch", self)
+        act_up.triggered.connect(self._on_dwell_up)
+        act_down = QtWidgets.QAction("runter", self)
+        act_down.triggered.connect(self._on_dwell_down)
+        act_new = QtWidgets.QAction("neu", self)
+        act_new.triggered.connect(self._on_new_dwell)
+        act_delete = QtWidgets.QAction("löschen", self)
+        act_delete.triggered.connect(self._on_delete_dwell)
+        menu.addActions([act_up, act_down, act_new, act_delete])
+        self.btn_dwell_options.setMenu(menu)
+        self.btn_dwell_options.setPopupMode(QtWidgets.QToolButton.InstantPopup)
         self.horizontalLayout.addWidget(self.btn_dwell_options)
 
         #region Connections
@@ -136,7 +149,18 @@ class DwellFrame(QtWidgets.QFrame):
         self.obj.toggleAlarm()
         print(f'Dwell {self.index} changes alarm to {self.obj.alarm}')
         self.btn_dwell_alarm.setIcon(self.ico_alarm[self.obj.alarm])
-        # self.alarm_clicked.emit(self.obj)
 
     def _on_option(self):
         self.option_clicked.emit(self.obj)
+        
+    def _on_dwell_up(self):
+        self.up_clicked.emit(self.obj)
+
+    def _on_dwell_down(self):
+        self.down_clicked.emit(self.obj)
+
+    def _on_new_dwell(self):
+        self.new_clicked.emit(self.obj)
+        
+    def _on_delete_dwell(self):
+        self.delete_clicked.emit(self.obj)

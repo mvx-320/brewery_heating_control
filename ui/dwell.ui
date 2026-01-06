@@ -30,6 +30,9 @@ background-color: rgba(0, 0, 0, 60);
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QFrame" name="frame">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -115,6 +118,9 @@ background-color: rgba(0, 0, 0, 60);
             </item>
             <item>
              <widget class="QLineEdit" name="lne_dwell_tar_time">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
               <property name="styleSheet">
                <string notr="true">background-color: rgba(0,0,0,60)</string>
               </property>
@@ -198,6 +204,23 @@ border-radius: 8px;</string>
          <string notr="true">background-color: transparent;
 border: none;
 </string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../src/assets/3-dots-gray.png</normaloff>../src/assets/3-dots-gray.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="toolButton">
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent; border: none;</string>
         </property>
         <property name="icon">
          <iconset>
