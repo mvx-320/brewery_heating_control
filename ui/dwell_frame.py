@@ -7,7 +7,7 @@ dwell_names = [
 
 class Dwell:
     
-    def __init__(self, tar_temp: int, tar_time:int, alarm: bool):
+    def __init__(self, tar_temp: float, tar_time:float, alarm: bool):
         self.tar_temp = tar_temp 
         self.tar_time = tar_time 
         self.alarm = alarm
@@ -82,15 +82,23 @@ class DwellFrame(QtWidgets.QFrame):
         tempValidator.setLocale(self.locale)
         self.lne_dwell_tar_temp.setValidator(tempValidator)
         self.horizontalLayout_2.addWidget(self.lne_dwell_tar_temp)
-        self.lne_dwell_tar_time = QtWidgets.QLineEdit(self.frm_widget_2)
-        self.lne_dwell_tar_time.setStyleSheet("background-color: rgba(0,0,0,60)")
-        self.lne_dwell_tar_time.setAlignment(QtCore.Qt.AlignCenter)
-        self.lne_dwell_tar_time.setObjectName("lineEdit_2")
-        self.lne_dwell_tar_time.setText(str(self.obj.tar_time))
-        timeValidator = QtGui.QDoubleValidator(0.0, 9999.0, 1)
-        timeValidator.setLocale(self.locale)
-        self.lne_dwell_tar_time.setValidator(timeValidator)
-        self.horizontalLayout_2.addWidget(self.lne_dwell_tar_time)
+        self.dsb_dwell_tar_time = QtWidgets.QDoubleSpinBox(self.frm_widget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.dsb_dwell_tar_time.sizePolicy().hasHeightForWidth())
+        self.dsb_dwell_tar_time.setSizePolicy(sizePolicy)
+        self.dsb_dwell_tar_time.setMinimumHeight(30)
+        self.dsb_dwell_tar_time.setStyleSheet("background-color: rgba(0,0,0,60)")
+        self.dsb_dwell_tar_time.setLocale(self.locale)
+        self.dsb_dwell_tar_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.dsb_dwell_tar_time.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+        self.dsb_dwell_tar_time.setSuffix(" min")
+        self.dsb_dwell_tar_time.setDecimals(1)
+        self.dsb_dwell_tar_time.setObjectName("dsb_dwell_tar_time")
+        self.dsb_dwell_tar_time.setValue(0.0 if self.obj.tar_time is None else self.obj.tar_time)
+        #TODO: Maybe add a Focus all onclick (Not that easy)
+        self.horizontalLayout_2.addWidget(self.dsb_dwell_tar_time)
         self.verticalLayout_3.addWidget(self.frm_widget_2)
         self.widget_4 = QtWidgets.QWidget(self.frm_widget)
         self.widget_4.setObjectName("widget_4")
@@ -138,7 +146,7 @@ class DwellFrame(QtWidgets.QFrame):
 
         #region Connections
         self.lne_dwell_tar_temp.editingFinished.connect(self._on_temp_changed)
-        self.lne_dwell_tar_time.editingFinished.connect(self._on_time_changed)
+        self.dsb_dwell_tar_time.editingFinished.connect(self._on_time_changed)
         self.btn_dwell_alarm.clicked.connect(self._on_alarm)
 
         # TODO: Make it more beautiful with icons in a own QFrame using QtCore.Qt.Popup and move it to the right location
@@ -164,7 +172,7 @@ class DwellFrame(QtWidgets.QFrame):
         self.temp_changed.emit(value)
         
     def _on_time_changed(self):
-        self.time_changed.emit(self.lne_dwell_tar_time.text())
+        self.time_changed.emit(self.dsb_dwell_tar_time.value())
         
     def _on_alarm(self):
         self.obj.toggleAlarm()

@@ -117,18 +117,35 @@ background-color: rgba(0, 0, 0, 60);
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="lne_dwell_tar_time">
-              <property name="enabled">
-               <bool>true</bool>
+             <widget class="QDoubleSpinBox" name="doubleSpinBox">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
               </property>
               <property name="styleSheet">
-               <string notr="true">background-color: rgba(0,0,0,60)</string>
+               <string notr="true">background-color: rgba(0,0,0,60);
+border: none;
+border-radius: 5px;</string>
               </property>
-              <property name="text">
-               <string>30 min</string>
+              <property name="locale">
+               <locale language="German" country="Germany"/>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
+              </property>
+              <property name="buttonSymbols">
+               <enum>QAbstractSpinBox::NoButtons</enum>
+              </property>
+              <property name="suffix">
+               <string> min</string>
               </property>
              </widget>
             </item>

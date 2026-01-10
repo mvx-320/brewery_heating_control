@@ -5,12 +5,12 @@ import dwell_frame
 
 
 objects = [
-    dwell_frame.Dwell(50, 30, True),
-    dwell_frame.Dwell(60, 20, False),
-    dwell_frame.Dwell(60, 20, False),
-    dwell_frame.Dwell(60, 20, False),
-    dwell_frame.Dwell(60, 20, False),
-    dwell_frame.Dwell(60, None, False),
+    dwell_frame.Dwell(50.0, 30.0, True),
+    dwell_frame.Dwell(60.0, 20.0, False),
+    dwell_frame.Dwell(60.0, 20.0, False),
+    dwell_frame.Dwell(60.0, 20.0, False),
+    dwell_frame.Dwell(60.0, 20.0, False),
+    dwell_frame.Dwell(60.0, None, False),
 ]
 
 
