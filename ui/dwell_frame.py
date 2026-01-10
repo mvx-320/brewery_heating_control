@@ -22,6 +22,8 @@ class Dwell:
         
 
 class DwellFrame(QtWidgets.QFrame):
+    temp_changed = QtCore.pyqtSignal(float)
+    time_changed = QtCore.pyqtSignal(float)
     up_clicked = QtCore.pyqtSignal(object)
     down_clicked = QtCore.pyqtSignal(object)
     new_clicked = QtCore.pyqtSignal(object)
@@ -75,12 +77,19 @@ class DwellFrame(QtWidgets.QFrame):
         self.lne_dwell_tar_temp.setAlignment(QtCore.Qt.AlignCenter)
         self.lne_dwell_tar_temp.setObjectName("lineEdit")
         self.lne_dwell_tar_temp.setText(str(self.obj.tar_temp))
+        self.locale = QtCore.QLocale(QtCore.QLocale.German)
+        tempValidator = QtGui.QDoubleValidator(0.0, 100.0, 1)
+        tempValidator.setLocale(self.locale)
+        self.lne_dwell_tar_temp.setValidator(tempValidator)
         self.horizontalLayout_2.addWidget(self.lne_dwell_tar_temp)
         self.lne_dwell_tar_time = QtWidgets.QLineEdit(self.frm_widget_2)
         self.lne_dwell_tar_time.setStyleSheet("background-color: rgba(0,0,0,60)")
         self.lne_dwell_tar_time.setAlignment(QtCore.Qt.AlignCenter)
         self.lne_dwell_tar_time.setObjectName("lineEdit_2")
         self.lne_dwell_tar_time.setText(str(self.obj.tar_time))
+        timeValidator = QtGui.QDoubleValidator(0.0, 9999.0, 1)
+        timeValidator.setLocale(self.locale)
+        self.lne_dwell_tar_time.setValidator(timeValidator)
         self.horizontalLayout_2.addWidget(self.lne_dwell_tar_time)
         self.verticalLayout_3.addWidget(self.frm_widget_2)
         self.widget_4 = QtWidgets.QWidget(self.frm_widget)
@@ -126,6 +135,12 @@ class DwellFrame(QtWidgets.QFrame):
         self.btn_dwell_options.setIconSize(QtCore.QSize(30, 30))
         self.btn_dwell_options.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_dwell_options.setObjectName("btn_dwell_options")
+
+        #region Connections
+        self.lne_dwell_tar_temp.editingFinished.connect(self._on_temp_changed)
+        self.lne_dwell_tar_time.editingFinished.connect(self._on_time_changed)
+        self.btn_dwell_alarm.clicked.connect(self._on_alarm)
+
         # TODO: Make it more beautiful with icons in a own QFrame using QtCore.Qt.Popup and move it to the right location
         menu = QtWidgets.QMenu(self)
         act_up = QtWidgets.QAction("hoch", self)
@@ -141,18 +156,21 @@ class DwellFrame(QtWidgets.QFrame):
         self.btn_dwell_options.setPopupMode(QtWidgets.QToolButton.InstantPopup)
         self.horizontalLayout.addWidget(self.btn_dwell_options)
 
-        #region Connections
-        self.btn_dwell_alarm.clicked.connect(self._on_alarm)
-        self.btn_dwell_alarm.clicked.connect(self._on_option)
-
+    def _on_temp_changed(self):
+        text = self.lne_dwell_tar_temp.text().replace('.', ',')
+        self.lne_dwell_tar_temp.setText(text + " °C")
+        value = self.locale.toDouble(text)[0]
+        self.lne_dwell_tar_temp.clearFocus()
+        self.temp_changed.emit(value)
+        
+    def _on_time_changed(self):
+        self.time_changed.emit(self.lne_dwell_tar_time.text())
+        
     def _on_alarm(self):
         self.obj.toggleAlarm()
         print(f'Dwell {self.index} changes alarm to {self.obj.alarm}')
         self.btn_dwell_alarm.setIcon(self.ico_alarm[self.obj.alarm])
 
-    def _on_option(self):
-        self.option_clicked.emit(self.obj)
-        
     def _on_dwell_up(self):
         self.up_clicked.emit(self.obj)
 

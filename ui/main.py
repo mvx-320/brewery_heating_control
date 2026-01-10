@@ -35,6 +35,8 @@ if __name__ == "__main__":
 
             frame = dwell_frame.DwellFrame(i, obj) 
 
+            frame.temp_changed.connect(temp_changed_handler)
+            frame.time_changed.connect(time_changed_handler)
             frame.up_clicked.connect(up_clicked_handler)
             frame.down_clicked.connect(down_clicked_handler)
             frame.new_clicked.connect(new_clicked_handler)
@@ -43,6 +45,12 @@ if __name__ == "__main__":
             ui.dwell_layout.addWidget(frame)
 
         ui.dwell_layout.addStretch()
+        
+    def temp_changed_handler(tar_temp):
+        print(tar_temp)
+
+    def time_changed_handler(tar_time):
+        print(tar_time)
         
     def up_clicked_handler(obj):
         index = next(i for i, x in enumerate(objects) if x is obj)
