@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1012</width>
+    <width>905</width>
     <height>132</height>
    </rect>
   </property>
@@ -88,6 +88,9 @@ background-color: rgba(0, 0, 0, 60);
          <string notr="true">background-color: transparent</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
+         <property name="spacing">
+          <number>0</number>
+         </property>
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -103,16 +106,53 @@ background-color: rgba(0, 0, 0, 60);
          <item>
           <widget class="QWidget" name="frm_widget_2" native="true">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="spacing">
+             <number>9</number>
+            </property>
             <item>
-             <widget class="QLineEdit" name="lne_dwell_tar_temp">
-              <property name="styleSheet">
-               <string notr="true">background-color: rgba(0,0,0,60)</string>
+             <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
-              <property name="text">
-               <string>60°C</string>
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>16</pointsize>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: rgba(0,0,0,60);
+border: none;
+border-radius: 8px;</string>
+              </property>
+              <property name="locale">
+               <locale language="German" country="Germany"/>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
+              </property>
+              <property name="buttonSymbols">
+               <enum>QAbstractSpinBox::NoButtons</enum>
+              </property>
+              <property name="specialValueText">
+               <string>Temperatur</string>
+              </property>
+              <property name="suffix">
+               <string> °C</string>
+              </property>
+              <property name="decimals">
+               <number>1</number>
+              </property>
+              <property name="value">
+               <double>50.000000000000000</double>
               </property>
              </widget>
             </item>
@@ -126,14 +166,19 @@ background-color: rgba(0, 0, 0, 60);
               </property>
               <property name="minimumSize">
                <size>
-                <width>0</width>
-                <height>30</height>
+                <width>90</width>
+                <height>40</height>
                </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>16</pointsize>
+               </font>
               </property>
               <property name="styleSheet">
                <string notr="true">background-color: rgba(0,0,0,60);
 border: none;
-border-radius: 5px;</string>
+border-radius: 8px;</string>
               </property>
               <property name="locale">
                <locale language="German" country="Germany"/>
@@ -144,8 +189,17 @@ border-radius: 5px;</string>
               <property name="buttonSymbols">
                <enum>QAbstractSpinBox::NoButtons</enum>
               </property>
+              <property name="specialValueText">
+               <string>Dauer</string>
+              </property>
               <property name="suffix">
                <string> min</string>
+              </property>
+              <property name="decimals">
+               <number>1</number>
+              </property>
+              <property name="value">
+               <double>20.000000000000000</double>
               </property>
              </widget>
             </item>
@@ -154,15 +208,36 @@ border-radius: 5px;</string>
          </item>
          <item>
           <widget class="QWidget" name="widget_4" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>30</height>
+            </size>
+           </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
              <widget class="QProgressBar" name="progressBar">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>10</height>
+               </size>
+              </property>
               <property name="styleSheet">
                <string notr="true">background-color: rgba(0,0,0,60);
 </string>
               </property>
               <property name="value">
                <number>70</number>
+              </property>
+              <property name="textVisible">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
