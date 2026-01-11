@@ -46,11 +46,11 @@ if __name__ == "__main__":
 
         ui.dwell_layout.addStretch()
         
-    def temp_changed_handler(tar_temp):
-        print(tar_temp)
+    def temp_changed_handler(index, value):
+        print(f'index: {index}; temp: {value}')
 
-    def time_changed_handler(tar_time):
-        print(tar_time)
+    def time_changed_handler(index, value):
+        print(f'index: {index}; temp: {value}')
         
     def up_clicked_handler(obj):
         index = next(i for i, x in enumerate(objects) if x is obj)

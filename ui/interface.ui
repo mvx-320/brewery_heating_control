@@ -230,23 +230,7 @@ border:2px solid blue;
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="lne_temp_cook">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>20</pointsize>
-                        <bold>false</bold>
-                       </font>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
-                     </widget>
+                     <widget class="SelectAllDoubleSpinBox" name="doubleSpinBox_2"/>
                     </item>
                    </layout>
                   </widget>
@@ -453,23 +437,7 @@ background: lavender;
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="lne_temp_fill">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>20</pointsize>
-                        <bold>false</bold>
-                       </font>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
-                     </widget>
+                     <widget class="SelectAllDoubleSpinBox" name="doubleSpinBox"/>
                     </item>
                    </layout>
                   </widget>
@@ -2431,6 +2399,13 @@ QLineEdit{background-color: rgb(210,255,200);}</string>
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SelectAllDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header location="global">selectalldoublespinbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
