@@ -19,16 +19,21 @@
   <property name="windowTitle">
    <string>Brauerei Pfofeld</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: black;
+color: lightgray;
+</string>
+  </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonIconOnly</enum>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="centralWidget">
    <property name="layoutDirection">
     <enum>Qt::LeftToRight</enum>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_8">
     <item>
-     <widget class="QTabWidget" name="tab_widget">
+     <widget class="QTabWidget" name="tabWidget">
       <property name="font">
        <font>
         <pointsize>14</pointsize>
@@ -72,10 +77,10 @@ border:2px solid blue;
             <number>0</number>
            </property>
            <property name="spacing">
-            <number>2</number>
+            <number>8</number>
            </property>
            <item row="0" column="2">
-            <widget class="QWidget" name="widget_11" native="true">
+            <widget class="QWidget" name="wdg_cook" native="true">
              <property name="maximumSize">
               <size>
                <width>350</width>
@@ -83,7 +88,14 @@ border:2px solid blue;
               </size>
              </property>
              <property name="styleSheet">
-              <string notr="true">background: azure;</string>
+              <string notr="true">* {
+background-color: rgb(36, 31, 49);
+}
+
+QWidget#wdg_cook {
+border: 4px solid rgb(90,100,0);
+border-radius: 16px;
+}</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_6">
               <item>
@@ -106,6 +118,9 @@ border:2px solid blue;
                   <height>67</height>
                  </size>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true">border: none;</string>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
@@ -113,21 +128,6 @@ border:2px solid blue;
                  <enum>QFrame::Raised</enum>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_4">
-                 <property name="spacing">
-                  <number>0</number>
-                 </property>
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
                  <item>
                   <widget class="QLabel" name="lbl_cook">
                    <property name="maximumSize">
@@ -159,7 +159,7 @@ border:2px solid blue;
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap>assets/cook.png</pixmap>
+                    <pixmap>../src/assets/cook.png</pixmap>
                    </property>
                    <property name="scaledContents">
                     <bool>true</bool>
@@ -286,10 +286,15 @@ border:2px solid blue;
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QWidget" name="widget_10" native="true">
+            <widget class="QWidget" name="wdg_fill" native="true">
              <property name="styleSheet">
-              <string notr="true">QWidget{
-background: lavender;
+              <string notr="true">* {
+background-color: rgb(36, 31, 49);
+}
+
+QWidget#wdg_fill {
+border: 4px solid rgb(0, 70, 100);
+border-radius: 16px;
 }</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -313,28 +318,13 @@ background: lavender;
                   <height>67</height>
                  </size>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true">border: none;</string>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_3">
-                 <property name="spacing">
-                  <number>0</number>
-                 </property>
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
+                <layout class="QHBoxLayout" name="fillLayout">
                  <item>
                   <widget class="QLabel" name="lbl_fill">
                    <property name="maximumSize">
@@ -366,7 +356,7 @@ background: lavender;
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap>assets/cook.png</pixmap>
+                    <pixmap>../src/assets/cook.png</pixmap>
                    </property>
                    <property name="scaledContents">
                     <bool>true</bool>
@@ -493,7 +483,7 @@ background: lavender;
             </widget>
            </item>
            <item row="1" column="0" colspan="2">
-            <widget class="QWidget" name="steps" native="true">
+            <widget class="QWidget" name="wdg_dwells" native="true">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -501,18 +491,24 @@ background: lavender;
               </sizepolicy>
              </property>
              <property name="styleSheet">
-              <string notr="true">QWidget {
-background-color:seashell;
+              <string notr="true">* {
+background-color: rgb(36, 31, 49);
 }
+
+QWidget#wdg_dwells {
+border: 4px solid rgb(150, 150, 40);
+border-radius: 16px;
+}
+
 QScrollBar:vertical {
-    background: seashell;
+    background: rgb(36, 31, 49);
     width: 12px;
     margin: 0px;
     border: none;
 }
 
 QScrollBar::handle:vertical {
-    background: #dcb;
+    background: rgb(94, 92, 100);
     min-height: 20px;
     border-radius: 6px;
 }
@@ -555,21 +551,20 @@ QScrollBar::sub-page:horizontal {
     background: none;
 }
 
-QFrame {
-background-color:#dcb;
-border-radius: 15px;
-}
-
-QLineEdit {
-background-color:#dcb;
-}</string>
+</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
+              <property name="leftMargin">
+               <number>8</number>
+              </property>
               <property name="topMargin">
-               <number>5</number>
+               <number>8</number>
+              </property>
+              <property name="rightMargin">
+               <number>8</number>
               </property>
               <property name="bottomMargin">
-               <number>5</number>
+               <number>8</number>
               </property>
               <item row="0" column="0" rowspan="2">
                <widget class="QScrollArea" name="steps_scroll">
@@ -599,7 +594,7 @@ background-color:#dcb;
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>858</width>
+                   <width>852</width>
                    <height>786</height>
                   </rect>
                  </property>
@@ -1835,9 +1830,18 @@ QLineEdit{background-color: rgb(210,255,200);}</string>
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QWidget" name="widget_9" native="true">
+            <widget class="QWidget" name="wdg_mash" native="true">
              <property name="styleSheet">
-              <string notr="true">background-color:seashell</string>
+              <string notr="true">* {
+background-color: rgb(36, 31, 49);
+}
+
+QWidget#wdg_mash {
+border: 4px solid rgb(150,150,40);
+border-radius: 16px;
+}
+
+</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
@@ -1860,6 +1864,9 @@ QLineEdit{background-color: rgb(210,255,200);}</string>
                   <height>67</height>
                  </size>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true">border: none;</string>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
@@ -1867,21 +1874,6 @@ QLineEdit{background-color: rgb(210,255,200);}</string>
                  <enum>QFrame::Raised</enum>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_2">
-                 <property name="spacing">
-                  <number>0</number>
-                 </property>
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
                  <item>
                   <widget class="QLabel" name="lbl_mash">
                    <property name="maximumSize">
@@ -1913,7 +1905,7 @@ QLineEdit{background-color: rgb(210,255,200);}</string>
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap>assets/cook.png</pixmap>
+                    <pixmap>../src/assets/cook.png</pixmap>
                    </property>
                    <property name="scaledContents">
                     <bool>true</bool>
@@ -2062,7 +2054,7 @@ QLineEdit{background-color: rgb(210,255,200);}</string>
             </widget>
            </item>
            <item row="1" column="2">
-            <widget class="QWidget" name="widget_2" native="true">
+            <widget class="QWidget" name="wdg_timer" native="true">
              <property name="maximumSize">
               <size>
                <width>350</width>
@@ -2076,7 +2068,14 @@ QLineEdit{background-color: rgb(210,255,200);}</string>
               <string>whatsThis</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">background: azure;</string>
+              <string notr="true">* {
+background-color: rgb(36, 31, 49);
+}
+
+QWidget#wdg_timer {
+border: 4px solid rgb(90,100,0);
+border-radius: 16px;
+}</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
               <item row="0" column="0">

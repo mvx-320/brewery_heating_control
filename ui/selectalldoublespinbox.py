@@ -7,7 +7,7 @@ class SelectAllDoubleSpinBox(QtWidgets.QDoubleSpinBox):
         self.spinBox_font.setPointSize(16)
         self.setFont(self.spinBox_font)
         self.setStyleSheet("\
-                            background-color: rgba(0,0,0,60);\
+                            background-color: rgba(255, 255, 255,60);\
                             border: none;\
                             border-radius: 8px;\
                            ")

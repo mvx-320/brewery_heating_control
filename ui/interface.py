@@ -20,20 +20,23 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
+        MainWindow.setStyleSheet("background-color: black;\n"
+"color: lightgray;\n"
+"")
         MainWindow.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.centralwidget.setObjectName("centralwidget")
-        self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.centralWidget = QtWidgets.QWidget(MainWindow)
+        self.centralWidget.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.centralWidget.setObjectName("centralWidget")
+        self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.centralWidget)
         self.verticalLayout_8.setObjectName("verticalLayout_8")
-        self.tab_widget = QtWidgets.QTabWidget(self.centralwidget)
+        self.tabWidget = QtWidgets.QTabWidget(self.centralWidget)
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(False)
-        self.tab_widget.setFont(font)
-        self.tab_widget.setTabPosition(QtWidgets.QTabWidget.North)
-        self.tab_widget.setTabShape(QtWidgets.QTabWidget.Rounded)
-        self.tab_widget.setObjectName("tab_widget")
+        self.tabWidget.setFont(font)
+        self.tabWidget.setTabPosition(QtWidgets.QTabWidget.North)
+        self.tabWidget.setTabShape(QtWidgets.QTabWidget.Rounded)
+        self.tabWidget.setObjectName("tabWidget")
         self.control = QtWidgets.QWidget()
         self.control.setObjectName("control")
         self.gridLayout_8 = QtWidgets.QGridLayout(self.control)
@@ -47,15 +50,22 @@ class Ui_MainWindow(object):
         self.widget_12.setObjectName("widget_12")
         self.gridLayout_9 = QtWidgets.QGridLayout(self.widget_12)
         self.gridLayout_9.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout_9.setSpacing(2)
+        self.gridLayout_9.setSpacing(8)
         self.gridLayout_9.setObjectName("gridLayout_9")
-        self.widget_11 = QtWidgets.QWidget(self.widget_12)
-        self.widget_11.setMaximumSize(QtCore.QSize(350, 16777215))
-        self.widget_11.setStyleSheet("background: azure;")
-        self.widget_11.setObjectName("widget_11")
-        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.widget_11)
+        self.wdg_cook = QtWidgets.QWidget(self.widget_12)
+        self.wdg_cook.setMaximumSize(QtCore.QSize(350, 16777215))
+        self.wdg_cook.setStyleSheet("* {\n"
+"background-color: rgb(36, 31, 49);\n"
+"}\n"
+"\n"
+"QWidget#wdg_cook {\n"
+"border: 4px solid rgb(90,100,0);\n"
+"border-radius: 16px;\n"
+"}")
+        self.wdg_cook.setObjectName("wdg_cook")
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.wdg_cook)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
-        self.frame_cook = QtWidgets.QFrame(self.widget_11)
+        self.frame_cook = QtWidgets.QFrame(self.wdg_cook)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -63,12 +73,11 @@ class Ui_MainWindow(object):
         self.frame_cook.setSizePolicy(sizePolicy)
         self.frame_cook.setMinimumSize(QtCore.QSize(0, 67))
         self.frame_cook.setMaximumSize(QtCore.QSize(16777215, 67))
+        self.frame_cook.setStyleSheet("border: none;")
         self.frame_cook.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_cook.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_cook.setObjectName("frame_cook")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.frame_cook)
-        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_4.setSpacing(0)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.lbl_cook = QtWidgets.QLabel(self.frame_cook)
         self.lbl_cook.setMaximumSize(QtCore.QSize(16777215, 49))
@@ -81,12 +90,12 @@ class Ui_MainWindow(object):
         self.lbl_cook_switch = QtWidgets.QLabel(self.frame_cook)
         self.lbl_cook_switch.setMaximumSize(QtCore.QSize(60, 65))
         self.lbl_cook_switch.setText("")
-        self.lbl_cook_switch.setPixmap(QtGui.QPixmap("assets/cook.png"))
+        self.lbl_cook_switch.setPixmap(QtGui.QPixmap("../src/assets/cook.png"))
         self.lbl_cook_switch.setScaledContents(True)
         self.lbl_cook_switch.setObjectName("lbl_cook_switch")
         self.horizontalLayout_4.addWidget(self.lbl_cook_switch)
         self.verticalLayout_6.addWidget(self.frame_cook)
-        self.widget_8 = QtWidgets.QWidget(self.widget_11)
+        self.widget_8 = QtWidgets.QWidget(self.wdg_cook)
         self.widget_8.setObjectName("widget_8")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.widget_8)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
@@ -132,7 +141,7 @@ class Ui_MainWindow(object):
         self.lbl_heat_w_cook.setObjectName("lbl_heat_w_cook")
         self.verticalLayout_3.addWidget(self.lbl_heat_w_cook)
         self.verticalLayout_6.addWidget(self.widget_8)
-        self.btn_heat_cook = QtWidgets.QPushButton(self.widget_11)
+        self.btn_heat_cook = QtWidgets.QPushButton(self.wdg_cook)
         self.btn_heat_cook.setMinimumSize(QtCore.QSize(0, 50))
         font = QtGui.QFont()
         font.setPointSize(10)
@@ -141,15 +150,20 @@ class Ui_MainWindow(object):
         self.btn_heat_cook.setCheckable(True)
         self.btn_heat_cook.setObjectName("btn_heat_cook")
         self.verticalLayout_6.addWidget(self.btn_heat_cook)
-        self.gridLayout_9.addWidget(self.widget_11, 0, 2, 1, 1)
-        self.widget_10 = QtWidgets.QWidget(self.widget_12)
-        self.widget_10.setStyleSheet("QWidget{\n"
-"background: lavender;\n"
+        self.gridLayout_9.addWidget(self.wdg_cook, 0, 2, 1, 1)
+        self.wdg_fill = QtWidgets.QWidget(self.widget_12)
+        self.wdg_fill.setStyleSheet("* {\n"
+"background-color: rgb(36, 31, 49);\n"
+"}\n"
+"\n"
+"QWidget#wdg_fill {\n"
+"border: 4px solid rgb(0, 70, 100);\n"
+"border-radius: 16px;\n"
 "}")
-        self.widget_10.setObjectName("widget_10")
-        self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.widget_10)
+        self.wdg_fill.setObjectName("wdg_fill")
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.wdg_fill)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
-        self.frame_fill = QtWidgets.QFrame(self.widget_10)
+        self.frame_fill = QtWidgets.QFrame(self.wdg_fill)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -157,13 +171,11 @@ class Ui_MainWindow(object):
         self.frame_fill.setSizePolicy(sizePolicy)
         self.frame_fill.setMinimumSize(QtCore.QSize(0, 67))
         self.frame_fill.setMaximumSize(QtCore.QSize(16777215, 67))
+        self.frame_fill.setStyleSheet("border: none;")
         self.frame_fill.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame_fill.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_fill.setObjectName("frame_fill")
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.frame_fill)
-        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_3.setSpacing(0)
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.fillLayout = QtWidgets.QHBoxLayout(self.frame_fill)
+        self.fillLayout.setObjectName("fillLayout")
         self.lbl_fill = QtWidgets.QLabel(self.frame_fill)
         self.lbl_fill.setMaximumSize(QtCore.QSize(16777215, 49))
         font = QtGui.QFont()
@@ -171,16 +183,16 @@ class Ui_MainWindow(object):
         font.setBold(True)
         self.lbl_fill.setFont(font)
         self.lbl_fill.setObjectName("lbl_fill")
-        self.horizontalLayout_3.addWidget(self.lbl_fill)
+        self.fillLayout.addWidget(self.lbl_fill)
         self.lbl_fill_switch = QtWidgets.QLabel(self.frame_fill)
         self.lbl_fill_switch.setMaximumSize(QtCore.QSize(60, 65))
         self.lbl_fill_switch.setText("")
-        self.lbl_fill_switch.setPixmap(QtGui.QPixmap("assets/cook.png"))
+        self.lbl_fill_switch.setPixmap(QtGui.QPixmap("../src/assets/cook.png"))
         self.lbl_fill_switch.setScaledContents(True)
         self.lbl_fill_switch.setObjectName("lbl_fill_switch")
-        self.horizontalLayout_3.addWidget(self.lbl_fill_switch)
+        self.fillLayout.addWidget(self.lbl_fill_switch)
         self.verticalLayout_5.addWidget(self.frame_fill)
-        self.widget = QtWidgets.QWidget(self.widget_10)
+        self.widget = QtWidgets.QWidget(self.wdg_fill)
         self.widget.setObjectName("widget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.widget)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -226,7 +238,7 @@ class Ui_MainWindow(object):
         self.lbl_heat_w_fill.setObjectName("lbl_heat_w_fill")
         self.verticalLayout.addWidget(self.lbl_heat_w_fill)
         self.verticalLayout_5.addWidget(self.widget)
-        self.btn_heat_fill = QtWidgets.QPushButton(self.widget_10)
+        self.btn_heat_fill = QtWidgets.QPushButton(self.wdg_fill)
         self.btn_heat_fill.setMinimumSize(QtCore.QSize(0, 50))
         font = QtGui.QFont()
         font.setPointSize(10)
@@ -235,25 +247,31 @@ class Ui_MainWindow(object):
         self.btn_heat_fill.setCheckable(True)
         self.btn_heat_fill.setObjectName("btn_heat_fill")
         self.verticalLayout_5.addWidget(self.btn_heat_fill)
-        self.gridLayout_9.addWidget(self.widget_10, 0, 1, 1, 1)
-        self.steps = QtWidgets.QWidget(self.widget_12)
+        self.gridLayout_9.addWidget(self.wdg_fill, 0, 1, 1, 1)
+        self.wdg_dwells = QtWidgets.QWidget(self.widget_12)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.steps.sizePolicy().hasHeightForWidth())
-        self.steps.setSizePolicy(sizePolicy)
-        self.steps.setStyleSheet("QWidget {\n"
-"background-color:seashell;\n"
+        sizePolicy.setHeightForWidth(self.wdg_dwells.sizePolicy().hasHeightForWidth())
+        self.wdg_dwells.setSizePolicy(sizePolicy)
+        self.wdg_dwells.setStyleSheet("* {\n"
+"background-color: rgb(36, 31, 49);\n"
 "}\n"
+"\n"
+"QWidget#wdg_dwells {\n"
+"border: 4px solid rgb(150, 150, 40);\n"
+"border-radius: 16px;\n"
+"}\n"
+"\n"
 "QScrollBar:vertical {\n"
-"    background: seashell;\n"
+"    background: rgb(36, 31, 49);\n"
 "    width: 12px;\n"
 "    margin: 0px;\n"
 "    border: none;\n"
 "}\n"
 "\n"
 "QScrollBar::handle:vertical {\n"
-"    background: #dcb;\n"
+"    background: rgb(94, 92, 100);\n"
 "    min-height: 20px;\n"
 "    border-radius: 6px;\n"
 "}\n"
@@ -296,19 +314,12 @@ class Ui_MainWindow(object):
 "    background: none;\n"
 "}\n"
 "\n"
-"QFrame {\n"
-"background-color:#dcb;\n"
-"border-radius: 15px;\n"
-"}\n"
-"\n"
-"QLineEdit {\n"
-"background-color:#dcb;\n"
-"}")
-        self.steps.setObjectName("steps")
-        self.gridLayout_4 = QtWidgets.QGridLayout(self.steps)
-        self.gridLayout_4.setContentsMargins(-1, 5, -1, 5)
+"")
+        self.wdg_dwells.setObjectName("wdg_dwells")
+        self.gridLayout_4 = QtWidgets.QGridLayout(self.wdg_dwells)
+        self.gridLayout_4.setContentsMargins(8, 8, 8, 8)
         self.gridLayout_4.setObjectName("gridLayout_4")
-        self.steps_scroll = QtWidgets.QScrollArea(self.steps)
+        self.steps_scroll = QtWidgets.QScrollArea(self.wdg_dwells)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -321,7 +332,7 @@ class Ui_MainWindow(object):
         self.steps_scroll.setWidgetResizable(True)
         self.steps_scroll.setObjectName("steps_scroll")
         self.steps_scroll_content = QtWidgets.QWidget()
-        self.steps_scroll_content.setGeometry(QtCore.QRect(0, 0, 858, 786))
+        self.steps_scroll_content.setGeometry(QtCore.QRect(0, 0, 852, 786))
         self.steps_scroll_content.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.steps_scroll_content.setObjectName("steps_scroll_content")
         self.dwell_layout = QtWidgets.QVBoxLayout(self.steps_scroll_content)
@@ -784,13 +795,22 @@ class Ui_MainWindow(object):
         self.dwell_layout.addWidget(self.frm_mash_end)
         self.steps_scroll.setWidget(self.steps_scroll_content)
         self.gridLayout_4.addWidget(self.steps_scroll, 0, 0, 2, 1)
-        self.gridLayout_9.addWidget(self.steps, 1, 0, 1, 2)
-        self.widget_9 = QtWidgets.QWidget(self.widget_12)
-        self.widget_9.setStyleSheet("background-color:seashell")
-        self.widget_9.setObjectName("widget_9")
-        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.widget_9)
+        self.gridLayout_9.addWidget(self.wdg_dwells, 1, 0, 1, 2)
+        self.wdg_mash = QtWidgets.QWidget(self.widget_12)
+        self.wdg_mash.setStyleSheet("* {\n"
+"background-color: rgb(36, 31, 49);\n"
+"}\n"
+"\n"
+"QWidget#wdg_mash {\n"
+"border: 4px solid rgb(150,150,40);\n"
+"border-radius: 16px;\n"
+"}\n"
+"\n"
+"")
+        self.wdg_mash.setObjectName("wdg_mash")
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.wdg_mash)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.frame_mash = QtWidgets.QFrame(self.widget_9)
+        self.frame_mash = QtWidgets.QFrame(self.wdg_mash)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -798,12 +818,11 @@ class Ui_MainWindow(object):
         self.frame_mash.setSizePolicy(sizePolicy)
         self.frame_mash.setMinimumSize(QtCore.QSize(0, 67))
         self.frame_mash.setMaximumSize(QtCore.QSize(16777215, 67))
+        self.frame_mash.setStyleSheet("border: none;")
         self.frame_mash.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_mash.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_mash.setObjectName("frame_mash")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.frame_mash)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.lbl_mash = QtWidgets.QLabel(self.frame_mash)
         self.lbl_mash.setMaximumSize(QtCore.QSize(16777215, 49))
@@ -816,12 +835,12 @@ class Ui_MainWindow(object):
         self.lbl_mash_switch = QtWidgets.QLabel(self.frame_mash)
         self.lbl_mash_switch.setMaximumSize(QtCore.QSize(60, 65))
         self.lbl_mash_switch.setText("")
-        self.lbl_mash_switch.setPixmap(QtGui.QPixmap("assets/cook.png"))
+        self.lbl_mash_switch.setPixmap(QtGui.QPixmap("../src/assets/cook.png"))
         self.lbl_mash_switch.setScaledContents(True)
         self.lbl_mash_switch.setObjectName("lbl_mash_switch")
         self.horizontalLayout_2.addWidget(self.lbl_mash_switch)
         self.verticalLayout_4.addWidget(self.frame_mash)
-        self.widget_6 = QtWidgets.QWidget(self.widget_9)
+        self.widget_6 = QtWidgets.QWidget(self.wdg_mash)
         self.widget_6.setObjectName("widget_6")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.widget_6)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -871,7 +890,7 @@ class Ui_MainWindow(object):
         self.lbl_heat_w_mash.setObjectName("lbl_heat_w_mash")
         self.verticalLayout_2.addWidget(self.lbl_heat_w_mash)
         self.verticalLayout_4.addWidget(self.widget_6)
-        self.widget_7 = QtWidgets.QWidget(self.widget_9)
+        self.widget_7 = QtWidgets.QWidget(self.wdg_mash)
         self.widget_7.setObjectName("widget_7")
         self.horizontalLayout_16 = QtWidgets.QHBoxLayout(self.widget_7)
         self.horizontalLayout_16.setObjectName("horizontalLayout_16")
@@ -884,17 +903,24 @@ class Ui_MainWindow(object):
         self.btn_pause_mash.setObjectName("btn_pause_mash")
         self.horizontalLayout_16.addWidget(self.btn_pause_mash)
         self.verticalLayout_4.addWidget(self.widget_7)
-        self.gridLayout_9.addWidget(self.widget_9, 0, 0, 1, 1)
-        self.widget_2 = QtWidgets.QWidget(self.widget_12)
-        self.widget_2.setMaximumSize(QtCore.QSize(350, 16777215))
-        self.widget_2.setStyleSheet("background: azure;")
-        self.widget_2.setObjectName("widget_2")
-        self.gridLayout_7 = QtWidgets.QGridLayout(self.widget_2)
+        self.gridLayout_9.addWidget(self.wdg_mash, 0, 0, 1, 1)
+        self.wdg_timer = QtWidgets.QWidget(self.widget_12)
+        self.wdg_timer.setMaximumSize(QtCore.QSize(350, 16777215))
+        self.wdg_timer.setStyleSheet("* {\n"
+"background-color: rgb(36, 31, 49);\n"
+"}\n"
+"\n"
+"QWidget#wdg_timer {\n"
+"border: 4px solid rgb(90,100,0);\n"
+"border-radius: 16px;\n"
+"}")
+        self.wdg_timer.setObjectName("wdg_timer")
+        self.gridLayout_7 = QtWidgets.QGridLayout(self.wdg_timer)
         self.gridLayout_7.setObjectName("gridLayout_7")
-        self.label_3 = QtWidgets.QLabel(self.widget_2)
+        self.label_3 = QtWidgets.QLabel(self.wdg_timer)
         self.label_3.setObjectName("label_3")
         self.gridLayout_7.addWidget(self.label_3, 0, 0, 1, 1)
-        self.lne_time_cook = QtWidgets.QLineEdit(self.widget_2)
+        self.lne_time_cook = QtWidgets.QLineEdit(self.wdg_timer)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -902,7 +928,7 @@ class Ui_MainWindow(object):
         self.lne_time_cook.setSizePolicy(sizePolicy)
         self.lne_time_cook.setObjectName("lne_time_cook")
         self.gridLayout_7.addWidget(self.lne_time_cook, 1, 0, 1, 1)
-        self.lineEdit_2 = QtWidgets.QLineEdit(self.widget_2)
+        self.lineEdit_2 = QtWidgets.QLineEdit(self.wdg_timer)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -910,7 +936,7 @@ class Ui_MainWindow(object):
         self.lineEdit_2.setSizePolicy(sizePolicy)
         self.lineEdit_2.setObjectName("lineEdit_2")
         self.gridLayout_7.addWidget(self.lineEdit_2, 5, 0, 1, 1)
-        self.lineEdit_3 = QtWidgets.QLineEdit(self.widget_2)
+        self.lineEdit_3 = QtWidgets.QLineEdit(self.wdg_timer)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -918,7 +944,7 @@ class Ui_MainWindow(object):
         self.lineEdit_3.setSizePolicy(sizePolicy)
         self.lineEdit_3.setObjectName("lineEdit_3")
         self.gridLayout_7.addWidget(self.lineEdit_3, 7, 0, 1, 1)
-        self.frame = QtWidgets.QFrame(self.widget_2)
+        self.frame = QtWidgets.QFrame(self.wdg_timer)
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
@@ -947,10 +973,10 @@ class Ui_MainWindow(object):
         self.btn_pause_cook.setObjectName("btn_pause_cook")
         self.horizontalLayout_12.addWidget(self.btn_pause_cook)
         self.gridLayout_7.addWidget(self.frame, 3, 0, 1, 1)
-        self.label_6 = QtWidgets.QLabel(self.widget_2)
+        self.label_6 = QtWidgets.QLabel(self.wdg_timer)
         self.label_6.setObjectName("label_6")
         self.gridLayout_7.addWidget(self.label_6, 8, 0, 1, 1)
-        self.progressBar_2 = QtWidgets.QProgressBar(self.widget_2)
+        self.progressBar_2 = QtWidgets.QProgressBar(self.wdg_timer)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -961,7 +987,7 @@ class Ui_MainWindow(object):
         self.progressBar_2.setTextVisible(False)
         self.progressBar_2.setObjectName("progressBar_2")
         self.gridLayout_7.addWidget(self.progressBar_2, 2, 0, 1, 1)
-        self.lineEdit_4 = QtWidgets.QLineEdit(self.widget_2)
+        self.lineEdit_4 = QtWidgets.QLineEdit(self.wdg_timer)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -969,15 +995,15 @@ class Ui_MainWindow(object):
         self.lineEdit_4.setSizePolicy(sizePolicy)
         self.lineEdit_4.setObjectName("lineEdit_4")
         self.gridLayout_7.addWidget(self.lineEdit_4, 9, 0, 1, 1)
-        self.label_5 = QtWidgets.QLabel(self.widget_2)
+        self.label_5 = QtWidgets.QLabel(self.wdg_timer)
         self.label_5.setObjectName("label_5")
         self.gridLayout_7.addWidget(self.label_5, 6, 0, 1, 1)
-        self.label_4 = QtWidgets.QLabel(self.widget_2)
+        self.label_4 = QtWidgets.QLabel(self.wdg_timer)
         self.label_4.setObjectName("label_4")
         self.gridLayout_7.addWidget(self.label_4, 4, 0, 1, 1)
-        self.gridLayout_9.addWidget(self.widget_2, 1, 2, 1, 1)
+        self.gridLayout_9.addWidget(self.wdg_timer, 1, 2, 1, 1)
         self.gridLayout_8.addWidget(self.widget_12, 0, 0, 1, 1)
-        self.tab_widget.addTab(self.control, "")
+        self.tabWidget.addTab(self.control, "")
         self.settings = QtWidgets.QWidget()
         self.settings.setObjectName("settings")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.settings)
@@ -1023,9 +1049,9 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.horizontalLayout.addWidget(self.widget_5)
         self.gridLayout_2.addWidget(self.widget_3, 0, 0, 1, 1)
-        self.tab_widget.addTab(self.settings, "")
-        self.verticalLayout_8.addWidget(self.tab_widget)
-        self.lbl_connection_status = QtWidgets.QLabel(self.centralwidget)
+        self.tabWidget.addTab(self.settings, "")
+        self.verticalLayout_8.addWidget(self.tabWidget)
+        self.lbl_connection_status = QtWidgets.QLabel(self.centralWidget)
         font = QtGui.QFont()
         font.setPointSize(15)
         self.lbl_connection_status.setFont(font)
@@ -1037,12 +1063,12 @@ class Ui_MainWindow(object):
         self.lbl_connection_status.setAlignment(QtCore.Qt.AlignCenter)
         self.lbl_connection_status.setObjectName("lbl_connection_status")
         self.verticalLayout_8.addWidget(self.lbl_connection_status)
-        MainWindow.setCentralWidget(self.centralwidget)
+        MainWindow.setCentralWidget(self.centralWidget)
         self.actionMit_Arduino_verbinden = QtWidgets.QAction(MainWindow)
         self.actionMit_Arduino_verbinden.setObjectName("actionMit_Arduino_verbinden")
 
         self.retranslateUi(MainWindow)
-        self.tab_widget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -1102,8 +1128,8 @@ class Ui_MainWindow(object):
         self.lbl_heat_w_mash.setText(_translate("MainWindow", "---- W"))
         self.btn_start_mash.setText(_translate("MainWindow", "START"))
         self.btn_pause_mash.setText(_translate("MainWindow", "STOP"))
-        self.widget_2.setStatusTip(_translate("MainWindow", "statusTip"))
-        self.widget_2.setWhatsThis(_translate("MainWindow", "whatsThis"))
+        self.wdg_timer.setStatusTip(_translate("MainWindow", "statusTip"))
+        self.wdg_timer.setWhatsThis(_translate("MainWindow", "whatsThis"))
         self.label_3.setText(_translate("MainWindow", "Kochdauer:"))
         self.lne_time_cook.setText(_translate("MainWindow", "55min Kochdauer"))
         self.lineEdit_2.setText(_translate("MainWindow", "30 min vor Kochende"))
@@ -1116,9 +1142,9 @@ class Ui_MainWindow(object):
         self.lineEdit_4.setPlaceholderText(_translate("MainWindow", "__min vor Kochende"))
         self.label_5.setText(_translate("MainWindow", "Hopfengabe 2:"))
         self.label_4.setText(_translate("MainWindow", "Hopfengabe 1:"))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.control), _translate("MainWindow", "    Steuerung    "))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.control), _translate("MainWindow", "    Steuerung    "))
         self.btn_connect2arduino.setText(_translate("MainWindow", "Mit Arduino verbinden..."))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.settings), _translate("MainWindow", "    Einstellungen    "))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.settings), _translate("MainWindow", "    Einstellungen    "))
         self.lbl_connection_status.setText(_translate("MainWindow", "Arduino nicht verbunden. Programm läuft mit Mockup..."))
         self.actionMit_Arduino_verbinden.setText(_translate("MainWindow", "Mit Arduino verbinden..."))
 from selectalldoublespinbox import SelectAllDoubleSpinBox

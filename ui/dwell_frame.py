@@ -114,7 +114,7 @@ class DwellFrame(QtWidgets.QFrame):
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.progressBar = QtWidgets.QProgressBar(self.widget_4)
         self.progressBar.setMaximumHeight(10)
-        self.progressBar.setStyleSheet("background-color: rgba(0,0,0,60);\n"
+        self.progressBar.setStyleSheet("background-color: rgba(255, 255, 255,60);\n"
 "")
         self.progressBar.setProperty("value", 70)
         self.progressBar.setTextVisible(False)
@@ -131,7 +131,7 @@ class DwellFrame(QtWidgets.QFrame):
         self.btn_dwell_alarm = QtWidgets.QPushButton(self)
         self.btn_dwell_alarm.setMinimumSize(QtCore.QSize(70, 70))
         self.btn_dwell_alarm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_dwell_alarm.setStyleSheet("background-color: rgba(0,0,0,60); \n"
+        self.btn_dwell_alarm.setStyleSheet("background-color: rgba(255, 255, 255,60); \n"
 "border: none;\n"
 "border-radius: 8px;")
         icon0 = QtGui.QIcon()
