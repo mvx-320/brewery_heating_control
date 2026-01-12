@@ -38,6 +38,11 @@ class DwellFrame(QtWidgets.QFrame):
         self.spinBox_font = QtGui.QFont()
         self.spinBox_font.setPointSize(16)
 
+        self.setStyleSheet("\
+                            background-color: rgb(61,56,70);\
+                            border: none;\
+                            border-radius: 8px;\
+                           ")
         self.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.setFrameShadow(QtWidgets.QFrame.Raised)
 

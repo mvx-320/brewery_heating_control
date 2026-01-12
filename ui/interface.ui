@@ -610,6 +610,9 @@ QScrollBar::sub-page:horizontal {
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
+                    <property name="styleSheet">
+                     <string notr="true">background-color: rgb(61, 56, 70)</string>
+                    </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_10">
                      <property name="spacing">
                       <number>20</number>
