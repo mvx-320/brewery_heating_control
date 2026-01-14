@@ -4,7 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import dwell_frame
 
 
-objects = [
+dwell_array = [
     dwell_frame.Dwell(50.0, 30.0, True),
     dwell_frame.Dwell(60.0, 20.0, False),
     dwell_frame.Dwell(60.0, 20.0, False),
@@ -26,14 +26,15 @@ if __name__ == "__main__":
                 widget.setParent(None)
                 widget.deleteLater()
                 
-    def update_steps(objects):
+    def update_steps(dwell_array):
         scroll = ui.steps_scroll.verticalScrollBar()
         print(f'Scroll-Value: {scroll.value()}')
         clear_steps()
         
-        for i, obj in enumerate(objects):
+        dwell_amount = len(dwell_array)
+        for i, obj in enumerate(dwell_array):
 
-            frame = dwell_frame.DwellFrame(i, obj) 
+            frame = dwell_frame.DwellFrame(i, dwell_amount, obj) 
 
             frame.temp_changed.connect(temp_changed_handler)
             frame.time_changed.connect(time_changed_handler)
@@ -53,28 +54,30 @@ if __name__ == "__main__":
         print(f'index: {index}; temp: {value}')
         
     def up_clicked_handler(obj):
-        index = next(i for i, x in enumerate(objects) if x is obj)
+        index = next(i for i, x in enumerate(dwell_array) if x is obj)
         if index != 0:
-            del objects[index]
-            objects.insert(index -1, obj)
-            update_steps(objects)
+            del dwell_array[index]
+            dwell_array.insert(index -1, obj)
+            update_steps(dwell_array)
 
     def down_clicked_handler(obj):
-        index = next(i for i, x in enumerate(objects) if x is obj)
-        if index < len(objects) -1:
-            del objects[index]
-            objects.insert(index +1, obj)
-            update_steps(objects)
+        index = next(i for i, x in enumerate(dwell_array) if x is obj)
+        if index < len(dwell_array) -1:
+            del dwell_array[index]
+            dwell_array.insert(index +1, obj)
+            update_steps(dwell_array)
         
     def new_clicked_handler(obj):
-        index = next(i for i, x in enumerate(objects) if x is obj)
-        objects.insert(index +1, dwell_frame.Dwell(None, None, False))
-        update_steps(objects)
+        index = next(i for i, x in enumerate(dwell_array) if x is obj)
+        dwell_array.insert(index +1, dwell_frame.Dwell(None, None, False))
+        update_steps(dwell_array)
 
     def delete_clicked_handler(obj):
-        index = next(i for i, x in enumerate(objects) if x is obj)
-        del objects[index]
-        update_steps(objects)
+        index = next(i for i, x in enumerate(dwell_array) if x is obj)
+        if (len(dwell_array) <= 2):
+            print("Error: There can not be less than 2 dwells")
+        del dwell_array[index]
+        update_steps(dwell_array)
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -86,6 +89,6 @@ if __name__ == "__main__":
 
     # TODO: I should clean up the dwells from the interface.ui
     # clear_steps()
-    update_steps(objects)
+    update_steps(dwell_array)
 
     sys.exit(app.exec_())

@@ -1,24 +1,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from selectalldoublespinbox import SelectAllDoubleSpinBox
+from src.dwell import Dwell
 
 dwell_names = [
     # TODO: Safe the Dwell Names and their min and max, temp and time as a "static" variable
     "Verzuckerungsrast", "Maltoserast", "Eiweißrast"
 ]
-
-class Dwell:
-    
-    def __init__(self, tar_temp: float, tar_time:float, alarm: bool):
-        self.tar_temp = tar_temp 
-        self.tar_time = tar_time 
-        self.alarm = alarm
-
-    def getName(self):
-        # TODO: Give all the Dwell Names and a effitient way to find the correct one. Else the name ist Rast
-        return dwell_names[0]
-
-    def toggleAlarm(self):
-        self.alarm = not self.alarm
 
         
 
@@ -30,9 +17,10 @@ class DwellFrame(QtWidgets.QFrame):
     new_clicked = QtCore.pyqtSignal(object)
     delete_clicked = QtCore.pyqtSignal(object)
     
-    def __init__(self, index:int, obj: Dwell):
+    def __init__(self, index: int, dwell_amount: int, obj: Dwell):
         super().__init__()
         self.index = index
+        self.dwell_amount = dwell_amount
         self.obj = obj
         self.locale = QtCore.QLocale(QtCore.QLocale.German, QtCore.QLocale.Germany)
         self.spinBox_font = QtGui.QFont()
@@ -69,11 +57,12 @@ class DwellFrame(QtWidgets.QFrame):
         font.setPointSize(17)
         self.lbl_dwell_name.setFont(font)
         self.lbl_dwell_name.setObjectName("frm_name")
-        self.lbl_dwell_name.setText(self.obj.getName())
+        self.lbl_dwell_name.setText(self.obj.getName(self.index, self.dwell_amount))
         self.dwellLayout.addWidget(self.lbl_dwell_name)
         self.frm_widget = QtWidgets.QWidget(self)
         self.frm_widget.setStyleSheet("background-color: transparent")
         self.frm_widget.setObjectName("frm_widget")
+        self.frm_widget.setFixedWidth(400)
         self.verticalDataLayout = QtWidgets.QVBoxLayout(self.frm_widget)
         self.verticalDataLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalDataLayout.setSpacing(0)
@@ -97,22 +86,26 @@ class DwellFrame(QtWidgets.QFrame):
         self.dsb_dwell_tar_temp.setValue(0.0 if self.obj.tar_temp is None else self.obj.tar_temp)
         #TODO: Maybe add a Focus all onclick (Not that easy)
         self.horizontalInputLayout.addWidget(self.dsb_dwell_tar_temp)
-        self.dsb_dwell_tar_time = SelectAllDoubleSpinBox(self.frm_widget_2)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.dsb_dwell_tar_time.sizePolicy().hasHeightForWidth())
-        self.dsb_dwell_tar_time.setSizePolicy(sizePolicy)
-        self.dsb_dwell_tar_time.setMinimumSize(QtCore.QSize(120, 40))
-        self.dsb_dwell_tar_time.setFont(self.spinBox_font)
-        self.dsb_dwell_tar_time.setSuffix(" min")
-        self.dsb_dwell_tar_time.setObjectName("dsb_dwell_tar_time")
-        self.dsb_dwell_tar_time.setMinimum(0.0)
-        self.dsb_dwell_tar_time.setSpecialValueText(QtCore.QCoreApplication.translate("Form", "Temperatur"))
-        self.dsb_dwell_tar_time.setValue(0.0 if self.obj.tar_time is None else self.obj.tar_time)
-        #TODO: Maybe add a Focus all onclick (Not that easy)
-        self.horizontalInputLayout.addWidget(self.dsb_dwell_tar_time)
+
+        if (self.index != 0 and self.index != (self.dwell_amount -1)):
+            self.dsb_dwell_tar_time = SelectAllDoubleSpinBox(self.frm_widget_2)
+            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+            sizePolicy.setHorizontalStretch(0)
+            sizePolicy.setVerticalStretch(0)
+            sizePolicy.setHeightForWidth(self.dsb_dwell_tar_time.sizePolicy().hasHeightForWidth())
+            self.dsb_dwell_tar_time.setSizePolicy(sizePolicy)
+            self.dsb_dwell_tar_time.setMinimumSize(QtCore.QSize(120, 40))
+            self.dsb_dwell_tar_time.setFont(self.spinBox_font)
+            self.dsb_dwell_tar_time.setSuffix(" min")
+            self.dsb_dwell_tar_time.setObjectName("dsb_dwell_tar_time")
+            self.dsb_dwell_tar_time.setMinimum(0.0)
+            self.dsb_dwell_tar_time.setSpecialValueText(QtCore.QCoreApplication.translate("Form", "Temperatur"))
+            self.dsb_dwell_tar_time.setValue(0.0 if self.obj.tar_time is None else self.obj.tar_time)
+            #TODO: Maybe add a Focus all onclick (Not that easy)
+            self.horizontalInputLayout.addWidget(self.dsb_dwell_tar_time)
+
         self.verticalDataLayout.addWidget(self.frm_widget_2)
+
         self.widget_4 = QtWidgets.QWidget(self.frm_widget)
         self.widget_4.setObjectName("widget_4")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.widget_4)
@@ -134,7 +127,7 @@ class DwellFrame(QtWidgets.QFrame):
         self.verticalDataLayout.addWidget(self.widget_4)
         self.dwellLayout.addWidget(self.frm_widget)
         self.btn_dwell_alarm = QtWidgets.QPushButton(self)
-        self.btn_dwell_alarm.setMinimumSize(QtCore.QSize(70, 70))
+        self.btn_dwell_alarm.setFixedSize(QtCore.QSize(70, 70))
         self.btn_dwell_alarm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_dwell_alarm.setStyleSheet("background-color: rgba(255, 255, 255,60); \n"
 "border: none;\n"
@@ -162,7 +155,8 @@ class DwellFrame(QtWidgets.QFrame):
 
         #region Connections
         self.dsb_dwell_tar_temp.textChanged.connect(self._on_temp_changed)
-        self.dsb_dwell_tar_time.textChanged.connect(self._on_time_changed)
+        if (self.index != 0 and self.index != (self.dwell_amount -1)):
+            self.dsb_dwell_tar_time.textChanged.connect(self._on_time_changed)
         self.btn_dwell_alarm.clicked.connect(self._on_alarm)
 
         # TODO: Make it more beautiful with icons in a own QFrame using QtCore.Qt.Popup and move it to the right location
@@ -174,11 +168,14 @@ class DwellFrame(QtWidgets.QFrame):
         act_up.triggered.connect(self._on_dwell_up)
         act_down = QtWidgets.QAction("runter", self)
         act_down.triggered.connect(self._on_dwell_down)
-        act_new = QtWidgets.QAction("neu", self)
-        act_new.triggered.connect(self._on_new_dwell)
         act_delete = QtWidgets.QAction("löschen", self)
         act_delete.triggered.connect(self._on_delete_dwell)
-        menu.addActions([act_up, act_down, act_new, act_delete])
+        actions = [act_up, act_down, act_delete]
+        if (self.index != (self.dwell_amount -1)):
+            act_new = QtWidgets.QAction("neu", self)
+            act_new.triggered.connect(self._on_new_dwell)
+            actions = [act_up, act_down, act_new, act_delete]
+        menu.addActions(actions)
         self.btn_dwell_options.setMenu(menu)
         self.btn_dwell_options.setPopupMode(QtWidgets.QToolButton.InstantPopup)
         self.dwellLayout.addWidget(self.btn_dwell_options)
