@@ -17,3 +17,6 @@ class Dwell:
 
     def toggleAlarm(self):
         self.alarm = not self.alarm
+
+    def makeBound(self):
+        self.tar_time = None

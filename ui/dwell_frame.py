@@ -164,17 +164,22 @@ class DwellFrame(QtWidgets.QFrame):
         font = menu.font()
         font.setPointSize(16)
         menu.setFont(font)
-        act_up = QtWidgets.QAction("hoch", self)
-        act_up.triggered.connect(self._on_dwell_up)
-        act_down = QtWidgets.QAction("runter", self)
-        act_down.triggered.connect(self._on_dwell_down)
-        act_delete = QtWidgets.QAction("löschen", self)
-        act_delete.triggered.connect(self._on_delete_dwell)
-        actions = [act_up, act_down, act_delete]
-        if (self.index != (self.dwell_amount -1)):
-            act_new = QtWidgets.QAction("neu", self)
-            act_new.triggered.connect(self._on_new_dwell)
-            actions = [act_up, act_down, act_new, act_delete]
+        # act_up = QtWidgets.QAction("hoch", self)
+        # act_up.triggered.connect(self._on_dwell_up)
+        # act_down = QtWidgets.QAction("runter", self)
+        # act_down.triggered.connect(self._on_dwell_down)
+        # act_delete = QtWidgets.QAction("löschen", self)
+        # act_delete.triggered.connect(self._on_delete_dwell)
+        # actions = [act_up, act_down, act_delete]
+        # if (self.index != (self.dwell_amount -1)):
+        #     act_new = QtWidgets.QAction("neu", self)
+        #     act_new.triggered.connect(self._on_new_dwell)
+        #     actions = [act_up, act_down, act_new, act_delete]
+        act_up = self.index > 1 and self.index != self.dwell_amount -1
+        act_down = self.index != 0 and self.index < self.dwell_amount -2
+        act_new = self.index != self.dwell_amount -1
+        act_delete = self.index != 0 and self.index != self.dwell_amount -1
+        actions = self._actions_in_menu(act_up, act_down, act_new, act_delete)
         menu.addActions(actions)
         self.btn_dwell_options.setMenu(menu)
         self.btn_dwell_options.setPopupMode(QtWidgets.QToolButton.InstantPopup)
@@ -190,6 +195,27 @@ class DwellFrame(QtWidgets.QFrame):
         self.obj.toggleAlarm()
         print(f'Dwell {self.index} changes alarm to {self.obj.alarm}')
         self.btn_dwell_alarm.setIcon(self.ico_alarm[self.obj.alarm])
+
+    def _actions_in_menu(self, up: bool, down: bool, new: bool, delete:bool) -> []:
+        actions = []
+        if (up):
+            act_up = QtWidgets.QAction("hoch", self)
+            act_up.triggered.connect(self._on_dwell_up)
+            actions.append(act_up)
+        if (down):
+            act_down = QtWidgets.QAction("runter", self)
+            act_down.triggered.connect(self._on_dwell_down)
+            actions.append(act_down)
+        if (new):
+            act_new = QtWidgets.QAction("neu (darunter)", self)
+            act_new.triggered.connect(self._on_new_dwell)
+            actions.append(act_new)
+        if (delete):
+            act_delete = QtWidgets.QAction("löschen", self)
+            act_delete.triggered.connect(self._on_delete_dwell)
+            actions.append(act_delete)
+        
+        return actions
 
     def _on_dwell_up(self):
         self.up_clicked.emit(self.obj)

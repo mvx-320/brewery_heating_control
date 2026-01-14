@@ -5,7 +5,7 @@ import dwell_frame
 
 
 dwell_array = [
-    dwell_frame.Dwell(50.0, 30.0, True),
+    dwell_frame.Dwell(50.0, None, True),
     dwell_frame.Dwell(60.0, 20.0, False),
     dwell_frame.Dwell(60.0, 20.0, False),
     dwell_frame.Dwell(60.0, 20.0, False),
@@ -55,14 +55,14 @@ if __name__ == "__main__":
         
     def up_clicked_handler(obj):
         index = next(i for i, x in enumerate(dwell_array) if x is obj)
-        if index != 0:
+        if index > 1:
             del dwell_array[index]
             dwell_array.insert(index -1, obj)
             update_steps(dwell_array)
 
     def down_clicked_handler(obj):
         index = next(i for i, x in enumerate(dwell_array) if x is obj)
-        if index < len(dwell_array) -1:
+        if index < len(dwell_array) -2:
             del dwell_array[index]
             dwell_array.insert(index +1, obj)
             update_steps(dwell_array)
@@ -76,6 +76,8 @@ if __name__ == "__main__":
         index = next(i for i, x in enumerate(dwell_array) if x is obj)
         if (len(dwell_array) <= 2):
             print("Error: There can not be less than 2 dwells")
+            map(lambda d: d.makeBound(), dwell_array)
+            return
         del dwell_array[index]
         update_steps(dwell_array)
 
