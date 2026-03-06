@@ -4,7 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import dwell_frame
 
 
-dwell_array = [
+dwell_array: list[dwell_frame.Dwell] = [
     dwell_frame.Dwell(50.0, None, True),
     dwell_frame.Dwell(60.0, 20.0, False),
     dwell_frame.Dwell(60.0, 20.0, False),
@@ -48,10 +48,20 @@ if __name__ == "__main__":
         ui.dwell_layout.addStretch()
         
     def temp_changed_handler(index, value):
-        print(f'index: {index}; temp: {value}')
+        # TODO: Muss bei pots.py geändert werden
+        dwell_array[index].tar_temp = value
+        printDwellArray(dwell_array)
 
     def time_changed_handler(index, value):
-        print(f'index: {index}; temp: {value}')
+        # TODO: Muss bei pots.py geändert werden
+        dwell_array[index].tar_time = value
+        printDwellArray(dwell_array)
+
+    # Remove function
+    def printDwellArray(array: list[dwell_frame.Dwell]):
+        print('RASTEN:')
+        for index, dwell in enumerate(array): 
+            print(f'index: {index}; temp: {dwell.tar_temp}°C; time: {dwell.tar_time}min; alarm: {dwell.alarm}')
         
     def up_clicked_handler(obj):
         index = next(i for i, x in enumerate(dwell_array) if x is obj)
