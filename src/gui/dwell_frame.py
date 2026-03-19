@@ -1,6 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from src.gui.selectalldoublespinbox import SelectAllDoubleSpinBox
 from dwell import Dwell
+from pathlib import Path
+
+ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
 
 dwell_names = [
     # TODO: Safe the Dwell Names and their min and max, temp and time as a "static" variable
@@ -134,9 +137,9 @@ class DwellFrame(QtWidgets.QFrame):
 "border: none;\n"
 "border-radius: 8px;")
         icon0 = QtGui.QIcon()
-        icon0.addPixmap(QtGui.QPixmap(f'../src/assets/alarm0.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon0.addPixmap(QtGui.QPixmap(str(ASSETS_DIR / "alarm0.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(f'../src/assets/alarm1.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(str(ASSETS_DIR / "alarm1.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ico_alarm = [icon0, icon1]
 
         self.btn_dwell_alarm.setIcon(self.ico_alarm[self.obj.alarm])
@@ -148,7 +151,7 @@ class DwellFrame(QtWidgets.QFrame):
 "border: none;\n"
 "")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("../src/assets/3-dots-gray.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(str(ASSETS_DIR / "3-dots-gray.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_dwell_options.setIcon(icon1)
         self.btn_dwell_options.setIconSize(QtCore.QSize(30, 30))
         self.btn_dwell_options.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))

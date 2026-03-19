@@ -72,34 +72,19 @@ def main():
     fill = Pot('fill')
     cook = Pot('cook') # TODO: Pot must be replaced with HopPot with multiple timers that alarm the brewer on certain times to the end of cooking
 
-    
 
     #region INTERFACE
     app = QtWidgets.QApplication(sys.argv)
 
 
-
     #region LOAD IMAGES
-    
     icon_brewery = QtGui.QIcon("src/assets/icon_brewery.png")
     alarm0 = QtGui.QPixmap("src/assets/alarm0.png")
     alarm1 = QtGui.QPixmap("src/assets/alarm1.png")
-#       pic_cook = QtGui.QPixmap("assets/cook.png")
+    pot_white = QtGui.QPixmap("src/assets/pot_white.png")
 #       pic_prop = QtGui.QPixmap("assets/propeller.png")
 #       pic_pump = QtGui.QPixmap("assets/water-pump.png")
-#       # Old Path: /home/raspberry/FilesBrewery/assets
-#       app.setWindowIcon(icon_brewery)
-#       ui.lbl_alarm_sym.setPixmap(alarm0)
-#       ui.lbl_mash_switch.setPixmap(pic_cook)
-#       ui.lbl_fill_switch.setPixmap(pic_cook)
-#       ui.lbl_cook_switch.setPixmap(pic_cook)
-#       ui.lbl_prop_switch.setPixmap(pic_prop)
-#       ui.lbl_pump_switch.setPixmap(pic_pump)
 
-# # TODO: Set alarm icons in the dwells
-    
-
-    
 
     splash_pixmap = QtGui.QPixmap(512, 512)
     splash_pixmap.fill(QtGui.QColor(36, 31, 49))
@@ -130,6 +115,19 @@ def main():
         '255, 255, 100',
         '150, 255, 150',
         '255, 121, 121']
+    
+
+    # region SET IMAGES
+#       # Old Path: /home/raspberry/FilesBrewery/assets
+#       app.setWindowIcon(icon_brewery)
+#       ui.lbl_alarm_sym.setPixmap(alarm0)
+    ui.lbl_mash_switch.setPixmap(pot_white)
+    ui.lbl_fill_switch.setPixmap(pot_white)
+    ui.lbl_cook_switch.setPixmap(pot_white)
+#       ui.lbl_prop_switch.setPixmap(pic_prop)
+#       ui.lbl_pump_switch.setPixmap(pic_pump)
+
+# # TODO: Set alarm icons in the dwells
     
     
     #region TIME POT PERIOD
@@ -326,7 +324,6 @@ def main():
     # TODO: Here has to be the start button that turns on the Dwell Runtime
 
     def fill_heat_regulation_shift(): # button is checkable
-        ui.lbl_connection_status.setText('test')
         fill.heat_regulation = not fill.heat_regulation
         logging.info(f'Fill heat regulation {fill.heat_regulation}')
     ui.btn_heat_fill.clicked.connect(fill_heat_regulation_shift) # connect
@@ -383,12 +380,12 @@ def main():
             logging.info("Starting serial thread...")
             serial_reader_thread.start()
             ui.lbl_connection_status.setText("Arduino ist verbunden")
-            ui.lbl_connection_status.setStyleSheet("QLabel {background-color: green; color: white;}")
+            ui.lbl_connection_status.setStyleSheet("QLabel {background-color: darkgreen; color: lightgray; border-radius: 5;}")
             logging.info("Arduino successfully connected")
         except (serial.SerialException, PermissionError) as e:
             logging.error(f"Exception caught: {type(e).__name__}: {str(e)}")
             ui.lbl_connection_status.setText("Arduino nicht verbunden. Mockup läuft ...")
-            ui.lbl_connection_status.setStyleSheet("QLabel {background-color: red; color: white;}")
+            ui.lbl_connection_status.setStyleSheet("QLabel {background-color: darkred; color: lightgray; border-radius: 5;}")
             serial_reader_thread = ThreadMockupSer(mash, fill, cook)
             serial_reader_thread.start()
             logging.error(f"opening serial port: {str(e)}")
@@ -438,7 +435,7 @@ def main():
 
     # TODO: I should clean up the dwells from the interface.ui or put some persistant stored dwells in there
     # clear_steps()
-    # update_steps(mash.get_dwell_array())
+    update_steps(mash.get_dwell_array())
     
     # Start the application event loop
     sys.exit(app.exec_())

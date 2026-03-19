@@ -13,7 +13,7 @@ class DwellPot(Pot):
         dwell_frame.Dwell(50.0, None, True),  # TODO: Wahrscheinlich wird hier Dwell über dwell_frame importiert. Das macht vllt keinen Sinn. zirkuläre Abhängigkeit.
         dwell_frame.Dwell(60.0, 20.0, False),
         dwell_frame.Dwell(60.0, 20.0, False),
-        dwell_frame.Dwell(60.0, 20.0, False),
+        dwell_frame.Dwell(60.0, 20.0, True),
         dwell_frame.Dwell(60.0, 20.0, False),
         dwell_frame.Dwell(60.0, None, False),
     ]
