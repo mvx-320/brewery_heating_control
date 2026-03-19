@@ -1,20 +1,23 @@
 import sys, logging
-sys.path.append("src/components")
+sys.path.append("src")
 
 from PyQt5.QtCore import QObject, pyqtSignal
 
-from pid_controller import myPID
-import dwell_frame
+from components.pid_controller import myPID
+import ui.dwell_frame
+from components.pots import Pot
 
 class DwellPot(Pot):
-    _dwell_array: list[dwell_frame.Dwell] = [
-        dwell_frame.Dwell(50.0, None, True),
-        dwell_frame.Dwell(60.0, 20.0, False),
-        dwell_frame.Dwell(60.0, 20.0, False),
-        dwell_frame.Dwell(60.0, 20.0, False),
-        dwell_frame.Dwell(60.0, 20.0, False),
-        dwell_frame.Dwell(60.0, None, False),
+    _dwell_array: list[ui.dwell_frame.Dwell] = [ # TODO: Eventuell komplett in eine lokale Datenbank verschieben
+        ui.dwell_frame.Dwell(50.0, None, True),
+        ui.dwell_frame.Dwell(60.0, 20.0, False),
+        ui.dwell_frame.Dwell(60.0, 20.0, False),
+        ui.dwell_frame.Dwell(60.0, 20.0, False),
+        ui.dwell_frame.Dwell(60.0, 20.0, False),
+        ui.dwell_frame.Dwell(60.0, None, False),
     ]
+
+    _current_dwell_index: int = 0
     act_time_changed = pyqtSignal(float)
     run_state_changed = pyqtSignal(int)
     
@@ -54,6 +57,29 @@ class DwellPot(Pot):
         self.logger.info(f'{self.name}.run_state = {new_state}')
 
     # TODO: Add getter, setter für dwell_array
+    @property
+    def tar_temp(self):
+        return self._dwell_array[self._current_dwell_index].tar_temp
+
+    @tar_temp.setter
+    def tar_temp(self, new_temp: float):
+        if new_temp < 0:
+            raise ValueError ("new target value < 0")
+        if new_temp > 120:
+            raise ValueError ("new target value > 120")
+        self._dwell_array[self._current_dwell_index].tar_temp = new_temp
+        self.logger.info(f'dwell_array[{self._current_dwell_index}].tar_temp = {new_temp}')
+
+    @property
+    def tar_time(self):
+        return self._dwell_array[self._current_dwell_index].tar_time
+    
+    @tar_time.setter
+    def tar_time(self, new_time: float):
+        if new_time < 0:
+            raise ValueError ("new target value < 0")
+        self._dwell_array[self._current_dwell_index].tar_time = new_time
+        self.logger.info(f'dwell_array[{self._current_dwell_index}].tar_time = {new_time}')
             
             
                 

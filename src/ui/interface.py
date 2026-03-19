@@ -1147,7 +1147,7 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.settings), _translate("MainWindow", "    Einstellungen    "))
         self.lbl_connection_status.setText(_translate("MainWindow", "Arduino nicht verbunden. Programm läuft mit Mockup..."))
         self.actionMit_Arduino_verbinden.setText(_translate("MainWindow", "Mit Arduino verbinden..."))
-from selectalldoublespinbox import SelectAllDoubleSpinBox
+from ui.selectalldoublespinbox import SelectAllDoubleSpinBox
 
 
 if __name__ == "__main__":

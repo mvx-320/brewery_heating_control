@@ -20,3 +20,8 @@ class Dwell:
 
     def makeBound(self):
         self.tar_time = None
+
+    def getProgressBarValue(self):
+        if self.tar_time is None:
+            return 0
+        return int((1 - self.rest_time / self.tar_time) * 100)
