@@ -13,26 +13,25 @@ class ThreadMockupSer(QThread):
         self.cook = cook
         self.running = True
         self.interval = 1  # in s
-        self.previousSecs = 0.0
+        # self.previousSecs = 0.0
 
     def run(self):
+        # TODO: Was machen die 3 Zeilen?
         self.mash.temp_now = 20
         self.fill.temp_now = 20
         self.cook.temp_now = 20
 
         while self.running:
             try:
-                currentSecs = time.time()
-                if currentSecs - self.previousSecs >= self.interval:
-                    self.previousSecs = currentSecs
+                self.simulate_heating(self.mash)
+                self.simulate_heating(self.fill)
+                self.simulate_heating(self.cook)
 
-                    self.simulate_heating(self.mash)
-                    self.simulate_heating(self.fill)
-                    self.simulate_heating(self.cook)
-
-                    self.logger.info(f"Mock Temp: {self.mash.temp_now:.1f};{self.fill.temp_now:.1f};{self.cook.temp_now:.1f};OK")
+                self.logger.info(f"Mock Temp: {self.mash.temp_now:.1f};{self.fill.temp_now:.1f};{self.cook.temp_now:.1f};OK")
             except Exception as e:
                 self.logger.warning(f"Mock error: {str(e)}")
+            
+            time.sleep(self.interval)
 
     def simulate_heating(self, pot):
         power_ratio = pot.heat_val / 3500.0  # normalized [0,1]

@@ -1,11 +1,12 @@
 #! /usr/bin/python3.9
+import cProfile
 import sys, serial, logging, threading
 sys.path.extend(["src"])#, "mockups"])
 
 from time import gmtime, strftime, sleep
 from datetime import datetime
 from pathlib import Path
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
 
 now = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
 base_path = Path(__file__).resolve().parent
@@ -21,7 +22,7 @@ from background_services.thread_arduino import ThreadReadSer
 DEBUG = True # TODO: Set false in production
 
 
-if __name__ == "__main__":
+def main():
     
     #region LOGGING
     log_path = base_path / 'logs' / f"{now}.log"
@@ -71,22 +72,13 @@ if __name__ == "__main__":
     fill = Pot('fill')
     cook = Pot('cook') # TODO: Pot must be replaced with HopPot with multiple timers that alarm the brewer on certain times to the end of cooking
 
+    
+
     #region INTERFACE
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = interface.Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    
-    screen_rect = QtWidgets.QDesktopWidget().availableGeometry()
-    MainWindow.setGeometry(0, 0, screen_rect.width(), screen_rect.height())
-    
-    string_lbl_time_state = 'background: rgb(%s);border-radius: 4px;'
-    colors_lbl_time_state = [
-        '212, 212, 212',
-        '255, 255, 100',
-        '150, 255, 150',
-        '255, 121, 121']
-    
+
+
+
     #region LOAD IMAGES
     
     icon_brewery = QtGui.QIcon("src/assets/icon_brewery.png")
@@ -104,7 +96,40 @@ if __name__ == "__main__":
 #       ui.lbl_prop_switch.setPixmap(pic_prop)
 #       ui.lbl_pump_switch.setPixmap(pic_pump)
 
-# TODO: Set alarm icons in the dwells
+# # TODO: Set alarm icons in the dwells
+    
+
+    
+
+    splash_pixmap = QtGui.QPixmap(512, 512)
+    splash_pixmap.fill(QtGui.QColor(36, 31, 49))
+
+    logo_pixmap = icon_brewery.pixmap(240, 240)
+    painter = QtGui.QPainter(splash_pixmap)
+    logo_x = (splash_pixmap.width() - logo_pixmap.width()) // 2
+    logo_y = (splash_pixmap.height() - logo_pixmap.height()) // 2 - 25
+    painter.drawPixmap(logo_x, logo_y, logo_pixmap)
+    painter.end()
+
+    splash = QtWidgets.QSplashScreen(splash_pixmap, QtCore.Qt.WindowStaysOnTopHint)
+    splash.showMessage("Brauerei Steuerung wird gestartet...", QtCore.Qt.AlignBottom | QtCore.Qt.AlignCenter, QtGui.QColor("lightgray"))
+    splash.show()
+    app.processEvents()  # Ensure the splash screen is displayed immediately
+    
+    MainWindow = QtWidgets.QMainWindow()
+    ui = interface.Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    
+    # Look glitchy, because when starting the fixed size gets displayed for a short time
+    # screen_rect = QtWidgets.QDesktopWidget().availableGeometry()
+    # MainWindow.setGeometry(0, 0, screen_rect.width(), screen_rect.height())
+    
+    string_lbl_time_state = 'background: rgb(%s);border-radius: 4px;'
+    colors_lbl_time_state = [
+        '212, 212, 212',
+        '255, 255, 100',
+        '150, 255, 150',
+        '255, 121, 121']
     
     
     #region TIME POT PERIOD
@@ -369,7 +394,6 @@ if __name__ == "__main__":
             logging.error(f"opening serial port: {str(e)}")
 
 
-    connect2arduino()
         
     #region SHOW UI
     # Override closeEvent to show confirmation dialog
@@ -403,8 +427,14 @@ if __name__ == "__main__":
         else:
             event.ignore()  # Ignore the close event
     
+
     MainWindow.closeEvent = closeEvent
+    splash.finish(MainWindow)
     MainWindow.show()
+    # MainWindow.showMaximized() # Looks glitchy because MainWindow has a fixed size
+
+    QtCore.QTimer.singleShot(100, connect2arduino)
+
 
     # TODO: I should clean up the dwells from the interface.ui or put some persistant stored dwells in there
     # clear_steps()
@@ -412,3 +442,9 @@ if __name__ == "__main__":
     
     # Start the application event loop
     sys.exit(app.exec_())
+
+
+if DEBUG:
+    cProfile.run('main()')
+else:
+    main()
