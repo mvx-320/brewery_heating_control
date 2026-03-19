@@ -34,7 +34,7 @@ class DwellPot(Pot):
         return self._act_time
         
     @act_time.setter
-    def act_time(self, new_time: float):
+    def act_time(self, new_time: float): # TODO: Maybe run_state is not usefull anymore. Maybe the logic can be removed here and be done in the Runtime Environment
         if (new_time <0):
             #self.time_elapsed = True
             self.run_state = 3
