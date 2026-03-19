@@ -127,9 +127,9 @@ class Ui_MainWindow(object):
         self.label_11 = QtWidgets.QLabel(self.frame_6)
         self.label_11.setObjectName("label_11")
         self.horizontalLayout_18.addWidget(self.label_11)
-        self.doubleSpinBox_2 = SelectAllDoubleSpinBox(self.frame_6)
-        self.doubleSpinBox_2.setObjectName("doubleSpinBox_2")
-        self.horizontalLayout_18.addWidget(self.doubleSpinBox_2)
+        self.dsb_cook_tar_temp = SelectAllDoubleSpinBox(self.frame_6)
+        self.dsb_cook_tar_temp.setObjectName("dsb_cook_tar_temp")
+        self.horizontalLayout_18.addWidget(self.dsb_cook_tar_temp)
         self.verticalLayout_3.addWidget(self.frame_6)
         self.lbl_heat_w_cook = QtWidgets.QLabel(self.widget_8)
         self.lbl_heat_w_cook.setMaximumSize(QtCore.QSize(16777215, 30))
@@ -224,9 +224,9 @@ class Ui_MainWindow(object):
         self.label_8 = QtWidgets.QLabel(self.frame_3)
         self.label_8.setObjectName("label_8")
         self.horizontalLayout_14.addWidget(self.label_8)
-        self.doubleSpinBox = SelectAllDoubleSpinBox(self.frame_3)
-        self.doubleSpinBox.setObjectName("doubleSpinBox")
-        self.horizontalLayout_14.addWidget(self.doubleSpinBox)
+        self.dsb_fill_tar_temp = SelectAllDoubleSpinBox(self.frame_3)
+        self.dsb_fill_tar_temp.setObjectName("dsb_fill_tar_temp")
+        self.horizontalLayout_14.addWidget(self.dsb_fill_tar_temp)
         self.verticalLayout.addWidget(self.frame_3)
         self.lbl_heat_w_fill = QtWidgets.QLabel(self.widget)
         self.lbl_heat_w_fill.setMaximumSize(QtCore.QSize(16777215, 30))
@@ -343,6 +343,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frm_mash_begin.sizePolicy().hasHeightForWidth())
         self.frm_mash_begin.setSizePolicy(sizePolicy)
+        self.frm_mash_begin.setStyleSheet("background-color: rgb(61, 56, 70)")
         self.frm_mash_begin.setObjectName("frm_mash_begin")
         self.horizontalLayout_10 = QtWidgets.QHBoxLayout(self.frm_mash_begin)
         self.horizontalLayout_10.setContentsMargins(20, 5, 20, 5)
@@ -1147,7 +1148,7 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.settings), _translate("MainWindow", "    Einstellungen    "))
         self.lbl_connection_status.setText(_translate("MainWindow", "Arduino nicht verbunden. Programm läuft mit Mockup..."))
         self.actionMit_Arduino_verbinden.setText(_translate("MainWindow", "Mit Arduino verbinden..."))
-from ui.selectalldoublespinbox import SelectAllDoubleSpinBox
+from src.gui.selectalldoublespinbox import SelectAllDoubleSpinBox
 
 
 if __name__ == "__main__":

@@ -13,8 +13,7 @@ sys.path.append(str(base_path / 'mockups')) # TODO: Not shure why this is there
 
 from components.pots import Pot
 from components.dwell_pot import DwellPot
-import ui.interface as interface
-import ui.dwell_frame
+from gui import interface, dwell_frame
 from background_services.timer_heat_regulation import PeriodHeatReg
 from background_services.timer_pot import PeriodTimePot
 from background_services.thread_arduino import ThreadReadSer
@@ -104,6 +103,8 @@ if __name__ == "__main__":
 #       ui.lbl_cook_switch.setPixmap(pic_cook)
 #       ui.lbl_prop_switch.setPixmap(pic_prop)
 #       ui.lbl_pump_switch.setPixmap(pic_pump)
+
+# TODO: Set alarm icons in the dwells
     
     
     #region TIME POT PERIOD
@@ -121,15 +122,15 @@ if __name__ == "__main__":
     # - Use the ui element outside of main.py with mainThread
 
     def mash_temp_changed(new_temp):
-        ui.lbl_temp_mash.setText(f'{new_temp :.2f} °C')
+        ui.lbl_cur_temp_mash.setText(f'{new_temp :.2f} °C')
     mash.temp_now_changed.connect(mash_temp_changed) # connect
     
     def fill_temp_changed(new_temp):
-        ui.lbl_temp_fill.setText(f'{new_temp :.2f} °C')
+        ui.lbl_cur_temp_fill.setText(f'{new_temp :.2f} °C')
     fill.temp_now_changed.connect(fill_temp_changed) # connect
     
     def cook_temp_changed(new_temp):
-        ui.lbl_temp_cook.setText(f'{new_temp :.2f} °C')
+        ui.lbl_cur_temp_cook.setText(f'{new_temp :.2f} °C')
     cook.temp_now_changed.connect(cook_temp_changed) # connect
     
 
@@ -197,44 +198,22 @@ if __name__ == "__main__":
         ui.dwell_layout.addStretch()
         
     def temp_changed_handler(index, value):
-        # TODO: Muss bei pots.py geändert werden
-        # dwell_array[index].tar_temp = value
         mash.tar_temp = value
-        # printDwellArray(dwell_array)
 
     def time_changed_handler(index, value):
-        # TODO: Muss bei pots.py geändert werden
-        # dwell_array[index].tar_time = value
         mash.tar_time = value
-        # printDwellArray(dwell_array)
 
     def up_clicked_handler(obj):
-        index = next(i for i, x in enumerate(dwell_array) if x is obj)
-        if index > 1:
-            del dwell_array[index]
-            dwell_array.insert(index -1, obj)
-            update_steps(dwell_array)
+        update_steps(mash.dwell_up(obj))
 
     def down_clicked_handler(obj):
-        index = next(i for i, x in enumerate(dwell_array) if x is obj)
-        if index < len(dwell_array) -2:
-            del dwell_array[index]
-            dwell_array.insert(index +1, obj)
-            update_steps(dwell_array)
+            update_steps(mash.dwell_down(obj))
         
     def new_clicked_handler(obj):
-        index = next(i for i, x in enumerate(dwell_array) if x is obj)
-        dwell_array.insert(index +1, dwell_frame.Dwell(None, None, False))
-        update_steps(dwell_array)
+        update_steps(mash.dwell_new(obj))
 
     def delete_clicked_handler(obj):
-        index = next(i for i, x in enumerate(dwell_array) if x is obj)
-        if (len(dwell_array) <= 2):
-            print("Error: There can not be less than 2 dwells")
-            map(lambda d: d.makeBound(), dwell_array)
-            return
-        del dwell_array[index]
-        update_steps(dwell_array)
+        update_steps(mash.dwell_delete(obj))
     
     
     
@@ -290,32 +269,33 @@ if __name__ == "__main__":
                 cook.act_time = 0
     ui.lne_time_cook.editingFinished.connect(cook_act_time_changed) # connect
     # --- TEMPERATURE -------------------------------------------------------------------------------------------------
-    def mash_tar_temp_changed():
-        try:
-            mash.temp_tar = float(ui.lne_temp_mash.text().replace(',','.'))
-            logging.info(f'Got mash.temp_tar = {mash.temp_tar}')
-        except ValueError as e:
-            logging.error(f"lne_temp_mash returned {ui.lne_temp_mash}: {str(e)}")
-            mash.temp_tar = 0
-    ui.lne_temp_mash.textChanged.connect(mash_tar_temp_changed) # connect
+    # # Should be down later by the Runtime Environment of the dwells
+    # def mash_tar_temp_changed():
+    #     try:
+    #         mash.temp_tar = float(ui.lne_temp_mash.text().replace(',','.'))
+    #         logging.info(f'Got mash.temp_tar = {mash.temp_tar}')
+    #     except ValueError as e:
+    #         logging.error(f"lne_temp_mash returned {ui.lne_temp_mash}: {str(e)}")
+    #         mash.temp_tar = 0
+    # ui.lne_temp_mash.textChanged.connect(mash_tar_temp_changed) # connect
 
     def fill_tar_temp_changed():
         try:
-            fill.temp_tar = float(ui.lne_temp_fill.text().replace(',','.'))
+            fill.temp_tar = float(ui.dsb_fill_tar_temp.value())
             logging.info(f'Got fill.temp_tar = {fill.temp_tar}')
         except ValueError as e:
             logging.error(f"from lne_temp_fill returned {ui.lne_temp_fill}: {str(e)}")
             fill.temp_tar = 0
-    ui.lne_temp_fill.textChanged.connect(fill_tar_temp_changed) # connect
+    ui.dsb_fill_tar_temp.valueChanged.connect(fill_tar_temp_changed) # connect
 
     def cook_tar_temp_changed():
         try:
-            cook.temp_tar = float(ui.lne_temp_cook.text().replace(',','.'))
+            cook.temp_tar = float(ui.dsb_cook_tar_temp.value())
             logging.info(f'Got cook.temp_tar = {cook.temp_tar}')
         except ValueError as e:
             logging.error(f"lne_temp_cook returned {ui.lne_temp_cook}: {str(e)}")
             cook.temp_tar = 0
-    ui.lne_temp_cook.textChanged.connect(cook_tar_temp_changed) # connect
+    ui.dsb_cook_tar_temp.valueChanged.connect(cook_tar_temp_changed) # connect
     # -----------------------------------------------------------------------------------------------------------------
 
     # TODO: Here has to be the start button that turns on the Dwell Runtime
@@ -426,9 +406,9 @@ if __name__ == "__main__":
     MainWindow.closeEvent = closeEvent
     MainWindow.show()
 
-    # TODO: I should clean up the dwells from the interface.ui
+    # TODO: I should clean up the dwells from the interface.ui or put some persistant stored dwells in there
     # clear_steps()
-    update_steps(dwell_array)
+    # update_steps(mash.get_dwell_array())
     
     # Start the application event loop
     sys.exit(app.exec_())

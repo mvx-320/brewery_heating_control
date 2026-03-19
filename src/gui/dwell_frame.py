@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from src.ui.selectalldoublespinbox import SelectAllDoubleSpinBox
+from src.gui.selectalldoublespinbox import SelectAllDoubleSpinBox
 from dwell import Dwell
 
 dwell_names = [

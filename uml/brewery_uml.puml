@@ -92,9 +92,9 @@ class Ui_MainWindow << interface.py >> #ffe3c4{
   +lbl_pump_switch: QLabel
 
   +lbl_cur_temp: QLabel
-  +lbl_temp_mash: QLabel
-  +lbl_temp_fill: QLabel
-  +lbl_temp_cook: QLabel
+  +lbl_cur_temp_mash: QLabel
+  +lbl_cur_temp_fill: QLabel
+  +lbl_cur_temp_cook: QLabel
   +lbl_heat_w_mash: QLabel
   +lbl_heat_w_fill: QLabel
   +lbl_heat_w_cook: QLabel

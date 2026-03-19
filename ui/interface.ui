@@ -189,7 +189,7 @@ border-radius: 16px;
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="lbl_temp_cook">
+                     <widget class="QLabel" name="lbl_cur_temp_cook">
                       <property name="maximumSize">
                        <size>
                         <width>16777215</width>
@@ -230,7 +230,7 @@ border-radius: 16px;
                      </widget>
                     </item>
                     <item>
-                     <widget class="SelectAllDoubleSpinBox" name="doubleSpinBox_2"/>
+                     <widget class="SelectAllDoubleSpinBox" name="dsb_cook_tar_temp"/>
                     </item>
                    </layout>
                   </widget>
@@ -386,7 +386,7 @@ border-radius: 16px;
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="lbl_temp_fill">
+                     <widget class="QLabel" name="lbl_cur_temp_fill">
                       <property name="maximumSize">
                        <size>
                         <width>16777215</width>
@@ -427,7 +427,7 @@ border-radius: 16px;
                      </widget>
                     </item>
                     <item>
-                     <widget class="SelectAllDoubleSpinBox" name="doubleSpinBox"/>
+                     <widget class="SelectAllDoubleSpinBox" name="dsb_fill_tar_temp"/>
                     </item>
                    </layout>
                   </widget>
@@ -2405,7 +2405,7 @@ border-radius: 16px;
   <customwidget>
    <class>SelectAllDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
-   <header location="global">selectalldoublespinbox.h</header>
+   <header location="global">src.gui.selectalldoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
