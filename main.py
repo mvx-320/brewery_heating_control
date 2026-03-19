@@ -11,8 +11,10 @@ now = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
 base_path = Path(__file__).resolve().parent
 sys.path.append(str(base_path / 'mockups')) # TODO: Not shure why this is there
 
-from components.pots import Pot, TimerPot
-import interface
+from components.pots import Pot
+from components.dwell_pot import DwellPot
+import ui.interface as interface
+import ui.dwell_frame
 from background_services.timer_heat_regulation import PeriodHeatReg
 from background_services.timer_pot import PeriodTimePot
 from background_services.thread_arduino import ThreadReadSer
@@ -66,7 +68,7 @@ if __name__ == "__main__":
     serial_reader_thread = None
 
     #region POTS
-    mash = TimerPot('mash')
+    mash = DwellPot('mash')
     fill = Pot('fill')
     cook = TimerPot('cook')
 
@@ -129,7 +131,8 @@ if __name__ == "__main__":
     def cook_temp_changed(new_temp):
         ui.lbl_temp_cook.setText(f'{new_temp :.2f} °C')
     cook.temp_now_changed.connect(cook_temp_changed) # connect
-    # -----------------------------------------------------------------------------------------------------------------
+    
+
     def mash_heat_changed(new_temp):
         ui.lbl_heat_w_mash.setText(f'{new_temp :4.0f} W')
     mash.heat_val_changed.connect(mash_heat_changed) # connect
@@ -141,7 +144,8 @@ if __name__ == "__main__":
     def cook_heat_changed(new_temp):
         ui.lbl_heat_w_cook.setText(f'{new_temp :4.0f} W')
     cook.heat_val_changed.connect(cook_heat_changed) # connect
-    # --- TIMER -------------------------------------------------------------------------------------------------------
+
+    # TIMER
     def mash_run_state_changed(new_state):
         ui.lbl_time_mash_state.setStyleSheet(string_lbl_time_state % colors_lbl_time_state[new_state])
         mash_or_cook_time_elapsed()
@@ -239,7 +243,7 @@ if __name__ == "__main__":
     ui.lne_temp_cook.textChanged.connect(cook_tar_temp_changed) # connect
     # -----------------------------------------------------------------------------------------------------------------
 
-    # TODO: Here hast to be the start button that turns on the Dwell Runtime
+    # TODO: Here has to be the start button that turns on the Dwell Runtime
 
     def fill_heat_regulation_shift(): # button is checkable
         ui.lbl_connection_status.setText('test')

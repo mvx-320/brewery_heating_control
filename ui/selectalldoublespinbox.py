@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 
+# TODO: Kann das weg?
 class SelectAllDoubleSpinBox(QtWidgets.QDoubleSpinBox):
     def __init__(self, parent=None): 
         super().__init__(parent)

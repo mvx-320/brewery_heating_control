@@ -1,18 +1,8 @@
 import sys
-import interface
+import ui.interface as interface
 from PyQt5 import QtCore, QtGui, QtWidgets
-import dwell_frame
 
-
-dwell_array: list[dwell_frame.Dwell] = [
-    dwell_frame.Dwell(50.0, None, True),
-    dwell_frame.Dwell(60.0, 20.0, False),
-    dwell_frame.Dwell(60.0, 20.0, False),
-    dwell_frame.Dwell(60.0, 20.0, False),
-    dwell_frame.Dwell(60.0, 20.0, False),
-    dwell_frame.Dwell(60.0, None, False),
-]
-
+# TODO: That has to be put in ./main.py
 
 if __name__ == "__main__":
 

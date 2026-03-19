@@ -1,14 +1,15 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from selectalldoublespinbox import SelectAllDoubleSpinBox
-from src.dwell import Dwell
+from dwell import Dwell
 
 dwell_names = [
     # TODO: Safe the Dwell Names and their min and max, temp and time as a "static" variable
+    # TODO: Should be stored in a JSON
     "Verzuckerungsrast", "Maltoserast", "Eiweißrast"
 ]
 
         
-
+# Ui-Frame to be placed in the dwell list
 class DwellFrame(QtWidgets.QFrame):
     temp_changed = QtCore.pyqtSignal(int, float)
     time_changed = QtCore.pyqtSignal(int, float)
@@ -159,22 +160,11 @@ class DwellFrame(QtWidgets.QFrame):
             self.dsb_dwell_tar_time.textChanged.connect(self._on_time_changed)
         self.btn_dwell_alarm.clicked.connect(self._on_alarm)
 
-        # TODO: Make it more beautiful with icons in a own QFrame using QtCore.Qt.Popup and move it to the right location
+        # TODO: lowPrio: Make it more beautiful with icons in a own QFrame using QtCore.Qt.Popup and move it to the right location
         menu = QtWidgets.QMenu(self)
         font = menu.font()
         font.setPointSize(16)
         menu.setFont(font)
-        # act_up = QtWidgets.QAction("hoch", self)
-        # act_up.triggered.connect(self._on_dwell_up)
-        # act_down = QtWidgets.QAction("runter", self)
-        # act_down.triggered.connect(self._on_dwell_down)
-        # act_delete = QtWidgets.QAction("löschen", self)
-        # act_delete.triggered.connect(self._on_delete_dwell)
-        # actions = [act_up, act_down, act_delete]
-        # if (self.index != (self.dwell_amount -1)):
-        #     act_new = QtWidgets.QAction("neu", self)
-        #     act_new.triggered.connect(self._on_new_dwell)
-        #     actions = [act_up, act_down, act_new, act_delete]
         act_up = self.index > 1 and self.index != self.dwell_amount -1
         act_down = self.index != 0 and self.index < self.dwell_amount -2
         act_new = self.index != self.dwell_amount -1
