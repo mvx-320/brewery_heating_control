@@ -12,8 +12,10 @@ now = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
 base_path = Path(__file__).resolve().parent
 sys.path.append(str(base_path / 'mockups')) # TODO: Not shure why this is there
 
-from components.pots import Pot
-from components.dwell_pot import DwellPot
+from components.pots.cook_pot import CookPot
+from components.pots.dwell_pot import DwellPot
+from components.pots.pots import Pot
+
 from gui import interface, dwell_frame
 from gui.styled_splash_screen import create_brewery_splash
 from background_services.timer_heat_regulation import PeriodHeatReg
@@ -71,7 +73,7 @@ def main():
     #region POTS
     mash = DwellPot('mash')
     fill = Pot('fill')
-    cook = Pot('cook') # TODO: Pot must be replaced with HopPot with multiple timers that alarm the brewer on certain times to the end of cooking
+    cook = CookPot('cook') # TODO: Pot must be replaced with HopPot with multiple timers that alarm the brewer on certain times to the end of cooking
 
 
     #region INTERFACE

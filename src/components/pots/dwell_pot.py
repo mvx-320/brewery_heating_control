@@ -5,7 +5,7 @@ from PyQt5.QtCore import QObject, QMutex, QMutexLocker, pyqtSignal
 
 from components.pid_controller import myPID
 from gui import dwell_frame
-from components.pots import Pot
+from pots.pots import Pot
 
 class DwellPot(Pot):
     dwell_array_mutex = QMutex() # TODO: Maybe use lock() and unlock() if QMutexLocker is not working.
