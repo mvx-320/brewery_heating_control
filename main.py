@@ -15,6 +15,7 @@ sys.path.append(str(base_path / 'mockups')) # TODO: Not shure why this is there
 from components.pots import Pot
 from components.dwell_pot import DwellPot
 from gui import interface, dwell_frame
+from gui.styled_splash_screen import create_brewery_splash
 from background_services.timer_heat_regulation import PeriodHeatReg
 from background_services.timer_pot import PeriodTimePot
 from background_services.thread_arduino import ThreadReadSer
@@ -78,26 +79,14 @@ def main():
 
 
     #region LOAD IMAGES
-    icon_brewery = QtGui.QIcon("src/assets/icon_brewery.png")
     alarm0 = QtGui.QPixmap("src/assets/alarm0.png")
     alarm1 = QtGui.QPixmap("src/assets/alarm1.png")
     pot_white = QtGui.QPixmap("src/assets/pot_white.png")
 #       pic_prop = QtGui.QPixmap("assets/propeller.png")
 #       pic_pump = QtGui.QPixmap("assets/water-pump.png")
 
-
-    splash_pixmap = QtGui.QPixmap(512, 512)
-    splash_pixmap.fill(QtGui.QColor(36, 31, 49))
-
-    logo_pixmap = icon_brewery.pixmap(240, 240)
-    painter = QtGui.QPainter(splash_pixmap)
-    logo_x = (splash_pixmap.width() - logo_pixmap.width()) // 2
-    logo_y = (splash_pixmap.height() - logo_pixmap.height()) // 2 - 25
-    painter.drawPixmap(logo_x, logo_y, logo_pixmap)
-    painter.end()
-
-    splash = QtWidgets.QSplashScreen(splash_pixmap, QtCore.Qt.WindowStaysOnTopHint)
-    splash.showMessage("Brauerei Steuerung wird gestartet...", QtCore.Qt.AlignBottom | QtCore.Qt.AlignCenter, QtGui.QColor("lightgray"))
+    # region SPLASH SCREEN
+    splash = create_brewery_splash()
     splash.show()
     app.processEvents()  # Ensure the splash screen is displayed immediately
     
