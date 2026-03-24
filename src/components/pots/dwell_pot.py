@@ -4,18 +4,18 @@ sys.path.append("src")
 from PyQt5.QtCore import QObject, QMutex, QMutexLocker, pyqtSignal
 
 from components.pid_controller import myPID
-from gui import dwell_frame
+from gui.dwell_frame import Dwell
 from pots.pots import Pot
 
 class DwellPot(Pot):
     dwell_array_mutex = QMutex() # TODO: Maybe use lock() and unlock() if QMutexLocker is not working.
-    _dwell_array: list[dwell_frame.Dwell] = [ # TODO: Eventuell komplett in eine lokale Datenbank verschieben
-        dwell_frame.Dwell(50.0, None, True),  # TODO: Wahrscheinlich wird hier Dwell über dwell_frame importiert. Das macht vllt keinen Sinn. zirkuläre Abhängigkeit.
-        dwell_frame.Dwell(60.0, 20.0, False),
-        dwell_frame.Dwell(60.0, 20.0, False),
-        dwell_frame.Dwell(60.0, 20.0, True),
-        dwell_frame.Dwell(60.0, 20.0, False),
-        dwell_frame.Dwell(60.0, None, False),
+    _dwell_array: list[Dwell] = [ # TODO: Eventuell komplett in eine lokale Datenbank verschieben
+        Dwell(50.0, None, True),  # TODO: Wahrscheinlich wird hier Dwell über dwell_frame importiert. Das macht vllt keinen Sinn. zirkuläre Abhängigkeit.
+        Dwell(60.0, 20.0, False),
+        Dwell(60.0, 20.0, False),
+        Dwell(60.0, 20.0, True),
+        Dwell(60.0, 20.0, False),
+        Dwell(60.0, None, False),
     ]
 
     _current_dwell_index: int = 0
@@ -90,11 +90,11 @@ class DwellPot(Pot):
         self.logger.info(f'dwell_array[{self._current_dwell_index}].tar_time = {new_time}')
     
     # region dwell_array
-    def get_dwell_array(self) -> list[dwell_frame.Dwell]:
+    def get_dwell_array(self) -> list[Dwell]:
         locker = QMutexLocker(self.dwell_array_mutex)
         return self._dwell_array
 
-    def dwell_up(self, obj) -> list[dwell_frame.Dwell]:
+    def dwell_up(self, obj) -> list[Dwell]:
         locker = QMutexLocker(self.dwell_array_mutex)
         index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
         if index > 1:
@@ -102,7 +102,7 @@ class DwellPot(Pot):
             self._dwell_array.insert(index -1, obj)
         return self._dwell_array
 
-    def dwell_down(self, obj) -> list[dwell_frame.Dwell]:
+    def dwell_down(self, obj) -> list[Dwell]:
         locker = QMutexLocker(self.dwell_array_mutex)
         index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
         if index < len(self._dwell_array) -2:
@@ -110,13 +110,13 @@ class DwellPot(Pot):
             self._dwell_array.insert(index +1, obj)
         return self._dwell_array
 
-    def dwell_new(self, obj) -> list[dwell_frame.Dwell]:
+    def dwell_new(self, obj) -> list[Dwell]:
         locker = QMutexLocker(self.dwell_array_mutex)
         index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
-        self._dwell_array.insert(index +1, dwell_frame.Dwell(None, None, False))
+        self._dwell_array.insert(index +1, Dwell(None, None, False))
         return self._dwell_array
 
-    def dwell_delete(self, obj) -> list[dwell_frame.Dwell]:
+    def dwell_delete(self, obj) -> list[Dwell]:
         locker = QMutexLocker(self.dwell_array_mutex)
         index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
         if (len(self._dwell_array) <= 2):

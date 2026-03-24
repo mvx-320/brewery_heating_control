@@ -25,6 +25,12 @@ color: lightgray;
    <property name="layoutDirection">
     <enum>Qt::LeftToRight</enum>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QTableWidget {
+	background-color: rgb(36, 31, 49);
+	alternate-background-color: rgb(46, 55, 80);
+}</string>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout_8">
     <item>
      <widget class="QTabWidget" name="tabWidget">
@@ -41,7 +47,7 @@ color: lightgray;
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="control">
        <attribute name="title">
@@ -2274,88 +2280,364 @@ border-radius: 16px;
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
-         <widget class="QWidget" name="widget_3" native="true">
-          <layout class="QHBoxLayout" name="horizontalLayout">
+         <widget class="QWidget" name="wdg_settings" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1">
+           <property name="spacing">
+            <number>12</number>
+           </property>
            <item>
-            <widget class="QWidget" name="widget_4" native="true">
-             <widget class="QPushButton" name="btn_connect2arduino">
-              <property name="geometry">
-               <rect>
-                <x>90</x>
-                <y>60</y>
-                <width>311</width>
-                <height>27</height>
-               </rect>
+            <widget class="QWidget" name="wdg_settings_left" native="true">
+             <property name="styleSheet">
+              <string notr="true">* {
+	background-color: rgb(36, 31, 49);
+}
+
+QWidget#wdg_settings_left {
+	border: 4px solid lightgray;
+	border-radius: 16px;
+}</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_9">
+              <property name="leftMargin">
+               <number>12</number>
               </property>
-              <property name="text">
-               <string>Mit Arduino verbinden...</string>
+              <property name="topMargin">
+               <number>12</number>
               </property>
-             </widget>
+              <property name="rightMargin">
+               <number>12</number>
+              </property>
+              <property name="bottomMargin">
+               <number>12</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="btn_connect2arduino">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Mit Arduino verbinden...</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
-            <widget class="QWidget" name="widget_5" native="true">
-             <widget class="QScrollArea" name="scrollArea">
-              <property name="geometry">
-               <rect>
-                <x>20</x>
-                <y>10</y>
-                <width>591</width>
-                <height>331</height>
-               </rect>
+            <widget class="QWidget" name="wdg_settings_right" native="true">
+             <property name="styleSheet">
+              <string notr="true">* {
+	background-color: rgb(36, 31, 49);
+}
+
+QWidget#wdg_settings_right {
+	border: 4px solid lightgray;
+	border-radius: 16px;
+}</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_10">
+              <property name="leftMargin">
+               <number>12</number>
               </property>
-              <property name="verticalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOn</enum>
+              <property name="topMargin">
+               <number>12</number>
               </property>
-              <property name="horizontalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
+              <property name="rightMargin">
+               <number>12</number>
               </property>
-              <property name="widgetResizable">
-               <bool>true</bool>
+              <property name="bottomMargin">
+               <number>12</number>
               </property>
-              <widget class="QWidget" name="scrollAreaWidgetContents">
-               <property name="geometry">
-                <rect>
-                 <x>0</x>
-                 <y>0</y>
-                 <width>575</width>
-                 <height>329</height>
-                </rect>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_7">
-                <item>
-                 <widget class="QFrame" name="frame_8">
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                 </widget>
+              <item>
+               <widget class="QScrollArea" name="scrollArea">
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarAlwaysOn</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>565</width>
+                   <height>434</height>
+                  </rect>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_7">
+                  <item>
+                   <widget class="QFrame" name="frame_8">
+                    <property name="frameShape">
+                     <enum>QFrame::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QFrame" name="frame_9">
+                    <property name="frameShape">
+                     <enum>QFrame::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QFrame" name="frame_10">
+                    <property name="frameShape">
+                     <enum>QFrame::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTableWidget" name="tbl_dwell_names">
+                <property name="lineWidth">
+                 <number>2</number>
+                </property>
+                <property name="sizeAdjustPolicy">
+                 <enum>QAbstractScrollArea::AdjustToContents</enum>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
+                <property name="sortingEnabled">
+                 <bool>true</bool>
+                </property>
+                <property name="rowCount">
+                 <number>6</number>
+                </property>
+                <property name="columnCount">
+                 <number>5</number>
+                </property>
+                <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                 <bool>true</bool>
+                </attribute>
+                <attribute name="horizontalHeaderStretchLastSection">
+                 <bool>true</bool>
+                </attribute>
+                <attribute name="verticalHeaderVisible">
+                 <bool>false</bool>
+                </attribute>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+                <column>
+                 <property name="text">
+                  <string>Rastname</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>min. Temperatur</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>max. Temperatur</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>min. Dauer</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>max. Dauer</string>
+                 </property>
+                </column>
+                <item row="0" column="0">
+                 <property name="text">
+                  <string>Gummirast</string>
+                 </property>
                 </item>
-                <item>
-                 <widget class="QFrame" name="frame_9">
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                 </widget>
+                <item row="0" column="1">
+                 <property name="text">
+                  <string>35</string>
+                 </property>
                 </item>
-                <item>
-                 <widget class="QFrame" name="frame_10">
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                 </widget>
+                <item row="0" column="2">
+                 <property name="text">
+                  <string>40</string>
+                 </property>
                 </item>
-               </layout>
-              </widget>
-             </widget>
+                <item row="0" column="3">
+                 <property name="text">
+                  <string>15</string>
+                 </property>
+                </item>
+                <item row="0" column="4">
+                 <property name="text">
+                  <string>30</string>
+                 </property>
+                </item>
+                <item row="1" column="0">
+                 <property name="text">
+                  <string>Weizenrast</string>
+                 </property>
+                </item>
+                <item row="1" column="1">
+                 <property name="text">
+                  <string>40</string>
+                 </property>
+                </item>
+                <item row="1" column="2">
+                 <property name="text">
+                  <string>48</string>
+                 </property>
+                </item>
+                <item row="1" column="3">
+                 <property name="text">
+                  <string>15</string>
+                 </property>
+                </item>
+                <item row="1" column="4">
+                 <property name="text">
+                  <string>15</string>
+                 </property>
+                </item>
+                <item row="2" column="0">
+                 <property name="text">
+                  <string>Maltoserast</string>
+                 </property>
+                </item>
+                <item row="2" column="1">
+                 <property name="text">
+                  <string>30</string>
+                 </property>
+                </item>
+                <item row="2" column="2">
+                 <property name="text">
+                  <string>45</string>
+                 </property>
+                </item>
+                <item row="2" column="3">
+                 <property name="text">
+                  <string>30</string>
+                 </property>
+                </item>
+                <item row="2" column="4">
+                 <property name="text">
+                  <string>60</string>
+                 </property>
+                </item>
+                <item row="3" column="0">
+                 <property name="text">
+                  <string>Eiweißrast</string>
+                 </property>
+                </item>
+                <item row="3" column="1">
+                 <property name="text">
+                  <string>50</string>
+                 </property>
+                </item>
+                <item row="3" column="2">
+                 <property name="text">
+                  <string>58</string>
+                 </property>
+                </item>
+                <item row="3" column="3">
+                 <property name="text">
+                  <string>10</string>
+                 </property>
+                </item>
+                <item row="3" column="4">
+                 <property name="text">
+                  <string>20</string>
+                 </property>
+                </item>
+                <item row="4" column="0">
+                 <property name="text">
+                  <string>Maltoserast</string>
+                 </property>
+                </item>
+                <item row="4" column="1">
+                 <property name="text">
+                  <string>60</string>
+                 </property>
+                </item>
+                <item row="4" column="2">
+                 <property name="text">
+                  <string>68</string>
+                 </property>
+                </item>
+                <item row="4" column="3">
+                 <property name="text">
+                  <string>30</string>
+                 </property>
+                </item>
+                <item row="4" column="4">
+                 <property name="text">
+                  <string>90</string>
+                 </property>
+                </item>
+                <item row="5" column="0">
+                 <property name="text">
+                  <string>Verzuckerungsrast</string>
+                 </property>
+                </item>
+                <item row="5" column="1">
+                 <property name="text">
+                  <string>70</string>
+                 </property>
+                </item>
+                <item row="5" column="2">
+                 <property name="text">
+                  <string>75</string>
+                 </property>
+                </item>
+                <item row="5" column="3">
+                 <property name="text">
+                  <string>15</string>
+                 </property>
+                </item>
+                <item row="5" column="4">
+                 <property name="text">
+                  <string>45</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>

@@ -1,15 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from src.gui.selectalldoublespinbox import SelectAllDoubleSpinBox
-from dwell import Dwell
+from models.dwell import Dwell
 from pathlib import Path
 
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
-
-dwell_names = [
-    # TODO: Safe the Dwell Names and their min and max, temp and time as a "static" variable
-    # TODO: Should be stored in a JSON
-    "Verzuckerungsrast", "Maltoserast", "Eiweißrast"
-]
 
         
 # Ui-Frame to be placed in the dwell list
@@ -189,7 +183,7 @@ class DwellFrame(QtWidgets.QFrame):
         print(f'Dwell {self.index} changes alarm to {self.obj.alarm}')
         self.btn_dwell_alarm.setIcon(self.ico_alarm[self.obj.alarm])
 
-    def _actions_in_menu(self, up: bool, down: bool, new: bool, delete:bool) -> []:
+    def _actions_in_menu(self, up: bool, down: bool, new: bool, delete:bool) -> list:
         actions = []
         if (up):
             act_up = QtWidgets.QAction("hoch", self)

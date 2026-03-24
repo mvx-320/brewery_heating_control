@@ -49,6 +49,7 @@ def main():
         root_logger = logging.getLogger()
         root_logger.addHandler(console_handler)
 
+
     #region Import mockup
     try:
         from mockups.thread_mockup_ser import ThreadMockupSer
@@ -69,6 +70,36 @@ def main():
                 self.running = False
 
     serial_reader_thread = None
+    
+
+    #region ARDUINO INIT
+    def _create_arduino_or_mockup_serial():
+        global serial_reader_thread
+        logging.info("Starting _create_arduino_or_mockup_serial()...")
+        try:
+            logging.info("Creating ThreadReadSer...")
+            serial_reader_thread = ThreadReadSer(mash, fill, cook)
+            logging.info("Initializing serial port...")
+            serial_reader_thread.initialize_serial()  # Initialize serial port here
+            logging.info("Starting serial thread...")
+            serial_reader_thread.start()
+            ui.lbl_connection_status.setText("Arduino ist verbunden")
+            ui.lbl_connection_status.setStyleSheet("QLabel {background-color: darkgreen; color: lightgray; border-radius: 5;}")
+            logging.info("Arduino successfully connected")
+        except (serial.SerialException, PermissionError) as e:
+            logging.error(f"Exception caught: {type(e).__name__}: {str(e)}")
+            ui.lbl_connection_status.setText("Arduino nicht verbunden. Simulation läuft ...")
+            ui.lbl_connection_status.setStyleSheet("QLabel {background-color: darkred; color: lightgray; border-radius: 5;}")
+            serial_reader_thread = ThreadMockupSer(mash, fill, cook)
+            serial_reader_thread.start()
+            logging.error(f"opening serial port: {str(e)}")
+
+    def connect2arduino():
+        ui.lbl_connection_status.setText("Verbindungsversuch läuft...")
+        ui.lbl_connection_status.setStyleSheet("QLabel {background-color: rgb(80, 80, 0); color: lightgray; border-radius: 5;}")
+        QtWidgets.QApplication.processEvents()
+        QtCore.QTimer.singleShot(1000, _create_arduino_or_mockup_serial)
+
 
     #region POTS
     mash = DwellPot('mash')
@@ -160,7 +191,7 @@ def main():
         ui.lbl_heat_w_cook.setText(f'{new_temp :4.0f} W')
     cook.heat_val_changed.connect(cook_heat_changed) # connect
 
-    # TIMER
+    # region UI - TIMER
     def mash_run_state_changed(new_state):
         ui.lbl_time_mash_state.setStyleSheet(string_lbl_time_state % colors_lbl_time_state[new_state])
         mash_or_cook_time_elapsed()
@@ -179,7 +210,7 @@ def main():
     #     ui.lbl_time_cook.setText(strftime("%H:%M:%S", gmtime(act_time)) + f'.{int((act_time % 1) *10)}')
     # cook.act_time_changed.connect(cook_time_changed) # connect
     
-    # DWELLS
+    # region UI - DWELLS
     def clear_steps():
         layout = ui.dwell_layout
         
@@ -212,10 +243,10 @@ def main():
         ui.dwell_layout.addStretch()
         
     def temp_changed_handler(index, value):
-        mash.tar_temp = value
+        mash._dwell_array[index].tar_temp = value
 
     def time_changed_handler(index, value):
-        mash.tar_time = value
+        mash._dwell_array[index].tar_time = value
 
     def up_clicked_handler(obj):
         update_steps(mash.dwell_up(obj))
@@ -358,29 +389,10 @@ def main():
 #       ui.btn_alarm_out.clicked.connect(every_alarm_out)
         
     # !!! Hier sicherstellen das alles im Hintergrund funktioniert (Das die Threads laufen)
-    
-    #region ARDUINO INIT
-    def connect2arduino():
-        global serial_reader_thread
-        logging.info("Starting connect2arduino()...")
-        try:
-            logging.info("Creating ThreadReadSer...")
-            serial_reader_thread = ThreadReadSer(mash, fill, cook)
-            logging.info("Initializing serial port...")
-            serial_reader_thread.initialize_serial()  # Initialize serial port here
-            logging.info("Starting serial thread...")
-            serial_reader_thread.start()
-            ui.lbl_connection_status.setText("Arduino ist verbunden")
-            ui.lbl_connection_status.setStyleSheet("QLabel {background-color: darkgreen; color: lightgray; border-radius: 5;}")
-            logging.info("Arduino successfully connected")
-        except (serial.SerialException, PermissionError) as e:
-            logging.error(f"Exception caught: {type(e).__name__}: {str(e)}")
-            ui.lbl_connection_status.setText("Arduino nicht verbunden. Mockup läuft ...")
-            ui.lbl_connection_status.setStyleSheet("QLabel {background-color: darkred; color: lightgray; border-radius: 5;}")
-            serial_reader_thread = ThreadMockupSer(mash, fill, cook)
-            serial_reader_thread.start()
-            logging.error(f"opening serial port: {str(e)}")
 
+    # region UI - Settings
+    ui.btn_connect2arduino.clicked.connect(connect2arduino)
+    
 
         
     #region SHOW UI
