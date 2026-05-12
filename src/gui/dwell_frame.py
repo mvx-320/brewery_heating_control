@@ -1,3 +1,6 @@
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from src.gui.selectalldoublespinbox import SelectAllDoubleSpinBox
 from models.dwell import Dwell
@@ -23,12 +26,12 @@ class DwellFrame(QtWidgets.QFrame):
         self.locale = QtCore.QLocale(QtCore.QLocale.German, QtCore.QLocale.Germany)
         self.spinBox_font = QtGui.QFont()
         self.spinBox_font.setPointSize(16)
+        
+        # Styling für aktiv/inaktiv
+        self.style_inactive = "background-color: rgb(61,56,70); border: none; border-radius: 8px;"
+        self.style_active = "background-color: rgb(76,150,80); border: none; border-radius: 8px;"
 
-        self.setStyleSheet("\
-                            background-color: rgb(61,56,70);\
-                            border: none;\
-                            border-radius: 8px;\
-                           ")
+        self.setStyleSheet(self.style_inactive)
         self.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.setFrameShadow(QtWidgets.QFrame.Raised)
 
@@ -215,3 +218,10 @@ class DwellFrame(QtWidgets.QFrame):
         
     def _on_delete_dwell(self):
         self.delete_clicked.emit(self.obj)
+    
+    def on_current_dwell_changed(self, current_index: int):
+        """Wird aufgerufen, wenn sich der aktuelle Dwell-Index ändert"""
+        if self.index == current_index:
+            self.setStyleSheet(self.style_active)
+        else:
+            self.setStyleSheet(self.style_inactive)

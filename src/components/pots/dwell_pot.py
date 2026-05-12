@@ -18,9 +18,10 @@ class DwellPot(Pot):
         Dwell(60.0, None, False),
     ]
 
-    _current_dwell_index: int = 0
+    _current_dwell_index: int = -1
     act_time_changed = pyqtSignal(float)
     run_state_changed = pyqtSignal(int)
+    current_dwell_index_changed = pyqtSignal(int)
     
     def __init__(self, name, interval_s= 0.1, dt= 0.1, max_w= 3500, min_w= 0, kp= 0.5, ki= 1.5, kd= 0): # ki war vorher bei 0.2
        super().__init__(name, dt= dt, max_w= max_w, min_w= min_w, kp= kp, ki= ki, kd= kd)
@@ -30,6 +31,14 @@ class DwellPot(Pot):
        self._run_state = 0
         
     # region getter, setter
+    @property
+    def current_dwell_index(self):
+        return self._current_dwell_index
+    
+    @current_dwell_index.setter
+    def current_dwell_index(self, new_index: int):
+        self._current_dwell_index = new_index
+        self.current_dwell_index_changed.emit(new_index)
         
     @property
     def act_time(self):
@@ -125,3 +134,13 @@ class DwellPot(Pot):
             return
         del self._dwell_array[index]
         return self._dwell_array
+
+    # region runtime environment
+    def next_dwell(self):
+        locker = QMutexLocker(self.dwell_array_mutex)
+        if self._current_dwell_index < len(self._dwell_array) -1:
+            self.current_dwell_index = self._current_dwell_index + 1
+            self.logger.info(f'{self.name} switched to dwell {self._current_dwell_index}')
+        else:
+            # TODO: Change Pause button to Stop button
+            self.logger.info(f'{self.name} reached end of dwell array') 

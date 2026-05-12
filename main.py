@@ -21,8 +21,9 @@ from gui.styled_splash_screen import create_brewery_splash
 from background_services.timer_heat_regulation import PeriodHeatReg
 from background_services.timer_pot import PeriodTimePot
 from background_services.thread_arduino import ThreadReadSer
+from background_services.runtime_environment import DwellRuntimeEnvironment
 
-DEBUG = True # TODO: Set false in production
+DEBUG = False # TODO: Set false in production
 
 
 def main():
@@ -160,6 +161,9 @@ def main():
     heat_regulate_thread = PeriodHeatReg(mash, fill, cook, time_mash_thread, time_cook_thread)
     heat_regulate_thread.start()
     
+    #region RUNTIME ENVIRONMENT (Mash Process Control)
+    mash_runtime = DwellRuntimeEnvironment(mash)
+    
     #region UI CONNECT
     # The Connections and the refered Methods have to stay here.
     # Tested: 
@@ -237,6 +241,8 @@ def main():
             frame.down_clicked.connect(down_clicked_handler)
             frame.new_clicked.connect(new_clicked_handler)
             frame.delete_clicked.connect(delete_clicked_handler)
+            # Signal-Verbindung für Highlight des aktuellen Dwells
+            mash.current_dwell_index_changed.connect(frame.on_current_dwell_changed)
             
             ui.dwell_layout.addWidget(frame)
 
@@ -261,6 +267,12 @@ def main():
         update_steps(mash.dwell_delete(obj))
     
     
+    
+    def mash_start_clicked():
+        """Startet/Fortsetzt die Mash-Prozess-Sequenz über die Runtime Environment"""
+        mash_runtime.start_mash()
+    
+    ui.btn_start_mash.clicked.connect(mash_start_clicked)
     
     # -----------------------------------------------------------------------------------------------------------------
 #       def mash_start_timer_state_shift():
