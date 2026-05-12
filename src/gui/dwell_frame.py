@@ -109,6 +109,7 @@ class DwellFrame(QtWidgets.QFrame):
 
         self.widget_4 = QtWidgets.QWidget(self.frm_widget)
         self.widget_4.setObjectName("widget_4")
+        self.widget_4.hide()
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.widget_4)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.progressBar = QtWidgets.QProgressBar(self.widget_4)
@@ -223,5 +224,8 @@ class DwellFrame(QtWidgets.QFrame):
         """Wird aufgerufen, wenn sich der aktuelle Dwell-Index ändert"""
         if self.index == current_index:
             self.setStyleSheet(self.style_active)
+            if self.index > 0 and self.index < (self.dwell_amount -1):
+                self.widget_4.show()
         else:
             self.setStyleSheet(self.style_inactive)
+            self.widget_4.hide()
