@@ -229,3 +229,8 @@ class DwellFrame(QtWidgets.QFrame):
         else:
             self.setStyleSheet(self.style_inactive)
             self.widget_4.hide()
+
+    def update_progress(self, value: int, remaining_text: str = ""):
+        self.progressBar.setValue(value)
+        if remaining_text:
+            self.lbl_dwell_rest_time.setText(remaining_text)

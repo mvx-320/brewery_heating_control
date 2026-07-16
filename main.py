@@ -265,9 +265,17 @@ def main():
 
     def delete_clicked_handler(obj):
         update_steps(mash.dwell_delete(obj))
-    
-    
-    
+
+    def on_dwell_progress(dwell_index, percent, remaining):
+        for i in range(ui.dwell_layout.count()):
+            widget = ui.dwell_layout.itemAt(i).widget()
+            if hasattr(widget, 'index') and widget.index == dwell_index:
+                minutes = int(remaining // 60)
+                seconds = int(remaining % 60)
+                widget.update_progress(percent, f"{minutes}:{seconds:02d} min")
+
+    mash.dwell_progress_changed.connect(on_dwell_progress)
+
     def mash_start_clicked():
         """Startet/Fortsetzt die Mash-Prozess-Sequenz über die Runtime Environment"""
         mash_runtime.start_mash()
