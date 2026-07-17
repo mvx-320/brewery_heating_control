@@ -312,10 +312,18 @@ def main():
 
     ui.btn_start_mash.clicked.connect(mash_start_clicked)
 
-    def mash_pause_clicked():
-        mash_runtime.pause_mash()
+    def mash_stop_clicked():
+        if not mash_runtime.is_running:
+            return
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Warning)
+        msg.setWindowTitle('Maischprozess stoppen')
+        msg.setText('Möchtest du den Maischprozess wirklich stoppen?')
+        msg.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+        if msg.exec() == QtWidgets.QMessageBox.Ok:
+            mash_runtime.stop_mash()
 
-    ui.btn_pause_mash.clicked.connect(mash_pause_clicked)
+    ui.btn_stop_mash.clicked.connect(mash_stop_clicked)
 
     def update_tar_temp_label():
         if mash.current_dwell_index >= 0:
@@ -345,13 +353,6 @@ def main():
             # ui.lbl_connection_status.setText('button wieder gedrückt')
     # ui.btn_start_cook.clicked.connect(cook_start_timer_state_shift) # connect #!!! DIESE NAMEN HIER NOCH ÄNDERN!!! DAS SIND KEINE CHECKABLE BUTTONS MEHR
     # -----------------------------------------------------------------------------------------------------------------
-#       def mash_pause_clicked():
-#           if mash.run_state == 1:
-#               mash.run_state = 0
-#           elif mash.run_state == 2:
-#               time_mash_thread.pause()
-#       ui.btn_pause_mash.clicked.connect(mash_pause_clicked) # connect
-    
     def cook_pause_clicked():
         if cook.run_state == 1:
             cook.run_state = 0

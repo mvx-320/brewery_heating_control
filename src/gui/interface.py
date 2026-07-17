@@ -898,10 +898,10 @@ class Ui_MainWindow(object):
         self.btn_start_mash.setMinimumSize(QtCore.QSize(0, 50))
         self.btn_start_mash.setObjectName("btn_start_mash")
         self.horizontalLayout_16.addWidget(self.btn_start_mash)
-        self.btn_pause_mash = QtWidgets.QPushButton(self.widget_7)
-        self.btn_pause_mash.setMinimumSize(QtCore.QSize(0, 50))
-        self.btn_pause_mash.setObjectName("btn_pause_mash")
-        self.horizontalLayout_16.addWidget(self.btn_pause_mash)
+        self.btn_stop_mash = QtWidgets.QPushButton(self.widget_7)
+        self.btn_stop_mash.setMinimumSize(QtCore.QSize(0, 50))
+        self.btn_stop_mash.setObjectName("btn_stop_mash")
+        self.horizontalLayout_16.addWidget(self.btn_stop_mash)
         self.verticalLayout_4.addWidget(self.widget_7)
         self.gridLayout_9.addWidget(self.wdg_mash, 0, 0, 1, 1)
         self.wdg_timer = QtWidgets.QWidget(self.wdg_control)
@@ -1223,7 +1223,7 @@ class Ui_MainWindow(object):
         self.actionMit_Arduino_verbinden.setObjectName("actionMit_Arduino_verbinden")
 
         self.retranslateUi(MainWindow)
-        self.tab_widget.setCurrentIndex(2)
+        self.tab_widget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -1282,7 +1282,7 @@ class Ui_MainWindow(object):
         self.lbl_tar_temp_mash.setText(_translate("MainWindow", "--°C"))
         self.lbl_heat_w_mash.setText(_translate("MainWindow", "---- W"))
         self.btn_start_mash.setText(_translate("MainWindow", "START"))
-        self.btn_pause_mash.setText(_translate("MainWindow", "STOP"))
+        self.btn_stop_mash.setText(_translate("MainWindow", "STOPP"))
         self.wdg_timer.setStatusTip(_translate("MainWindow", "statusTip"))
         self.wdg_timer.setWhatsThis(_translate("MainWindow", "whatsThis"))
         self.label_3.setText(_translate("MainWindow", "Kochdauer:"))

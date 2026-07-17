@@ -18,7 +18,7 @@ class DwellRuntimeEnvironment(QObject):
     - Startet Heat Regulation und Timer für jeden Dwell
     - Wechselt automatisch zum nächsten Dwell wenn Zeit abgelaufen
     - Löst Alarm aus wenn gewünscht
-    - Pausiert und stoppt den Prozess
+    - Stoppt den Prozess
     """
 
     mash_finished = pyqtSignal()
@@ -29,7 +29,6 @@ class DwellRuntimeEnvironment(QObject):
         self.logger = logging.getLogger(__name__)
 
         self.is_running = False
-        self.is_paused = False
 
         self.mash_pot.run_state_changed.connect(self._on_run_state_changed)
 
@@ -37,13 +36,7 @@ class DwellRuntimeEnvironment(QObject):
 
     # region public API
     def start_mash(self):
-        if self.is_running and not self.is_paused:
-            return
-
-        if self.is_paused:
-            self.is_paused = False
-            self.mash_pot.run_state = 1
-            self.logger.info("Mash resumed")
+        if self.is_running:
             return
 
         self.logger.info("Mash started")
@@ -51,26 +44,20 @@ class DwellRuntimeEnvironment(QObject):
         self.mash_pot.current_dwell_index = 0
         self._activate_dwell(0)
 
-    def pause_mash(self):
-        if not self.is_running or self.is_paused:
-            return
-
-        self.is_paused = True
-        self.mash_pot.run_state = 0
-        self.logger.info("Mash paused")
-
     def stop_mash(self):
         self.is_running = False
-        self.is_paused = False
         self.mash_pot.heat_regulation = False
         self.mash_pot.heat_val = 0
+        self.mash_pot.temp_tar = 0
+        self.mash_pot.rest_time = 0
+        self.mash_pot.run_state = 0
         self.mash_pot.current_dwell_index = -1
         self.logger.info("Mash stopped")
     # endregion
 
     # region internal
     def _on_run_state_changed(self, new_state):
-        if not self.is_running or self.is_paused:
+        if not self.is_running:
             return
 
         if new_state == 3:

@@ -111,7 +111,7 @@ class Ui_MainWindow << interface.py >> #ffe3c4{
   +lne_time_mash: QLineEdit
   +lbl_time_mash_state: QLabel
   +btn_play_mash: QPushButton
-  +btn_pause_mash: QPushButton
+  +btn_stop_mash: QPushButton
 
   +lbl_time_cook: QLabel
   +lne_time_cook: QLineEdit

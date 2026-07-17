@@ -47,7 +47,7 @@ color: lightgray;
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_control">
        <attribute name="title">
@@ -2038,7 +2038,7 @@ border-radius: 16px;
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="btn_pause_mash">
+                  <widget class="QPushButton" name="btn_stop_mash">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -2046,7 +2046,7 @@ border-radius: 16px;
                     </size>
                    </property>
                    <property name="text">
-                    <string>STOP</string>
+                    <string>STOPP</string>
                    </property>
                   </widget>
                  </item>
