@@ -23,7 +23,7 @@ from background_services.timer_pot import PeriodTimePot
 from background_services.thread_arduino import ThreadReadSer
 from background_services.runtime_environment import DwellRuntimeEnvironment
 
-DEBUG = False # TODO: Set false in production
+DEBUG = True # TODO: Set false in production
 
 
 def main():
@@ -127,6 +127,9 @@ def main():
     MainWindow = QtWidgets.QMainWindow()
     ui = interface.Ui_MainWindow()
     ui.setupUi(MainWindow)
+    
+    if not DEBUG:
+        ui.tab_widget.removeTab(ui.tab_widget.indexOf(ui.tab_debug))
     
     # Look glitchy, because when starting the fixed size gets displayed for a short time
     # screen_rect = QtWidgets.QDesktopWidget().availableGeometry()
@@ -275,6 +278,37 @@ def main():
                 widget.update_progress(percent, f"{minutes}:{seconds:02d} min")
 
     mash.dwell_progress_changed.connect(on_dwell_progress)
+
+    # region UI - DEBUG TAB
+    def _find_dwell_frame(dwell_index):
+        for i in range(ui.dwell_layout.count()):
+            item = ui.dwell_layout.itemAt(i)
+            if item is None:
+                continue
+            widget = item.widget()
+            if widget is not None and hasattr(widget, 'index') and widget.index == dwell_index:
+                return widget
+        return None
+
+    def debug_execute_dwell_progress():
+        dwell_index = ui.spb_dwell_progress_dwell_index.value()
+        percent = int(ui.lne_dwell_progress_percent.text()) if ui.lne_dwell_progress_percent.text() else 0
+        remaining = float(ui.lne_dwell_progress_remaining.text()) if ui.lne_dwell_progress_remaining.text() else 0.0
+        on_dwell_progress(dwell_index, percent, remaining)
+        frame = _find_dwell_frame(dwell_index)
+        if frame is not None:
+            frame.widget_4.show()
+
+    ui.btn_dwell_progress_execute.clicked.connect(debug_execute_dwell_progress)
+
+    def debug_toggle_visibility(state):
+        dwell_index = ui.spb_dwell_progress_dwell_index.value()
+        frame = _find_dwell_frame(dwell_index)
+        if frame is not None:
+            frame.widget_4.show() if state == 2 else frame.widget_4.hide()
+
+    ui.chb_dwell_progress_visibility.stateChanged.connect(debug_toggle_visibility)
+    # endregion
 
     def mash_start_clicked():
         """Startet/Fortsetzt die Mash-Prozess-Sequenz über die Runtime Environment"""
