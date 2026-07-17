@@ -373,11 +373,11 @@ def main():
     def cook_act_time_changed():
         if cook.run_state != 3:
             try:
-                cook.act_time = float(ui.lne_time_cook.text().replace(',','.')) * 60
-                #print(f'Got .act_time = {cook.act_time/60}')
+                cook.rest_time = float(ui.lne_time_cook.text().replace(',','.')) * 60
+                #print(f'Got .rest_time = {cook.rest_time}')
             except ValueError as e:
                 logging.error(f"ValueError occured from lne_time_cook: {str(e)}")
-                cook.act_time = 0
+                cook.rest_time = 0
     ui.lne_time_cook.editingFinished.connect(cook_act_time_changed) # connect
     # --- TEMPERATURE -------------------------------------------------------------------------------------------------
     # # Should be down later by the Runtime Environment of the dwells

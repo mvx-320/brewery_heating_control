@@ -12,7 +12,7 @@ class PeriodTimePot(QObject):
         
                 
     def run(self):
-        self.pot.act_time -= self.pot.interval_s
+        self.pot.rest_time -= int(self.pot.interval_s)
         
         
     def start(self):

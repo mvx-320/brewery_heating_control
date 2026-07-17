@@ -4,7 +4,6 @@ class Dwell:
     def __init__(self, tar_temp: float, tar_time:float, alarm: bool):
         self.tar_temp = tar_temp 
         self.tar_time = tar_time 
-        self.rest_time = tar_time
         self.alarm = alarm
 
     def getName(self, index: int, dwell_amount: int):
@@ -21,7 +20,3 @@ class Dwell:
     def makeBound(self):
         self.tar_time = None
 
-    def getProgressBarValue(self):
-        if self.tar_time is None:
-            return 0
-        return int((1 - self.rest_time / self.tar_time) * 100)

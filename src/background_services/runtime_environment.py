@@ -90,9 +90,9 @@ class DwellRuntimeEnvironment(QObject):
         self.mash_pot.tar_temp = dwell.tar_temp
 
         if dwell.tar_time is not None:
-            self.mash_pot.act_time = dwell.tar_time
+            self.mash_pot.rest_time = dwell.tar_time
         else:
-            self.mash_pot.act_time = 0
+            self.mash_pot.rest_time = 0
 
         self.mash_pot.run_state = 1
         self.mash_pot.heat_regulation = True
