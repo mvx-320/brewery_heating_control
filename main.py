@@ -135,7 +135,7 @@ def main():
     # screen_rect = QtWidgets.QDesktopWidget().availableGeometry()
     # MainWindow.setGeometry(0, 0, screen_rect.width(), screen_rect.height())
     
-    string_lbl_time_state = 'background: rgb(%s);border-radius: 4px;'
+    string_lbl_time_state = 'color: rgb(%s);border-radius: 4px;'
     colors_lbl_time_state = [
         '212, 212, 212',
         '255, 255, 100',
@@ -200,8 +200,7 @@ def main():
 
     # region UI - TIMER
     def mash_run_state_changed(new_state):
-        ui.lbl_time_mash_state.setStyleSheet(string_lbl_time_state % colors_lbl_time_state[new_state])
-        mash_or_cook_time_elapsed()
+        ui.frame_4.setStyleSheet(string_lbl_time_state %colors_lbl_time_state[new_state])
     mash.run_state_changed.connect(mash_run_state_changed)
     
     # def cook_run_state_changed(new_state):
@@ -209,9 +208,6 @@ def main():
     #     mash_or_cook_time_elapsed()
     # cook.run_state_changed.connect(cook_run_state_changed)
     # -----------------------------------------------------------------------------------------------------------------
-    def mash_time_changed(act_time):
-        ui.lbl_time_mash.setText(strftime("%H:%M:%S", gmtime(act_time)) + f'.{int((act_time % 1) *10)}')
-    mash.act_time_changed.connect(mash_time_changed) # connect
     
     # def cook_time_changed(act_time):
     #     ui.lbl_time_cook.setText(strftime("%H:%M:%S", gmtime(act_time)) + f'.{int((act_time % 1) *10)}')
@@ -313,8 +309,24 @@ def main():
     def mash_start_clicked():
         """Startet/Fortsetzt die Mash-Prozess-Sequenz über die Runtime Environment"""
         mash_runtime.start_mash()
-    
+
     ui.btn_start_mash.clicked.connect(mash_start_clicked)
+
+    def mash_pause_clicked():
+        mash_runtime.pause_mash()
+
+    ui.btn_pause_mash.clicked.connect(mash_pause_clicked)
+
+    def update_tar_temp_label():
+        if mash.current_dwell_index >= 0:
+            dwell_array = mash.get_dwell_array()
+            if mash.current_dwell_index < len(dwell_array):
+                tar_temp = dwell_array[mash.current_dwell_index].tar_temp
+                ui.lbl_tar_temp_mash.setText(f'{tar_temp} °C')
+        else:
+            ui.lbl_tar_temp_mash.setText('--°C')
+
+    mash.current_dwell_index_changed.connect(lambda _: update_tar_temp_label())
     
     # -----------------------------------------------------------------------------------------------------------------
 #       def mash_start_timer_state_shift():
@@ -408,41 +420,9 @@ def main():
         cook.heat_regulation = not cook.heat_regulation
         logging.info(f'Cook heat regulation {cook.heat_regulation}')
     ui.btn_heat_cook.clicked.connect(cook_heat_regulation_shift) # connect
-    # --- ALARM -------------------------------------------------------------------------------------------------------
-    def mash_or_cook_time_elapsed():
-        if (mash.run_state == 3 or cook.run_state == 3):
-            ui.lbl_alarm_sym.setPixmap(alarm1)
-        else:
-            ui.lbl_alarm_sym.setPixmap(alarm0)
+
     # -----------------------------------------------------------------------------------------------------------------
-#       def every_alarm_out():
-#           try:
-#               if mash.act_time < 0.0:
-#                   time_mash_thread.pause()
-#                   try:
-#                       new_time = float(ui.lne_time_mash.text().replace(',','.'))
-#                   except:
-#                       new_time = 0
-#                   mash.act_time =  new_time * 60
-#                   mash.run_state = 0
-#                   print('mash.run_state = 0')
-#               
-#               if cook.act_time < 0.0:
-#                   time_cook_thread.pause()
-#                   try:
-#                       new_time = float(ui.lne_time_cook.text().replace(',','.'))
-#                   except:
-#                       new_time = 0
-#                   cook.act_time =  new_time * 60
-#                   cook.run_state = 0
-#                   print('cook.run_state = 0')
-#                   
-#               ui.lbl_alarm_sym.setPixmap(alarm0) # sollte eigentlich unnötig sein
-#           except Exception as e:
-#               print(f"Exception occured wenn transfer time values to the interface: {str(e)}")
-#       ui.btn_alarm_out.clicked.connect(every_alarm_out)
-        
-    # !!! Hier sicherstellen das alles im Hintergrund funktioniert (Das die Threads laufen)
+    # TODO: !!! Hier sicherstellen das alles im Hintergrund funktioniert (Das die Threads laufen)
 
     # region UI - Settings
     ui.btn_connect2arduino.clicked.connect(connect2arduino)
