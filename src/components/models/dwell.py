@@ -1,9 +1,9 @@
 
 class Dwell:
     
-    def __init__(self, tar_temp: float, tar_time:float, alarm: bool):
+    def __init__(self, tar_temp: float, tar_time_ds:float, alarm: bool):
         self.tar_temp = tar_temp 
-        self.tar_time = tar_time 
+        self.tar_time_ds = tar_time_ds 
         self.alarm = alarm
 
     def getName(self, index: int, dwell_amount: int):
@@ -18,5 +18,5 @@ class Dwell:
         self.alarm = not self.alarm
 
     def makeBound(self):
-        self.tar_time = None
+        self.tar_time_ds = None
 

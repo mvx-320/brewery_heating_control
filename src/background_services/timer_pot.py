@@ -12,11 +12,21 @@ class PeriodTimePot(QObject):
         
                 
     def run(self):
-        self.pot.rest_time -= int(self.pot.interval_s)
-        
-        
-    def start(self):
-        self.timer.start(self.pot.interval_s *1000)
+        self.pot.rest_time -= self.pot.interval_ds
 
-    def pause(self):
+        if self.pot.rest_time <= 0:
+            self.timer.stop()
+            self.pot.dwell_finished.emit()
+            return
+
+        tar_time = self.pot.tar_time_ds
+        if tar_time and tar_time > 0:
+            percent = int((tar_time - self.pot.rest_time) / tar_time * 100)
+            self.pot.dwell_progress_changed.emit(self.pot.current_dwell_index, percent, self.pot.rest_time)
+
+
+    def start(self):
+        self.timer.start(self.pot.interval_ds * 100)  # ds * 100 = ms
+
+    def stop(self):
         self.timer.stop()

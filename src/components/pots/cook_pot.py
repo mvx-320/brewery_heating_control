@@ -7,11 +7,11 @@ class CookPot(Pot):
    run_state_changed = pyqtSignal(int)
 
     
-   def __init__(self, name, interval_s= 0.1, dt= 0.1, max_w= 3500, min_w= 0, kp= 0.5, ki= 1.5, kd= 0): # ki war vorher bei 0.2
+   def __init__(self, name, interval_ds= 1, dt= 0.1, max_w= 3500, min_w= 0, kp= 0.5, ki= 1.5, kd= 0): # ki war vorher bei 0.2
        super().__init__(name, dt= dt, max_w= max_w, min_w= min_w, kp= kp, ki= ki, kd= kd)
        self._rest_time: int = 0
         
-       self.interval_s = interval_s
+       self.interval_ds = interval_ds  # Dezisekunden (1 ds = 100ms)
        self._run_state = 0
         
         

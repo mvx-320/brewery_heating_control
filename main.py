@@ -165,7 +165,7 @@ def main():
     heat_regulate_thread.start()
     
     #region RUNTIME ENVIRONMENT (Mash Process Control)
-    mash_runtime = DwellRuntimeEnvironment(mash)
+    mash_runtime = DwellRuntimeEnvironment(mash, time_mash_thread)
     
     #region UI CONNECT
     # The Connections and the refered Methods have to stay here.
@@ -201,7 +201,7 @@ def main():
     # region UI - TIMER
     def mash_run_state_changed(new_state):
         ui.frame_4.setStyleSheet(string_lbl_time_state %colors_lbl_time_state[new_state])
-    mash.run_state_changed.connect(mash_run_state_changed)
+    mash.run_state_changed.connect(mash_run_state_changed) # Just for recolering
     
     # def cook_run_state_changed(new_state):
     #     ui.lbl_time_cook_state.setStyleSheet(string_lbl_time_state % colors_lbl_time_state[new_state])
@@ -248,10 +248,15 @@ def main():
         ui.dwell_layout.addStretch()
         
     def temp_changed_handler(index, value):
-        mash._dwell_array[index].tar_temp = value
+        if index == mash.current_dwell_index:
+            mash.tar_temp = value  # Setter emittiert tar_temp_changed → Label update
+        else:
+            mash._dwell_array[index].tar_temp = value
+        if index == mash.current_dwell_index:
+            mash.temp_tar = value  # PID update
 
     def time_changed_handler(index, value):
-        mash._dwell_array[index].tar_time = value
+        mash._dwell_array[index].tar_time_ds = int(value * 600)  # min → ds (min * 60s * 10)
 
     def up_clicked_handler(obj):
         update_steps(mash.dwell_up(obj))
@@ -265,12 +270,13 @@ def main():
     def delete_clicked_handler(obj):
         update_steps(mash.dwell_delete(obj))
 
-    def on_dwell_progress(dwell_index, percent, remaining):
+    def on_dwell_progress(dwell_index, percent, remaining_ds):
         for i in range(ui.dwell_layout.count()):
             widget = ui.dwell_layout.itemAt(i).widget()
             if hasattr(widget, 'index') and widget.index == dwell_index:
-                minutes = int(remaining // 60)
-                seconds = int(remaining % 60)
+                total_seconds = remaining_ds // 10  # ds → s
+                minutes = int(total_seconds // 60)
+                seconds = int(total_seconds % 60)
                 widget.update_progress(percent, f"{minutes}:{seconds:02d} min")
 
     mash.dwell_progress_changed.connect(on_dwell_progress)
@@ -325,6 +331,19 @@ def main():
 
     ui.btn_stop_mash.clicked.connect(mash_stop_clicked)
 
+    def on_alarm_triggered(dwell_index):
+        dwell_array = mash.get_dwell_array()
+        dwell_name = dwell_array[dwell_index].getName(dwell_index, len(dwell_array))
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setWindowTitle('Rast abgelaufen')
+        msg.setText(f'{dwell_name} (Dwell {dwell_index + 1}) ist abgelaufen.\nWeiter zum nächsten Schritt?')
+        msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
+        if msg.exec() == QtWidgets.QMessageBox.Ok:
+            mash_runtime.confirm_alarm()
+
+    mash_runtime.alarm_triggered.connect(on_alarm_triggered)
+
     def update_tar_temp_label():
         if mash.current_dwell_index >= 0:
             dwell_array = mash.get_dwell_array()
@@ -334,7 +353,11 @@ def main():
         else:
             ui.lbl_tar_temp_mash.setText('--°C')
 
-    mash.current_dwell_index_changed.connect(lambda _: update_tar_temp_label())
+    def on_current_dwell_index_changed(_):
+        update_tar_temp_label()
+
+    mash.current_dwell_index_changed.connect(on_current_dwell_index_changed)
+    mash.tar_temp_changed.connect(on_current_dwell_index_changed)
     
     # -----------------------------------------------------------------------------------------------------------------
 #       def mash_start_timer_state_shift():
@@ -374,7 +397,7 @@ def main():
     def cook_act_time_changed():
         if cook.run_state != 3:
             try:
-                cook.rest_time = float(ui.lne_time_cook.text().replace(',','.')) * 60
+                cook.rest_time = int(float(ui.lne_time_cook.text().replace(',','.')) * 600)  # min → ds
                 #print(f'Got .rest_time = {cook.rest_time}')
             except ValueError as e:
                 logging.error(f"ValueError occured from lne_time_cook: {str(e)}")

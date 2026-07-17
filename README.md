@@ -8,6 +8,15 @@ sends the needed heating values back to the Arduino. The Arduino then controls t
 These heating plates are HENDI Modell 3500 M with electic power values from 500W to 3500W in 100W steps.
 They have self built in circuit boards which can decide if the plate should be controlled by the Arduino, 
 if the plate should be on/off and with how much electric power the indution plates should heat.
+## Process info
+- `run_state`:
+| Value | Meaning | Color |
+| --- | --- | --- |
+| 0 | pause/ stopped | gray |
+| 1 | wait for heating | yellow |
+| 2 | timer runs | green | 
+| 3 | timer finished | red |
+- Time is internal mostly processed as ds (deciseconds) of type int for beeing fast and don't waste space with floats
 
 ## Get Started
 ### Branch Info

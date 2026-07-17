@@ -101,7 +101,7 @@ class DwellFrame(QtWidgets.QFrame):
             self.dsb_dwell_tar_time.setObjectName("dsb_dwell_tar_time")
             self.dsb_dwell_tar_time.setMinimum(0.0)
             self.dsb_dwell_tar_time.setSpecialValueText(QtCore.QCoreApplication.translate("Form", "Temperatur"))
-            self.dsb_dwell_tar_time.setValue(0.0 if self.obj.tar_time is None else self.obj.tar_time)
+            self.dsb_dwell_tar_time.setValue(0.0 if self.obj.tar_time_ds is None else self.obj.tar_time_ds / 600)  # ds → min
             #TODO: Maybe add a Focus all onclick (Not that easy)
             self.horizontalInputLayout.addWidget(self.dsb_dwell_tar_time)
 

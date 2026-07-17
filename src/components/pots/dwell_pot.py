@@ -10,12 +10,12 @@ from pots.pots import Pot
 class DwellPot(Pot):
     dwell_array_mutex = QMutex() # TODO: Maybe use lock() and unlock() if QMutexLocker is not working.
     _dwell_array: list[Dwell] = [ # TODO: Eventuell komplett in eine lokale Datenbank verschieben
-        Dwell(50.0, None, True),  # TODO: Wahrscheinlich wird hier Dwell über dwell_frame importiert. Das macht vllt keinen Sinn. zirkuläre Abhängigkeit.
-        Dwell(60.0, 20.0, False),
-        Dwell(60.0, 20.0, False),
-        Dwell(60.0, 20.0, True),
-        Dwell(60.0, 20.0, False),
-        Dwell(60.0, None, False),
+        Dwell(20.0, None, True),    # Einmaischen: keine Zeit, nur Temperatur
+        Dwell(30.0, 1000, False),  # 20 min = 12000 ds
+        Dwell(40.0, 12000, False),
+        Dwell(60.0, 12000, True),
+        Dwell(60.0, 12000, False),
+        Dwell(60.0, None, False),   # Ausmaischen: keine Zeit
     ]
 
     _current_dwell_index: int = -1
@@ -23,12 +23,14 @@ class DwellPot(Pot):
     run_state_changed = pyqtSignal(int)
     current_dwell_index_changed = pyqtSignal(int)
     dwell_progress_changed = pyqtSignal(int, int, float)
+    dwell_finished = pyqtSignal()
+    tar_temp_changed = pyqtSignal(float)
     
-    def __init__(self, name, interval_s= 0.1, dt= 0.1, max_w= 3500, min_w= 0, kp= 0.5, ki= 1.5, kd= 0): # ki war vorher bei 0.2
+    def __init__(self, name, interval_ds= 1, dt= 0.1, max_w= 3500, min_w= 0, kp= 0.5, ki= 1.5, kd= 0): # ki war vorher bei 0.2
        super().__init__(name, dt= dt, max_w= max_w, min_w= min_w, kp= kp, ki= ki, kd= kd)
        self._rest_time: int = 0
         
-       self.interval_s = interval_s
+       self.interval_ds = interval_ds  # Dezisekunden (1 ds = 100ms)
        self._run_state = 0
         
     # region getter, setter
@@ -80,21 +82,22 @@ class DwellPot(Pot):
 
         locker = QMutexLocker(self.dwell_array_mutex)
         self._dwell_array[self._current_dwell_index].tar_temp = new_temp
+        self.tar_temp_changed.emit(new_temp)
         self.logger.info(f'dwell_array[{self._current_dwell_index}].tar_temp = {new_temp}')
 
     @property
-    def tar_time(self):
+    def tar_time_ds(self):
         locker = QMutexLocker(self.dwell_array_mutex)
-        return self._dwell_array[self._current_dwell_index].tar_time
+        return self._dwell_array[self._current_dwell_index].tar_time_ds
     
-    @tar_time.setter
-    def tar_time(self, new_time: float):
+    @tar_time_ds.setter
+    def tar_time_ds(self, new_time: int):
         if new_time < 0:
             raise ValueError ("new target value < 0")
 
         locker = QMutexLocker(self.dwell_array_mutex)
-        self._dwell_array[self._current_dwell_index].tar_time = new_time
-        self.logger.info(f'dwell_array[{self._current_dwell_index}].tar_time = {new_time}')
+        self._dwell_array[self._current_dwell_index].tar_time_ds = new_time
+        self.logger.info(f'dwell_array[{self._current_dwell_index}].tar_time_ds = {new_time}')
     
     # region dwell_array
     def get_dwell_array(self) -> list[Dwell]:
