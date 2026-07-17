@@ -21,8 +21,8 @@ class PeriodTimePot(QObject):
 
         tar_time = self.pot.tar_time_ds
         if tar_time and tar_time > 0:
-            percent = int((tar_time - self.pot.rest_time) / tar_time * 100)
-            self.pot.dwell_progress_changed.emit(self.pot.current_dwell_index, percent, self.pot.rest_time)
+            elapsed = tar_time - self.pot.rest_time
+            self.pot.dwell_progress_changed.emit(self.pot.current_dwell_index, elapsed, tar_time, self.pot.rest_time)
 
 
     def start(self):

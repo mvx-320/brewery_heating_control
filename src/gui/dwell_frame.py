@@ -230,7 +230,8 @@ class DwellFrame(QtWidgets.QFrame):
             self.setStyleSheet(self.style_inactive)
             self.widget_4.hide()
 
-    def update_progress(self, value: int, remaining_text: str = ""):
-        self.progressBar.setValue(value)
+    def update_progress(self, elapsed_ds: int, total_ds: int, remaining_text: str = ""):
+        self.progressBar.setMaximum(total_ds)
+        self.progressBar.setValue(elapsed_ds)
         if remaining_text:
             self.lbl_dwell_rest_time.setText(remaining_text)

@@ -270,14 +270,15 @@ def main():
     def delete_clicked_handler(obj):
         update_steps(mash.dwell_delete(obj))
 
-    def on_dwell_progress(dwell_index, percent, remaining_ds):
+    def on_dwell_progress(dwell_index, elapsed_ds, total_ds, remaining_ds):
         for i in range(ui.dwell_layout.count()):
             widget = ui.dwell_layout.itemAt(i).widget()
             if hasattr(widget, 'index') and widget.index == dwell_index:
-                total_seconds = remaining_ds // 10  # ds → s
-                minutes = int(total_seconds // 60)
-                seconds = int(total_seconds % 60)
-                widget.update_progress(percent, f"{minutes}:{seconds:02d} min")
+                total_seconds = total_ds // 10
+                remaining_seconds = remaining_ds // 10
+                minutes = int(remaining_seconds // 60)
+                seconds = int(remaining_seconds % 60)
+                widget.update_progress(elapsed_ds, total_ds, f"{minutes}:{seconds:02d} min")
 
     mash.dwell_progress_changed.connect(on_dwell_progress)
 
@@ -294,9 +295,9 @@ def main():
 
     def debug_execute_dwell_progress():
         dwell_index = ui.spb_dwell_progress_dwell_index.value()
-        percent = int(ui.lne_dwell_progress_percent.text()) if ui.lne_dwell_progress_percent.text() else 0
-        remaining = float(ui.lne_dwell_progress_remaining.text()) if ui.lne_dwell_progress_remaining.text() else 0.0
-        on_dwell_progress(dwell_index, percent, remaining)
+        elapsed = int(ui.lne_dwell_progress_percent.text()) if ui.lne_dwell_progress_percent.text() else 0
+        remaining = int(ui.lne_dwell_progress_remaining.text()) if ui.lne_dwell_progress_remaining.text() else 0
+        on_dwell_progress(dwell_index, elapsed, elapsed + remaining, remaining)
         frame = _find_dwell_frame(dwell_index)
         if frame is not None:
             frame.widget_4.show()
