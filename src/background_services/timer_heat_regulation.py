@@ -21,7 +21,7 @@ class PeriodHeatReg(QObject):
         if self.mash.heat_regulation:
             self.mash.heat_val, _ = self.mash.pid.calculate(self.mash.temp_tar, self.mash.temp_now)
             if self.mash.run_state == 1 and self.mash.temp_now >= self.mash.temp_tar:
-                if self.mash.rest_time is not None and self.mash.rest_time > 0:
+                if self.mash.rest_time_ds is not None and self.mash.rest_time_ds > 0:
                     self.time_mash_thread.start()
                     self.mash.run_state = 2
                 else:
@@ -37,7 +37,7 @@ class PeriodHeatReg(QObject):
         if self.cook.heat_regulation:
             self.cook.heat_val, _ = self.cook.pid.calculate(self.cook.temp_tar, self.cook.temp_now)
             if self.cook.run_state == 1 and self.cook.temp_now >= self.cook.temp_tar:
-                if self.cook.rest_time is not None and self.cook.rest_time > 0:
+                if self.cook.rest_time_ds is not None and self.cook.rest_time_ds > 0:
                     self.time_cook_thread.start()
                     self.cook.run_state = 2
                 else:

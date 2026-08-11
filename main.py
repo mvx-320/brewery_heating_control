@@ -373,11 +373,11 @@ def main():
     def cook_act_time_changed():
         if cook.run_state != 3:
             try:
-                cook.rest_time = int(float(ui.lne_time_cook.text().replace(',','.')) * 600)  # min → ds
-                #print(f'Got .rest_time = {cook.rest_time}')
+                cook.rest_time_ds = int(float(ui.lne_time_cook.text().replace(',','.')) * 600)  # min → ds
+                #print(f'Got .rest_time_ds = {cook.rest_time_ds}')
             except ValueError as e:
                 logging.error(f"ValueError occured from lne_time_cook: {str(e)}")
-                cook.rest_time = 0
+                cook.rest_time_ds = 0
     ui.lne_time_cook.editingFinished.connect(cook_act_time_changed) # connect
 
     # --- TEMPERATURE -------------------------------------------------------------------------------------------------
@@ -448,7 +448,7 @@ def main():
     def override_dwell_percentage():
         new_percentage = ui.dbg_dsb_dwell_percentage.value()
         if type(new_percentage) == float and new_percentage >= 0 and new_percentage <= 100:
-            mash.set_rest_time_percentage(new_percentage)
+            mash.set_rest_time_ds_percentage(new_percentage)
     ui.dbg_btn_dwell_percentage.clicked.connect(override_dwell_percentage)
 
         

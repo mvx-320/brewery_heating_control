@@ -122,10 +122,10 @@ class DwellFrame(QtWidgets.QFrame):
         # TODO: Find a way to talk to the active dwell and update the progressBar
         # Popperbly with a pyqtSignal in the Timer (Look for the GPT Thread)
         self.horizontalLayout_3.addWidget(self.progressBar)
-        self.lbl_dwell_rest_time = QtWidgets.QLabel(self.widget_4)
-        self.lbl_dwell_rest_time.setObjectName("lbl_rest_time")
-        self.lbl_dwell_rest_time.setText("4:32 min")
-        self.horizontalLayout_3.addWidget(self.lbl_dwell_rest_time)
+        self.lbl_dwell_rest_time_ds = QtWidgets.QLabel(self.widget_4)
+        self.lbl_dwell_rest_time_ds.setObjectName("lbl_rest_time_ds")
+        self.lbl_dwell_rest_time_ds.setText("4:32 min")
+        self.horizontalLayout_3.addWidget(self.lbl_dwell_rest_time_ds)
         self.verticalDataLayout.addWidget(self.widget_4)
         self.dwellLayout.addWidget(self.frm_widget)
         self.btn_dwell_alarm = QtWidgets.QPushButton(self)
@@ -234,4 +234,4 @@ class DwellFrame(QtWidgets.QFrame):
         self.progressBar.setMaximum(total_ds)
         self.progressBar.setValue(elapsed_ds)
         if remaining_text:
-            self.lbl_dwell_rest_time.setText(remaining_text)
+            self.lbl_dwell_rest_time_ds.setText(remaining_text)

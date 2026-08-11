@@ -242,7 +242,7 @@ border-radius: 8px;</string>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="lbl_dwell_rest_time">
+             <widget class="QLabel" name="lbl_dwell_rest_time_ds">
               <property name="text">
                <string>4:25 min</string>
               </property>
