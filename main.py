@@ -175,14 +175,17 @@ def main():
 
     def mash_temp_changed(new_temp):
         ui.lbl_cur_temp_mash.setText(f'{new_temp :.2f} °C')
+        ui.dbg_lbl_cur_temp_mash.setText(f'{new_temp :.2f} °C') # Shows mash temperature in debug tab
     mash.temp_now_changed.connect(mash_temp_changed) # connect
     
     def fill_temp_changed(new_temp):
         ui.lbl_cur_temp_fill.setText(f'{new_temp :.2f} °C')
+        ui.dbg_lbl_cur_temp_fill.setText(f'{new_temp :.2f} °C') # Shows fill temperature in debug tab
     fill.temp_now_changed.connect(fill_temp_changed) # connect
     
     def cook_temp_changed(new_temp):
         ui.lbl_cur_temp_cook.setText(f'{new_temp :.2f} °C')
+        ui.dbg_lbl_cur_temp_cook.setText(f'{new_temp :.2f} °C') # Shows cook temperature in debug tab
     cook.temp_now_changed.connect(cook_temp_changed) # connect
     
 
@@ -280,38 +283,10 @@ def main():
                 seconds = int(remaining_seconds % 60)
                 widget.update_progress(elapsed_ds, total_ds, f"{minutes}:{seconds:02d} min")
 
+                ui.dbg_pgb_cur_dwell.setMaximum(total_ds)
+                ui.dbg_pgb_cur_dwell.setValue(elapsed_ds)
+
     mash.dwell_progress_changed.connect(on_dwell_progress)
-
-    # region UI - DEBUG TAB
-    def _find_dwell_frame(dwell_index):
-        for i in range(ui.dwell_layout.count()):
-            item = ui.dwell_layout.itemAt(i)
-            if item is None:
-                continue
-            widget = item.widget()
-            if widget is not None and hasattr(widget, 'index') and widget.index == dwell_index:
-                return widget
-        return None
-
-    def debug_execute_dwell_progress():
-        dwell_index = ui.spb_dwell_progress_dwell_index.value()
-        elapsed = int(ui.lne_dwell_progress_percent.text()) if ui.lne_dwell_progress_percent.text() else 0
-        remaining = int(ui.lne_dwell_progress_remaining.text()) if ui.lne_dwell_progress_remaining.text() else 0
-        on_dwell_progress(dwell_index, elapsed, elapsed + remaining, remaining)
-        frame = _find_dwell_frame(dwell_index)
-        if frame is not None:
-            frame.widget_4.show()
-
-    ui.btn_dwell_progress_execute.clicked.connect(debug_execute_dwell_progress)
-
-    def debug_toggle_visibility(state):
-        dwell_index = ui.spb_dwell_progress_dwell_index.value()
-        frame = _find_dwell_frame(dwell_index)
-        if frame is not None:
-            frame.widget_4.show() if state == 2 else frame.widget_4.hide()
-
-    ui.chb_dwell_progress_visibility.stateChanged.connect(debug_toggle_visibility)
-    # endregion
 
     def mash_start_clicked():
         """Startet/Fortsetzt die Mash-Prozess-Sequenz über die Runtime Environment"""
@@ -449,9 +424,28 @@ def main():
     # -----------------------------------------------------------------------------------------------------------------
     # TODO: !!! Hier sicherstellen das alles im Hintergrund funktioniert (Das die Threads laufen)
 
-    # region UI - Settings
+    # region UI - SETTINGS
     ui.btn_connect2arduino.clicked.connect(connect2arduino)
-    
+
+
+    # region UI - DEBUG TAB
+    def write_cur_temp_mash():
+        write_temp = ui.dbg_spb_cur_temp_mash.value()
+        if type(write_temp) == float and write_temp > 0:
+            mash.temp_now = write_temp
+    ui.dbg_btn_cur_temp_mash.clicked.connect(write_cur_temp_mash)
+
+    def write_cur_temp_fill():
+        write_temp = ui.dbg_spb_cur_temp_fill.value()
+        if type(write_temp) == float and write_temp > 0:
+            fill.temp_now = write_temp
+    ui.dbg_btn_cur_temp_fill.clicked.connect(write_cur_temp_fill)
+
+    def write_cur_temp_cook():
+        write_temp = ui.dbg_spb_cur_temp_cook.value()
+        if type(write_temp) == float and write_temp > 0:
+            cook.temp_now = write_temp
+    ui.dbg_btn_cur_temp_cook.clicked.connect(write_cur_temp_cook)
 
         
     #region SHOW UI
@@ -507,3 +501,28 @@ if DEBUG:
     cProfile.run('main()')
 else:
     main()
+    
+
+#                      _
+#                     : \
+#                     ;\ \_                   _
+#                     ;@: ~:              _,-;@)
+#                     ;@: ;~:          _,' _,'@;
+#                     ;@;  ;~;      ,-'  _,@@@,'
+#                    |@(     ;      ) ,-'@@@-;
+#                    ;@;   |~~(   _/ /@@@@@@/
+#                    \@\   ; _/ _/ /@@@@@@;~
+#                     \@\   /  / ,'@@@,-'~
+#                       \\  (  ) :@@(~
+#                    ___ )-'~~~~`--/ ___
+#                   (   `--_    _,--'   )
+#                  (~`- ___ \  / ___ -'~)
+#                 __~\_(   \_~~_/   )_/~__
+#              ,-'~~~~~`-._ 0\/0 _,-'~~~~~`-.
+#             ;     ______ `----'  ______    :
+#             ;    {      \   ~   /      }   |
+#             `-._      ,-,' ~~  `.-.      _,'
+#                 `----' ,'       `, `----'
+#                        `-._/#\_,-'
+#                           (###)
+#                            `-'

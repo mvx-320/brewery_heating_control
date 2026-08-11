@@ -47,7 +47,7 @@ color: lightgray;
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab_control">
        <attribute name="title">
@@ -2387,7 +2387,7 @@ QWidget#wdg_settings_right {
                    <x>0</x>
                    <y>0</y>
                    <width>565</width>
-                   <height>434</height>
+                   <height>436</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -2664,45 +2664,230 @@ border-radius: 16px;
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_8">
            <item>
-            <widget class="QGroupBox" name="grb_dwell_progress">
+            <widget class="QGroupBox" name="dbg_grb_temp">
              <property name="title">
-              <string>Dwell Progressbar</string>
+              <string>GroupBox</string>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_3">
-              <item>
-               <widget class="QCheckBox" name="chb_dwell_progress_visibility">
+             <layout class="QGridLayout" name="gridLayout_12">
+              <item row="0" column="5">
+               <widget class="QLabel" name="dbg_lbl_cur_temp_cook_title">
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
                 <property name="text">
-                 <string>visibility</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-                <property name="tristate">
-                 <bool>false</bool>
+                 <string>Kochen</string>
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QSpinBox" name="spb_dwell_progress_dwell_index"/>
+              <item row="1" column="4">
+               <widget class="QLabel" name="dbg_lbl_cur_temp_fill">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>--°C</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
               </item>
-              <item>
-               <widget class="QLineEdit" name="lne_dwell_progress_percent">
+              <item row="1" column="5">
+               <widget class="QLabel" name="dbg_lbl_cur_temp_cook">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>--°C</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLabel" name="dbg_lbl_cur_temp_mash">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>--°C</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="4">
+               <widget class="QPushButton" name="dbg_btn_cur_temp_fill">
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Write</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="2">
+               <widget class="QPushButton" name="dbg_btn_cur_temp_mash">
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Write</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="5">
+               <widget class="QPushButton" name="dbg_btn_cur_temp_cook">
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Write</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="dbg_lbl_cur_temp_mash_title">
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Maische</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="4">
+               <widget class="QLabel" name="dbg_lbl_cur_temp_fill_title">
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Nachguss</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="SelectAllDoubleSpinBox" name="dbg_spb_cur_temp_mash"/>
+              </item>
+              <item row="2" column="4">
+               <widget class="SelectAllDoubleSpinBox" name="dbg_spb_cur_temp_fill"/>
+              </item>
+              <item row="2" column="5">
+               <widget class="SelectAllDoubleSpinBox" name="dbg_spb_cur_temp_cook"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="dbg_grb_dwell">
+             <property name="title">
+              <string>Dwell</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_11">
+              <item row="1" column="2">
+               <widget class="QLineEdit" name="dbg_lne_dwell_percentage">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgba(0,0,0,60);
+border: none;
+border-radius: 8px;</string>
+                </property>
                 <property name="placeholderText">
                  <string>% of Progressbar</string>
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QLineEdit" name="lne_dwell_progress_remaining">
-                <property name="placeholderText">
-                 <string>Rest-Time in s</string>
+              <item row="1" column="4">
+               <widget class="QPushButton" name="dbg_btn_dwell_percentage">
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Write</string>
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QPushButton" name="btn_dwell_progress_execute">
+              <item row="2" column="4">
+               <widget class="QPushButton" name="dbg_btn_dwell_visibility">
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                 </font>
+                </property>
                 <property name="text">
-                 <string>Execute</string>
+                 <string>Activ</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QProgressBar" name="dbg_pgb_cur_dwell">
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="value">
+                 <number>24</number>
+                </property>
+                <property name="textVisible">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0" rowspan="3">
+               <widget class="QSpinBox" name="dbg_spb_dwell_percentage_index">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>20</pointsize>
+                 </font>
                 </property>
                </widget>
               </item>

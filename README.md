@@ -23,7 +23,8 @@ if the plate should be on/off and with how much electric power the indution plat
 The `main` branch is the one that holds the current state of the brewery. **Every** change has to got through a seperate branch and pull request.
 
 ### Installation
-- To change the `.ui` use [Qt Creator 13.0.2](https://download.qt.io/official_releases/qtcreator/13.0/13.0.2/)
+- To change the `.ui` use [Qt Creator 13.0.2](https://download.qt.io/official_releases/qtcreator/13.0/13.0.2/). 
+    *This project requires Qt Creator 13.0.2 to maintain compatibility with the Qt 5-based UI files used by the project. The generated Python code is compiled with `pyuic5` for PyQt5, which requires Qt 5-compatible `.ui` files.*
 - `pip install -r requirements.txt`
 
 ##### Create interface.py

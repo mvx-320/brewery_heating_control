@@ -6,6 +6,7 @@ __pycache__/
 # Virtuelle Umgebungen
 .env/
 venv/
+.venv/
 
 # Logs und temporäre Dateien
 *.log

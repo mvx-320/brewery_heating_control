@@ -1,8 +1,11 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-# TODO: Kann das weg?
-# Wird von dwell_frame importiert
 class SelectAllDoubleSpinBox(QtWidgets.QDoubleSpinBox):
+    '''
+    All Inputs for Temperature should be created with this class:
+    - In Qt Creator:     Add a QDoubleSpinBox an "Promote to" SelectAllDoubleSpinBox
+    - In dwell_frame.py: The `dsb_dwell_tar_temp` is set by SelectAllDoubleSpinBox
+    '''
     def __init__(self, parent=None): 
         super().__init__(parent)
         self.spinBox_font = QtGui.QFont()
