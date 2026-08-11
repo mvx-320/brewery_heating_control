@@ -26,8 +26,8 @@ class DwellPot(Pot):
     dwell_finished = pyqtSignal()
     tar_temp_changed = pyqtSignal(float)
     
-    def __init__(self, name, interval_ds= 1, dt= 0.1, max_w= 3500, min_w= 0, kp= 0.5, ki= 1.5, kd= 0): # ki war vorher bei 0.2
-       super().__init__(name, dt= dt, max_w= max_w, min_w= min_w, kp= kp, ki= ki, kd= kd)
+    def __init__(self, name, debug_enabled, interval_ds= 1, dt= 0.1, max_w= 3500, min_w= 0, kp= 0.5, ki= 1.5, kd= 0): # ki war vorher bei 0.2
+       super().__init__(name, debug_enabled, dt= dt, max_w= max_w, min_w= min_w, kp= kp, ki= ki, kd= kd)
        self._rest_time: int = 0
         
        self.interval_ds = interval_ds  # Dezisekunden (1 ds = 100ms)
@@ -56,6 +56,16 @@ class DwellPot(Pot):
         self._rest_time = new_time
         self.rest_time_changed.emit(new_time)
             
+    def set_rest_time_percentage(self, percentage: float):
+        if not self.debug_enabled: return
+
+        locker = QMutexLocker(self.dwell_array_mutex)
+        total_time_ds = self._dwell_array[self._current_dwell_index].tar_time_ds
+        locker.unlock()
+
+        new_rest_time_ds = int(total_time_ds * (1 - percentage / 100))
+        self.rest_time = new_rest_time_ds
+
             
     @property
     def run_state(self):
@@ -70,7 +80,7 @@ class DwellPot(Pot):
     # TODO: Add getter, setter für dwell_array
     @property
     def tar_temp(self):
-        locker = QMutexLocker(self.dwell_array_mutex) # All these lockers should prevent race conditions on dwell_array.
+        locker = QMutexLocker(self.dwell_array_mutex) # lockers should prevent race conditions on dwell_array.
         return self._dwell_array[self._current_dwell_index].tar_temp
 
     @tar_temp.setter
@@ -104,6 +114,7 @@ class DwellPot(Pot):
         locker = QMutexLocker(self.dwell_array_mutex)
         return self._dwell_array
 
+    # --- MOVE DWELLS -------------------------------------------------------------------------------------------------
     def dwell_up(self, obj) -> list[Dwell]:
         locker = QMutexLocker(self.dwell_array_mutex)
         index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
@@ -135,6 +146,7 @@ class DwellPot(Pot):
             return
         del self._dwell_array[index]
         return self._dwell_array
+    # -----------------------------------------------------------------------------------------------------------------
 
     # region runtime environment
     def next_dwell(self):

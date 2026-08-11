@@ -91,7 +91,7 @@ class DwellRuntimeEnvironment(QObject):
             self.mash_pot.rest_time = dwell.tar_time_ds
             self.mash_pot.dwell_progress_changed.emit(index, 0, dwell.tar_time_ds, dwell.tar_time_ds)
         else:
-            self.mash_pot._rest_time = 0
+            self.mash_pot.rest_time = 0
 
         self.mash_pot.heat_regulation = True
 

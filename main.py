@@ -103,9 +103,9 @@ def main():
 
 
     #region POTS
-    mash = DwellPot('mash')
-    fill = Pot('fill')
-    cook = CookPot('cook') # TODO: Pot must be replaced with HopPot with multiple timers that alarm the brewer on certain times to the end of cooking
+    mash = DwellPot('mash', DEBUG)
+    fill = Pot('fill', DEBUG)
+    cook = CookPot('cook', DEBUG) # TODO: Pot must be replaced with HopPot with multiple timers that alarm the brewer on certain times to the end of cooking
 
 
     #region INTERFACE
@@ -283,8 +283,8 @@ def main():
                 seconds = int(remaining_seconds % 60)
                 widget.update_progress(elapsed_ds, total_ds, f"{minutes}:{seconds:02d} min")
 
-                ui.dbg_pgb_cur_dwell.setMaximum(total_ds)
-                ui.dbg_pgb_cur_dwell.setValue(elapsed_ds)
+                ui.dbg_pgb_dwell_percentage.setMaximum(total_ds)
+                ui.dbg_pgb_dwell_percentage.setValue(elapsed_ds)
 
     mash.dwell_progress_changed.connect(on_dwell_progress)
 
@@ -379,16 +379,11 @@ def main():
                 logging.error(f"ValueError occured from lne_time_cook: {str(e)}")
                 cook.rest_time = 0
     ui.lne_time_cook.editingFinished.connect(cook_act_time_changed) # connect
+
     # --- TEMPERATURE -------------------------------------------------------------------------------------------------
-    # # Should be down later by the Runtime Environment of the dwells
-    # def mash_tar_temp_changed():
-    #     try:
-    #         mash.temp_tar = float(ui.lne_temp_mash.text().replace(',','.'))
-    #         logging.info(f'Got mash.temp_tar = {mash.temp_tar}')
-    #     except ValueError as e:
-    #         logging.error(f"lne_temp_mash returned {ui.lne_temp_mash}: {str(e)}")
-    #         mash.temp_tar = 0
-    # ui.lne_temp_mash.textChanged.connect(mash_tar_temp_changed) # connect
+    # Add Suffixes
+    ui.dsb_fill_tar_temp.setSuffix(" °C")
+    ui.dsb_cook_tar_temp.setSuffix(" °C")
 
     def fill_tar_temp_changed():
         try:
@@ -407,10 +402,9 @@ def main():
             logging.error(f"lne_temp_cook returned {ui.lne_temp_cook}: {str(e)}")
             cook.temp_tar = 0
     ui.dsb_cook_tar_temp.valueChanged.connect(cook_tar_temp_changed) # connect
-    # -----------------------------------------------------------------------------------------------------------------
 
-    # TODO: Here has to be the start button that turns on the Dwell Runtime
 
+    # --- TEMPERATUR REGULATION ---------------------------------------------------------------------------------------
     def fill_heat_regulation_shift(): # button is checkable
         fill.heat_regulation = not fill.heat_regulation
         logging.info(f'Fill heat regulation {fill.heat_regulation}')
@@ -429,23 +423,33 @@ def main():
 
 
     # region UI - DEBUG TAB
-    def write_cur_temp_mash():
-        write_temp = ui.dbg_spb_cur_temp_mash.value()
-        if type(write_temp) == float and write_temp > 0:
-            mash.temp_now = write_temp
-    ui.dbg_btn_cur_temp_mash.clicked.connect(write_cur_temp_mash)
+    # --- TEMPERATURE OVERRIDE ----------------------------------------------------------------------------------------
+    def override_cur_temp_mash():
+        new_temp = ui.dbg_dsb_cur_temp_mash.value()
+        if type(new_temp) == float and new_temp > 0:
+            mash.temp_now = new_temp
+    ui.dbg_btn_cur_temp_mash.clicked.connect(override_cur_temp_mash)
 
-    def write_cur_temp_fill():
-        write_temp = ui.dbg_spb_cur_temp_fill.value()
-        if type(write_temp) == float and write_temp > 0:
-            fill.temp_now = write_temp
-    ui.dbg_btn_cur_temp_fill.clicked.connect(write_cur_temp_fill)
+    def override_cur_temp_fill():
+        new_temp = ui.dbg_dsb_cur_temp_fill.value()
+        if type(new_temp) == float and new_temp > 0:
+            fill.temp_now = new_temp
+    ui.dbg_btn_cur_temp_fill.clicked.connect(override_cur_temp_fill)
 
-    def write_cur_temp_cook():
-        write_temp = ui.dbg_spb_cur_temp_cook.value()
-        if type(write_temp) == float and write_temp > 0:
-            cook.temp_now = write_temp
-    ui.dbg_btn_cur_temp_cook.clicked.connect(write_cur_temp_cook)
+    def override_cur_temp_cook():
+        new_temp = ui.dbg_dsb_cur_temp_cook.value()
+        if type(new_temp) == float and new_temp > 0:
+            cook.temp_now = new_temp
+    ui.dbg_btn_cur_temp_cook.clicked.connect(override_cur_temp_cook)
+
+    # --- DWELL PERCENTAGE OVERRIDE ----------------------------------------------------------------------------------
+    ui.dbg_dsb_dwell_percentage.setSuffix(" %") # Add Suffix
+    
+    def override_dwell_percentage():
+        new_percentage = ui.dbg_dsb_dwell_percentage.value()
+        if type(new_percentage) == float and new_percentage >= 0 and new_percentage <= 100:
+            mash.set_rest_time_percentage(new_percentage)
+    ui.dbg_btn_dwell_percentage.clicked.connect(override_dwell_percentage)
 
         
     #region SHOW UI

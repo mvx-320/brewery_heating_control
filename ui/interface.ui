@@ -2793,13 +2793,17 @@ border-radius: 16px;
                </widget>
               </item>
               <item row="2" column="2">
-               <widget class="SelectAllDoubleSpinBox" name="dbg_spb_cur_temp_mash"/>
+               <widget class="SelectAllDoubleSpinBox" name="dbg_dsb_cur_temp_mash">
+                <property name="value">
+                 <double>31.000000000000000</double>
+                </property>
+               </widget>
               </item>
               <item row="2" column="4">
-               <widget class="SelectAllDoubleSpinBox" name="dbg_spb_cur_temp_fill"/>
+               <widget class="SelectAllDoubleSpinBox" name="dbg_dsb_cur_temp_fill"/>
               </item>
               <item row="2" column="5">
-               <widget class="SelectAllDoubleSpinBox" name="dbg_spb_cur_temp_cook"/>
+               <widget class="SelectAllDoubleSpinBox" name="dbg_dsb_cur_temp_cook"/>
               </item>
              </layout>
             </widget>
@@ -2810,30 +2814,7 @@ border-radius: 16px;
               <string>Dwell</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_11">
-              <item row="1" column="2">
-               <widget class="QLineEdit" name="dbg_lne_dwell_percentage">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>30</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>13</pointsize>
-                 </font>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">background-color: rgba(0,0,0,60);
-border: none;
-border-radius: 8px;</string>
-                </property>
-                <property name="placeholderText">
-                 <string>% of Progressbar</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="4">
+              <item row="0" column="2">
                <widget class="QPushButton" name="dbg_btn_dwell_percentage">
                 <property name="font">
                  <font>
@@ -2845,49 +2826,20 @@ border-radius: 8px;</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="4">
-               <widget class="QPushButton" name="dbg_btn_dwell_visibility">
-                <property name="font">
-                 <font>
-                  <pointsize>13</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Activ</string>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QProgressBar" name="dbg_pgb_cur_dwell">
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
+              <item row="0" column="0">
+               <widget class="QProgressBar" name="dbg_pgb_dwell_percentage">
                 <property name="value">
-                 <number>24</number>
+                 <number>0</number>
                 </property>
                 <property name="textVisible">
                  <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item row="0" column="0" rowspan="3">
-               <widget class="QSpinBox" name="dbg_spb_dwell_percentage_index">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>70</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>20</pointsize>
-                 </font>
+              <item row="0" column="1">
+               <widget class="SelectAllDoubleSpinBox" name="dbg_dsb_dwell_percentage">
+                <property name="value">
+                 <double>99.000000000000000</double>
                 </property>
                </widget>
               </item>
