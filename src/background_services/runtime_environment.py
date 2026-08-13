@@ -21,7 +21,7 @@ class DwellRuntimeEnvironment(QObject):
     - Stoppt den Prozess
     """
 
-    mash_finished = pyqtSignal()
+    mash_process_completed = pyqtSignal()
     alarm_triggered = pyqtSignal(int)  # dwell_index
 
     def __init__(self, mash_pot, time_mash_thread):
@@ -114,5 +114,5 @@ class DwellRuntimeEnvironment(QObject):
         self.mash_pot.heat_val = 0
         self.is_running = False
         self.logger.info("Mash process finished")
-        self.mash_finished.emit()
+        self.mash_process_completed.emit()
     # endregion

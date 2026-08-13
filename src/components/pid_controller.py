@@ -13,6 +13,9 @@ class myPID:
     integ = 0.0
 
     def __init__(self, dt, max_w, min_w, kp, ki, kd):
+        # Why ever I saved this values:
+        #     pid = myPID(0.1, 100, -100, 0.1, 0.01, 0.5)
+
         self.logger = logging.getLogger(__name__)
         self.dt = dt
         self.max = max_w
@@ -24,7 +27,7 @@ class myPID:
         self.h_value = 0.2
 
     def calculate(self, set, act):
-        tolerance = act * -0.008571428571428572 + 1.1857142857142857
+        tolerance = act * -0.008571428571428572 + 1.1857142857142857 # act = 20 -> 1; act = 80 -> 0.5
         if (act < set - tolerance + self.hysterese):
             self.hysterese = self.h_value
             return self.max, False
@@ -60,19 +63,3 @@ class myPID:
             
             return output_watt, True
 
-
-# ------------------------------------------------------------------------------
-def main():
-    pid = myPID(0.1, 100, -100, 0.1, 0.01, 0.5)
-
-    val = 20;
-    for i in range(100):
-        inc = pid.run(0, val)
-        print('val:', '{:7.3f}'.format(val), ' inc:', '{:7.3f}'.format(inc))
-        val += inc
-
-
-# ------------------------------------------------------------------------------
-if __name__ == "__main__":
-    main()
-# ------------------------------------------------------------------------------

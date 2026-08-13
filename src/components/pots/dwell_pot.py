@@ -3,7 +3,6 @@ sys.path.append("src")
 
 from PyQt5.QtCore import QObject, QMutex, QMutexLocker, pyqtSignal
 
-from components.pid_controller import myPID
 from gui.dwell_frame import Dwell
 from pots.pots import Pot
 
