@@ -190,15 +190,15 @@ def main():
     
 
     def mash_heat_changed(new_temp):
-        ui.lbl_heat_w_mash.setText(f'{new_temp :4.0f} W')
+        ui.lbl_heat_w_mash.setText(f'{new_temp * 3500 :4.0f} W')
     mash.heat_val_changed.connect(mash_heat_changed) # connect
 
     def fill_heat_changed(new_temp):
-        ui.lbl_heat_w_fill.setText(f'{new_temp :4.0f} W')
+        ui.lbl_heat_w_fill.setText(f'{new_temp * 3500 :4.0f} W')
     fill.heat_val_changed.connect(fill_heat_changed) # connect
 
     def cook_heat_changed(new_temp):
-        ui.lbl_heat_w_cook.setText(f'{new_temp :4.0f} W')
+        ui.lbl_heat_w_cook.setText(f'{new_temp * 3500 :4.0f} W')
     cook.heat_val_changed.connect(cook_heat_changed) # connect
 
     # region UI - TIMER

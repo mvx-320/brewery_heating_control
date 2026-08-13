@@ -53,10 +53,9 @@ class ThreadReadSer(QThread):
 
     def __writeToArd(self):
         send = 0
-        # 0-3500W -> 0-7 
-        mash_val = int(self.mash.heat_val / 440)
-        fill_val = int(self.fill.heat_val / 440)
-        cook_val = int(self.cook.heat_val / 440)
+        mash_val = int(self.mash.heat_val * 7)
+        fill_val = int(self.fill.heat_val * 7)
+        cook_val = int(self.cook.heat_val * 7)
         
         if (self.mash.run_state == 3 or self.cook.run_state == 3):
             send |= 512

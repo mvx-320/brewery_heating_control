@@ -177,7 +177,7 @@ class ThreadReadSer << thread_read_ser.py >> #ffc2bb{
   +n_runs: int
 
   +previousSecs: float
-  +last_heat_val: int
+  +last_heat_val: float
   __
   +run()
   +stop()
@@ -189,12 +189,12 @@ class Pot << pot.py >> #e7d6f0{
   <font color=blue>from</font> pid_controller <font color=blue>import</font> myPID
   __
   +temp_now_changed: pyqtSignal-float
-  +heat_val_changed: pyqtSignal-int
+  +heat_val_changed: pyqtSignal-float
 
   +name: str
   #_temp_now: float
   #_temp_tar: float
-  #_heat_val: int
+  #_heat_val: float
   +heat_regulation: bool
   +pid: myPID
   __
@@ -204,7 +204,7 @@ class Pot << pot.py >> #e7d6f0{
   +temp_tar.getter(): float
   +temp_tar.setter(new_temp: float): void
 
-  +heat_val.getter(): int
+  +heat_val.getter(): float
   +heat_val.setter(new_temp: float): void
 }
 

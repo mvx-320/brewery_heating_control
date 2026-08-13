@@ -50,7 +50,7 @@ class DwellRuntimeEnvironment(QObject):
         self.is_running = False
         self.time_mash_thread.stop()
         self.mash_pot.heat_regulation = False
-        self.mash_pot.heat_val = 0
+        self.mash_pot.heat_val = 0.0
         self.mash_pot.temp_tar = 0
         self.mash_pot.rest_time_ds = 0
         self.mash_pot.run_state = 0
@@ -111,7 +111,7 @@ class DwellRuntimeEnvironment(QObject):
     def _finish_mash(self):
         self.time_mash_thread.stop()
         self.mash_pot.heat_regulation = False
-        self.mash_pot.heat_val = 0
+        self.mash_pot.heat_val = 0.0
         self.is_running = False
         self.logger.info("Mash process finished")
         self.mash_process_completed.emit()

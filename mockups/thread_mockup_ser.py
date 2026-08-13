@@ -34,12 +34,11 @@ class ThreadMockupSer(QThread):
             time.sleep(self.interval)
 
     def simulate_heating(self, pot):
-        power_ratio = pot.heat_val / 3500.0  # normalized [0,1]
         ambient = 20.0
         max_temp = 120.0
 #        if not hasattr(pot, 'temp_now'):
 #            pot.temp_now = ambient
-        delta = (max_temp - pot.temp_now) * power_ratio * 0.005  - (pot.temp_now - ambient) * 0.003 # simple heating model
+        delta = (max_temp - pot.temp_now) * pot.heat_val * 0.005  - (pot.temp_now - ambient) * 0.003 # simple heating model
         pot.temp_now = min(max_temp, pot.temp_now + delta)
 
     def stop(self):

@@ -9,18 +9,18 @@ from pid_controller import myPID
 class Pot(QObject):
     
     temp_now_changed = pyqtSignal(float)
-    heat_val_changed = pyqtSignal(int)
+    heat_val_changed = pyqtSignal(float)
     
-    def __init__(self, name, debug_enabled, dt= 0.1, max_w= 3500, min_w= 0, kp= 5, ki= 0.1, kd= 0): # before kp= 2.9, ki= 0.3
+    def __init__(self, name, debug_enabled, dt= 0.1, kp= 5, ki= 0.1, kd= 0): # before kp= 2.9, ki= 0.3
         super().__init__()
         self.logger = logging.getLogger(__name__)
         self.name = name
         self._temp_now = 0.0
         self._temp_tar = 0.0
-        self._heat_val = 0
+        self._heat_val = 0.0 # 0.0 - 1.0
         self.heat_regulation = False
         self.debug_enabled = debug_enabled
-        self.pid = myPID(dt, max_w, min_w, kp, ki, kd) # TODO: Safe persitant in DB later, maybe even make it adjustable in the UI
+        self.pid = myPID(dt, kp, ki, kd) # TODO: Safe persitant in DB later, maybe even make it adjustable in the UI
 
 
     @property

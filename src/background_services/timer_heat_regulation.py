@@ -27,12 +27,12 @@ class PeriodHeatReg(QObject):
                 else:
                     self.mash.dwell_finished.emit()
         else:
-            self.mash.heat_val = 0
+            self.mash.heat_val = 0.0
 
         if self.fill.heat_regulation:
             self.fill.heat_val, _ = self.fill.pid.calculate(self.fill.temp_tar, self.fill.temp_now)
         else:
-            self.fill.heat_val = 0
+            self.fill.heat_val = 0.0
 
         if self.cook.heat_regulation:
             self.cook.heat_val, _ = self.cook.pid.calculate(self.cook.temp_tar, self.cook.temp_now)
@@ -43,7 +43,7 @@ class PeriodHeatReg(QObject):
                 else:
                     self.cook.dwell_finished.emit()
         else:
-            self.cook.heat_val = 0
+            self.cook.heat_val = 0.0
                     
             
     def start(self):

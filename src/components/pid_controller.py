@@ -12,14 +12,14 @@ class myPID:
     err = 0.0
     integ = 0.0
 
-    def __init__(self, dt, max_w, min_w, kp, ki, kd):
+    def __init__(self, dt, kp, ki, kd):
         # Why ever I saved this values:
         #     pid = myPID(0.1, 100, -100, 0.1, 0.01, 0.5)
 
         self.logger = logging.getLogger(__name__)
         self.dt = dt
-        self.max = max_w
-        self.min = min_w
+        self.max = 1.0
+        self.min = 0.0
         self.kp = kp
         self.ki = ki
         self.kd = kd
@@ -48,18 +48,17 @@ class myPID:
 
             D = self.kd * (error - self.err) / self.dt;
 
-            output_proz = P + I + D;
-            output_watt = (output_proz *35)
+            output = P + I + D; # 0.0 - 1.0
             
             #self.logger.info(f'\t\tP:{P:>4.4f} + I:{I:>4.4f} + D:{D:>4.4f} = {output_proz:>4.4f}; integ: {self.integ:>8.4f}')
             
-            if output_watt > self.max:
-                output_watt = self.max
-            elif output_watt < self.min:
-                output_watt = self.min
+            if output > self.max:
+                output = self.max
+            elif output < self.min:
+                output = self.min
 
             self.err = error;
             
             
-            return output_watt, True
+            return output, True
 
