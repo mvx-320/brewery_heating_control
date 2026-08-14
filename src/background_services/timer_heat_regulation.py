@@ -1,13 +1,14 @@
 from PyQt5.QtCore import QTimer, QObject
 
+from src.db_service.db_pid_values import PidValueService
+
 
 class PeriodHeatReg(QObject):
     
-    def __init__(self, mash, fill, cook, time_mash_thread, time_cook_thread, interval_ms= 500):
+    def __init__(self, mash, fill, cook, time_mash_thread, time_cook_thread):
         super().__init__()
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.run)
-        self.interval_ms = interval_ms
         
         self.mash = mash
         self.fill = fill
@@ -47,7 +48,7 @@ class PeriodHeatReg(QObject):
                     
             
     def start(self):
-        self.timer.start(self.interval_ms)
+        self.timer.start(int(PidValueService.dt * 1000))
                  
     def stop(self):
         self.timer.stop()

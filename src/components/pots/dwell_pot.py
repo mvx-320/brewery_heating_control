@@ -74,7 +74,7 @@ class DwellPot(Pot):
     def run_state(self, new_state: int):
         self.run_state_changed.emit(new_state)
         self._run_state = new_state
-        self.logger.info(f'{self.name}.run_state = {new_state}')
+        self.logger.info(f'{self.pot_type.name}.run_state = {new_state}')
 
     # TODO: Add getter, setter für dwell_array
     @property
@@ -152,7 +152,7 @@ class DwellPot(Pot):
         locker = QMutexLocker(self.dwell_array_mutex)
         if self._current_dwell_index < len(self._dwell_array) -1:
             self.current_dwell_index = self._current_dwell_index + 1
-            self.logger.info(f'{self.name} switched to dwell {self._current_dwell_index}')
+            self.logger.info(f'{self.pot_type.name} switched to dwell {self._current_dwell_index}')
         else:
             # TODO: Change Pause button to Stop button
-            self.logger.info(f'{self.name} reached end of dwell array') 
+            self.logger.info(f'{self.pot_type.name} reached end of dwell array') 

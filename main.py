@@ -12,16 +12,17 @@ now = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
 base_path = Path(__file__).resolve().parent
 sys.path.append(str(base_path / 'mockups')) # TODO: Not shure why this is there
 
-from components.pots.cook_pot import CookPot
-from components.pots.dwell_pot import DwellPot
-from components.pots.pots import Pot
+from src.components.enums.pot_type import PotType
+from src.components.pots.cook_pot import CookPot
+from src.components.pots.dwell_pot import DwellPot
+from src.components.pots.pots import Pot
 
-from gui import interface, dwell_frame
-from gui.styled_splash_screen import create_brewery_splash
-from background_services.timer_heat_regulation import PeriodHeatReg
-from background_services.timer_pot import PeriodTimePot
-from background_services.thread_arduino import ThreadReadSer
-from background_services.runtime_environment import DwellRuntimeEnvironment
+from src.gui import interface, dwell_frame
+from src.gui.styled_splash_screen import create_brewery_splash
+from src.background_services.timer_heat_regulation import PeriodHeatReg
+from src.background_services.timer_pot import PeriodTimePot
+from src.background_services.thread_arduino import ThreadReadSer
+from src.background_services.runtime_environment import DwellRuntimeEnvironment
 
 DEBUG = True # TODO: Set false in production
 
@@ -103,9 +104,9 @@ def main():
 
 
     #region POTS
-    mash = DwellPot('mash', DEBUG)
-    fill = Pot('fill', DEBUG)
-    cook = CookPot('cook', DEBUG) # TODO: Pot must be replaced with HopPot with multiple timers that alarm the brewer on certain times to the end of cooking
+    mash = DwellPot(PotType.MASH, DEBUG)
+    fill = Pot(PotType.FILL, DEBUG)
+    cook = CookPot(PotType.COOK, DEBUG) # TODO: Pot must be replaced with HopPot with multiple timers that alarm the brewer on certain times to the end of cooking
 
 
     #region INTERFACE
@@ -313,7 +314,7 @@ def main():
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Information)
         msg.setWindowTitle('Rast abgelaufen')
-        msg.setText(f'{dwell_name} (Dwell {dwell_index + 1}) ist abgelaufen.\nWeiter zum nächsten Schritt?')
+        msg.setText(f'{dwell_name} (Rast {dwell_index + 1}) ist abgelaufen.\nWeiter zum nächsten Schritt?')
         msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
         if msg.exec() == QtWidgets.QMessageBox.Ok:
             mash_runtime.confirm_alarm()

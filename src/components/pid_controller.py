@@ -1,23 +1,12 @@
 import sys, os, logging
 
+from src.db_service.db_pid_values import PidValueService
 
-# ------------------------------------------------------------------------------
-class myPID:
-    dt = 0.0
-    max = 0.0
-    min = 0.0
-    kp = 0.0
-    kd = 0.0
-    ki = 0.0
-    err = 0.0
-    integ = 0.0
+class PidContoller:
+    dt = PidValueService.dt # global
 
-    def __init__(self, dt, kp, ki, kd):
-        # Why ever I saved this values:
-        #     pid = myPID(0.1, 100, -100, 0.1, 0.01, 0.5)
-
+    def __init__(self, kp, ki, kd):
         self.logger = logging.getLogger(__name__)
-        self.dt = dt
         self.max = 1.0
         self.min = 0.0
         self.kp = kp
@@ -25,6 +14,8 @@ class myPID:
         self.kd = kd
         self.hysterese = 0
         self.h_value = 0.2
+        self.integ = 0
+        self.err = 0
 
     def calculate(self, set, act):
         tolerance = act * -0.008571428571428572 + 1.1857142857142857 # act = 20 -> 1; act = 80 -> 0.5

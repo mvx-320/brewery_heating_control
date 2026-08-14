@@ -186,7 +186,7 @@ class ThreadReadSer << thread_read_ser.py >> #ffc2bb{
 class Pot << pot.py >> #e7d6f0{
   <font color=blue>from</font> PyQt5.QtCore <font color=blue>import</font> QObject, pyqtSignal
 
-  <font color=blue>from</font> pid_controller <font color=blue>import</font> myPID
+  <font color=blue>from</font> pid_controller <font color=blue>import</font> PidContoller
   __
   +temp_now_changed: pyqtSignal-float
   +heat_val_changed: pyqtSignal-float
@@ -196,7 +196,7 @@ class Pot << pot.py >> #e7d6f0{
   #_temp_tar: float
   #_heat_val: float
   +heat_regulation: bool
-  +pid: myPID
+  +pid: PidContoller
   __
   +temp_now.getter(): float
   +temp_now.setter(new_temp: float): void
@@ -208,7 +208,7 @@ class Pot << pot.py >> #e7d6f0{
   +heat_val.setter(new_temp: float): void
 }
 
-class myPID << pid_controller.py >>{
+class PidContoller << pid_controller.py >>{
   <font color=blue>import</font> os, sys
   __
   +dt: float
@@ -228,7 +228,7 @@ class myPID << pid_controller.py >>{
 class TimerPot << pot.py >> #e7d6f0{
   <font color=blue>from</font> PyQt5.QtCore <font color=blue>import</font> QObject, pyqtSignal
 
-  <font color=blue>from</font> pid_controller <font color=blue>import</font> myPID
+  <font color=blue>from</font> pid_controller <font color=blue>import</font> PidContoller
   __
   +act_time_changed: pyqtSignal-float
   +run_state_changed: pyqtSignal-int
@@ -258,7 +258,7 @@ no_class o-- "1" ThreadReadSer: serial_reader_thread
 
 Pot --|> QObject
 no_class o-- "3" Pot : mash\nfill\ncook
-Pot o-- "1" myPID: pid
+Pot o-- "1" PidContoller: pid
 
 TimerPot --|> Pot
 

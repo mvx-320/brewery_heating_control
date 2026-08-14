@@ -37,7 +37,7 @@ class CookPot(Pot):
    def run_state(self, new_state: int):
        self.run_state_changed.emit(new_state)
        self._run_state = new_state
-       self.logger.info(f'{self.name}.run_state = {new_state}')
+       self.logger.info(f'{self.pot_type.name}.run_state = {new_state}')
         
         
             
