@@ -18,7 +18,7 @@ from src.components.pots.dwell_pot import DwellPot
 from src.components.pots.pots import Pot
 
 from src.gui import interface, dwell_frame
-from src.gui.styled_splash_screen import create_brewery_splash
+from src.gui.splash_screen import create_brewery_splash
 from src.background_services.timer_heat_regulation import PeriodHeatReg
 from src.background_services.timer_pot import PeriodTimePot
 from src.background_services.thread_arduino import ThreadReadSer
@@ -132,7 +132,7 @@ def main():
     if not DEBUG:
         ui.tab_widget.removeTab(ui.tab_widget.indexOf(ui.tab_debug))
     
-    # Look glitchy, because when starting the fixed size gets displayed for a short time
+    # Open in full screen look glitchy, because when starting the fixed size gets displayed for a short time
     # screen_rect = QtWidgets.QDesktopWidget().availableGeometry()
     # MainWindow.setGeometry(0, 0, screen_rect.width(), screen_rect.height())
     

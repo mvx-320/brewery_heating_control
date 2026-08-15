@@ -5,7 +5,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
 
 
-class StyledSplashScreen(QtWidgets.QSplashScreen):
+class SplashScreen(QtWidgets.QSplashScreen):
     def __init__( self, pixmap: QtGui.QPixmap, radius: int = 22, message_offset: int = 24,
         message_point_size: int = 16, border_width: int = 3, light_color: QtGui.QColor = QtGui.QColor("lightgray"),):
 
@@ -48,11 +48,11 @@ class StyledSplashScreen(QtWidgets.QSplashScreen):
         painter.drawRoundedRect(border_rect, self._radius, self._radius)
 
 
-def create_brewery_splash(message: str = "Brauerei Steuerung wird gestartet...") -> StyledSplashScreen:
+def create_brewery_splash(message: str = "Brauerei Steuerung wird gestartet...") -> SplashScreen:
     splash_pixmap = QtGui.QPixmap(512, 384)
     splash_pixmap.fill(QtGui.QColor(36, 31, 49))
 
-    brewery_icon = QtGui.QIcon(str(ASSETS_DIR / "icon_brewery_white.png"))
+    brewery_icon = QtGui.QIcon(str(ASSETS_DIR / "icon_brewery.png"))
     logo_pixmap = brewery_icon.pixmap(240, 240)
 
     painter = QtGui.QPainter(splash_pixmap)
@@ -61,6 +61,6 @@ def create_brewery_splash(message: str = "Brauerei Steuerung wird gestartet...")
     painter.drawPixmap(logo_x, logo_y, logo_pixmap)
     painter.end()
 
-    splash = StyledSplashScreen(splash_pixmap)
+    splash = SplashScreen(splash_pixmap)
     splash.showMessage(message, QtCore.Qt.AlignBottom | QtCore.Qt.AlignCenter, splash._light_color)
     return splash
