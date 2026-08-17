@@ -52,8 +52,8 @@ def create_brewery_splash(message: str = "Brauerei Steuerung wird gestartet...")
     splash_pixmap = QtGui.QPixmap(512, 384)
     splash_pixmap.fill(QtGui.QColor(36, 31, 49))
 
-    brewery_icon = QtGui.QIcon(str(ASSETS_DIR / "icon_brewery.png"))
-    logo_pixmap = brewery_icon.pixmap(240, 240)
+    brewery_icon = QtGui.QIcon(str(ASSETS_DIR / "brew_pot.svg"))
+    logo_pixmap = brewery_icon.pixmap(280, 280)
 
     painter = QtGui.QPainter(splash_pixmap)
     logo_x = (splash_pixmap.width() - logo_pixmap.width()) // 2

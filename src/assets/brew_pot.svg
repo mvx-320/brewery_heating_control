@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+      <!-- 
+       _______  __  ____ ____ ____
+       \     / /  \ \  / |  / \  /
+        |  =_|/    \|  | |  | |  |
+        |  <> \  =  \  |_|_ \_/  |
+       /       \ |   \    /      \
+      /_________\|___|___/\_______|
+       -->
+      <defs>
+            <linearGradient id="steel" x1="0" x2="1">
+                  <stop offset="0" stop-color="#8f969a"/>
+                  <stop offset="0.18" stop-color="#e9ecec"/>
+                  <stop offset="0.5" stop-color="#b8bec1"/>
+                  <stop offset="0.78" stop-color="#f1f3f3"/>
+                  <stop offset="1" stop-color="#858c90"/>
+            </linearGradient>
+            <linearGradient id="lid" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="#f4f5f5"/>
+                  <stop offset="1" stop-color="#a7adb0"/>
+            </linearGradient>
+            <linearGradient id="steel-inside" x1="0" x2="1">
+                  <stop offset="0" stop-color="#809090"/>
+                  <stop offset="0.28" stop-color="#e9ecec"/>
+                  <stop offset="0.45" stop-color="#b8bec1"/>
+                  <stop offset="0.78" stop-color="#b1b3b3"/>
+                  <stop offset="1" stop-color="#808080"/>
+            </linearGradient>
+            <linearGradient id="mash" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="#913323"/>
+                  <stop offset="0.7" stop-color="#a08030"/>
+            </linearGradient> 
+      </defs>
+
+      <g transform="translate(0,-90)">
+            <!-- Main pot -->
+            <path d=" M82 176 
+                  h348 
+                  v324 
+                  a-174 48 0 1 1 -348 0
+                  Z" fill="url(#steel)" stroke="#252b2e" stroke-width="9"/>
+                  <!-- Old bow bottom pot -->
+                  <!-- q0 28 -30 36 q-136 40 -288 0 q-28 -8 -30 -36  -->
+
+            <!-- Highlights -->
+            <polygon points=" 100,180 100,504 106,520 
+                               125,527 116,508 116,182" fill="#f5f6f6" opacity=".55"/>
+<!-- 128,528 140,531 -->
+            <polygon points=" 372,186 372,514 367,533 
+                               383,529 388,512 388,184" fill="#777f83" opacity=".45"/>
+<!-- 340,538 356,536 -->
+            <!-- Pot Lower Edge -->
+            <!-- <path d="M82 498 q174 60 348 0" fill="none" stroke="#252b2e" stroke-width="5"/> -->
+            <path d="M82 484 a174 48 0 1 0 348 0" fill="none" stroke="#252b2e" stroke-width="5"/>
+
+
+            <!-- Simplified steel highlights -->
+            <!-- <path d="M108 190 V385 Q108 420 135 434" fill="none" stroke="#f5f6f6" stroke-width="18" opacity=".55"/> -->
+            <!-- <path d="M380 190 V405" fill="none" stroke="#777f83" stroke-width="16" opacity=".35"/> -->
+
+            <!-- Lid -->
+
+            <!-- Lid rim "#c7ccce"-->
+            <!-- <path d="M72 175 q184 28 368 0 q-184 -28 -368 0 Z" fill="white" stroke="#252b2e" stroke-width="7"/> -->
+
+            <path d="M72 175 a184 24 0 1 1 368 0 a-184 24 0 1 1 -368 0" fill="url(#steel-inside)" stroke="#252b2e" stroke-width="7"/>
+            <!-- <path d="M70 166 Q256 78 442 166 L430 185 H82 Z" fill="url(#lid)" stroke="#252b2e" stroke-width="9"/> -->
+            <path d="M85 180 a240 42 0 0 1 342 0 a178 22 0 0 1 -342 0" fill="url(#mash)"/>
+
+            <!-- Small lid handle -->
+            <!-- <rect x="220" y="112" width="72" height="18" rx="9" fill="#aeb4b7" stroke="#252b2e" stroke-width="7"/> -->
+            <!-- <rect x="232" y="91" width="48" height="30" rx="12" fill="none" stroke="#252b2e" stroke-width="7"/> -->
+
+            <!-- Side handles -->
+            <!-- left -->
+            <!-- <path d="M82 218 H54 Q42 218 42 230 Q42 242 54 242 H82" fill="#aeb4b7" stroke="#252b2e" stroke-width="8"/> -->
+            <!-- right -->
+            <!-- <path d="M430 218 H458 Q470 218 470 230 Q470 242 458 242 H430" fill="#aeb4b7" stroke="#252b2e" stroke-width="8"/> -->
+            <defs>
+                  <g id="left-handle">
+                        <path d="M90 230 l-40 -8 q-10 -2 -10 -10 q0 -5 8 -8 q5 -2 12 0 l20 5 v7 l10 2" stroke="#252b2e" stroke-width="6" fill="#aeb4b7"/>
+                        <path d="M90 216 q3 8 0 16" stroke="#252b2e" stroke-width="10" stroke-linecap="round" fill="none"/>
+                        <path d="M80 216 l-24 -5" stroke="#252b2e" stroke-width="6" stroke-linecap="round" fill="none"/>
+                  </g>
+            </defs>
+            <use href="#left-handle"/>
+            <use href="#left-handle" transform="translate(512) scale(-1 1)"/>
+
+
+            <!-- Termometer -->
+            <g transform="translate(256,450) scale(1.4)" stroke="#303639" stroke-width="7" stroke-linecap="round">
+                  <!-- Analog temperature gauge -->
+                  <circle cx="0" cy="0" r="44" fill="url(#steel)" stroke="#252b2e" stroke-width="6"/>
+                  <circle cx="0" cy="0" r="36" fill="#f1f0e8" stroke="#555d61" stroke-width="4"/>
+
+                  <line x1="0" y1="-29" x2="0" y2="-22" stroke-width="4"/>
+                  <line x1="-18" y1="-22" x2="-14" y2="-17" stroke-width="4"/>
+                  <line x1="18" y1="-22" x2="14" y2="-17" stroke-width="4"/>
+                  <line x1="-28" y1="-7" x2="-22" y2="-5" stroke-width="4"/>
+                  <line x1="28" y1="-7" x2="22" y2="-5" stroke-width="4"/>
+                  <line x1="-27" y1="10" x2="-21" y2="8" stroke-width="4"/>
+                  <line x1="27" y1="10" x2="21" y2="8" stroke-width="4"/>
+                  <line x1="-18" y1="25" x2="-13" y2="19" stroke-width="4"/>
+                  <line x1="18" y1="25" x2="13" y2="19" stroke-width="4"/>
+
+                  <!-- Gauge needle -->
+                  <line x1="0" y1="0" x2="10" y2="-24" stroke="#c73535" stroke-width="6" stroke-linecap="round"/>
+                  <circle cx="0" cy="0" r="2" fill="#303639"/>
+            </g>
+
+
+            <!-- Spigot -->
+            <!-- <rect x="246" y="395" width="20" height="34" rx="7" fill="#b9bec0" stroke="#252b2e" stroke-width="7"/> -->
+            <!-- <path d="M240 397 H272 Q280 397 280 405" fill="none" stroke="#252b2e" stroke-width="9" stroke-linecap="round"/> -->
+
+            <!-- Feet -->
+            <!-- <path d="M130 442 L116 475 H145 L156 446 Z" fill="#aeb4b7" stroke="#252b2e" stroke-width="8"/> -->
+            <!-- <path d="M382 442 L396 475 H367 L356 446 Z" fill="#aeb4b7" stroke="#252b2e" stroke-width="8"/> -->
+      </g>
+</svg>
