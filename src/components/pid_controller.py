@@ -1,55 +1,72 @@
-import sys, os, logging
-
-from src.db_service.db_pid_values import PidValueService
+import logging
+from src.components.models.pid_gains import PidGains
+from src.components.models.pid_cool_factor import PidCoolFactor
 
 class PidContoller:
-    dt = PidValueService.dt # global
 
-    def __init__(self, kp, ki, kd):
+    def __init__(self, dt, gains30: PidGains, gains80: PidGains, coolfactor: PidCoolFactor, tm_lag):
         self.logger = logging.getLogger(__name__)
+        self.dt = dt
         self.max = 1.0
         self.min = 0.0
-        self.kp = kp
-        self.ki = ki
-        self.kd = kd
-        self.hysterese = 0
-        self.h_value = 0.2
+        self.gains30 = gains30
+        self.gains80 = gains80
+        self.coolfactor = coolfactor
         self.integ = 0
+        self.last_error = 0
+        self.last_output = 0
+        self.tm_lag = tm_lag # Prevents rapid jumps in the output
+        self.filtered_d = 0.0
         self.err = 0
 
+
     def calculate(self, set, act):
-        tolerance = act * -0.008571428571428572 + 1.1857142857142857 # act = 20 -> 1; act = 80 -> 0.5
-        if (act < set - tolerance + self.hysterese):
-            self.hysterese = self.h_value
-            return self.max, False
-        elif (act > set + tolerance/2 - self.hysterese):
-            self.hysterese = self.h_value
-            return self.min, False
-        else:
-            self.hysterese = 0
-            error = set - act;
+        '''
+        First calculate P & D
+        Then the conditional integration (I)
+        Then limits the output
+        '''
+        kp = self.linear_interpolate_value(act, self.gains30.kp, self.gains80.kp)
+        ki = self.linear_interpolate_value(act, self.gains30.ki, self.gains80.ki)
+        kd = self.linear_interpolate_value(act, self.gains30.kd, self.gains80.kd)
 
-            P = self.kp * error;
-            
-            if act < set:
-                self.integ += error * self.dt
-            else:
-                self.integ = 30
-            I = self.ki * self.integ;
+        error = set - act
+        
+        P = kp * error
 
-            D = self.kd * (error - self.err) / self.dt;
+        # Conditianl integration (prevents windup)
+        if not (self.last_output >= 1.0 and error > 0 or self.last_output <= 0.0 and error < 0): 
+            # Reduces self.integ in the right speed
+            cooling_factor = self.parabolic_interpolate_value(act, self.coolfactor.factor30, self.coolfactor.factor50, self.coolfactor.factor80) if error < self.coolfactor.threshold else 1
 
-            output = P + I + D; # 0.0 - 1.0
-            
-            #self.logger.info(f'\t\tP:{P:>4.4f} + I:{I:>4.4f} + D:{D:>4.4f} = {output_proz:>4.4f}; integ: {self.integ:>8.4f}')
-            
-            if output > self.max:
-                output = self.max
-            elif output < self.min:
-                output = self.min
+            self.integ += error * self.dt * cooling_factor
+        I = ki * self.integ
 
-            self.err = error;
-            
-            
-            return output, True
+        # Low-pass Filter calculates how quickly the temperature error changes
+        alpha = self.dt / (self.tm_lag + self.dt) # Determines how quickly the filtered value follows the raw D-term
+        raw_d = kd * (error - self.err) / self.dt
+        self.filtered_d += alpha * (raw_d - self.filtered_d)
+        D = self.filtered_d
+        raw_output = P + I + D
+        self.last_output = raw_output
 
+        output = max(self.min, min(raw_output, self.max))
+
+        self.last_error = error
+        return output, True
+
+    def linear_interpolate_value(self, temperature: float, value30: float, value80: float):
+        '''
+        For Gain Scheduling (different gains at different temperatures)
+        '''
+        m = (temperature - 30) / 50.0
+        return value30 + m * (value80 - value30)
+
+    def parabolic_interpolate_value(self, temperature: float, value30:float, value50: float, value80: float):
+        '''
+        For Cooling Factor (add more precise cooling)
+        ''' 
+        return (
+            value30 * (temperature - 50) * (temperature - 80) / 1000
+            - value50 * (temperature -30) * (temperature - 80) / 600
+            + value80 * (temperature -30) * (temperature - 50) / 1500)

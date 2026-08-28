@@ -4,7 +4,7 @@ sys.path.append("src/components")
 from PyQt5.QtCore import QObject, pyqtSignal
 
 from src.components.enums.pot_type import PotType
-from src.db_service.db_pid_values import PidValueService
+from src.db_service.db_pid_values import PidValuesService
 from src.components.pid_controller import PidContoller
 
 
@@ -22,7 +22,7 @@ class Pot(QObject):
         self._heat_val = 0.0 # 0.0 - 1.0
         self.heat_regulation = False
         self.debug_enabled = debug_enabled
-        self.pid = PidContoller(*PidValueService.get_pid_values(self.pot_type)) # * = unpacking-operator
+        self.pid = PidContoller(*PidValuesService.get_pid_values(self.pot_type)) # * = unpacking-operator
 
 
     @property
