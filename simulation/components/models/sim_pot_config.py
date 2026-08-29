@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 @dataclass
-class PotSimConfig:
+class SimPotConfig:
     temperature_fluid_init_c: float
     temperature_ambient_c: float
 

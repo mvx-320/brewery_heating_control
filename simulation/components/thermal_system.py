@@ -2,7 +2,7 @@ import random
 from src.components.enums.pot_type import PotType
 from src.db_service.db_sim_config import SimConfigService
 from src.db_service.db_pid_values import PidValuesService
-from mockups.models.simulation_state import SimulationState
+from simulation.components.models.sim_state import SimState
 
 class ThermalSystem:
     def __init__(self, pot: PotType, seed=42):
@@ -16,7 +16,7 @@ class ThermalSystem:
         self.pot_heat_capacity_j_per_k = self.POT_CONFIG.pot_mass_kg * self.POT_CONFIG.pot_heat_capacity_j_per_kg_k
         self.total_heat_capacity_j_per_k = self.fluid_heat_capacity_j_per_k + self.pot_heat_capacity_j_per_k
 
-        self.state = SimulationState(
+        self.state = SimState(
             fluid_temperature_c=self.POT_CONFIG.temperature_fluid_init_c,
             sensor_temperature_c=self.POT_CONFIG.temperature_fluid_init_c,
             measured_temperature_c=self.POT_CONFIG.temperature_fluid_init_c,

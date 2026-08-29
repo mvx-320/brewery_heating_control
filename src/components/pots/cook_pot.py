@@ -1,5 +1,5 @@
 from PyQt5.QtCore import pyqtSignal 
-from components.pots.pots import Pot
+from src.components.pots.pots import Pot
 
 
 class CookPot(Pot):

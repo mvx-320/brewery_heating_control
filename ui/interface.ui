@@ -2881,7 +2881,7 @@ border-radius: 16px;
 }</string>
       </property>
       <property name="text">
-       <string>Arduino nicht verbunden. Programm läuft mit Mockup...</string>
+       <string>Arduino nicht verbunden. Programm läuft mit Simulation...</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>

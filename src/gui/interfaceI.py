@@ -1459,7 +1459,7 @@ class Ui_MainWindow(object):
         self.dbg_grb_dwell.setTitle(_translate("MainWindow", "Dwell"))
         self.dbg_btn_dwell_percentage.setText(_translate("MainWindow", "Write"))
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_debug), _translate("MainWindow", "Debug"))
-        self.lbl_connection_status.setText(_translate("MainWindow", "Arduino nicht verbunden. Programm läuft mit Mockup..."))
+        self.lbl_connection_status.setText(_translate("MainWindow", "Arduino nicht verbunden. Programm läuft mit Simulation..."))
         self.actionMit_Arduino_verbinden.setText(_translate("MainWindow", "Mit Arduino verbinden..."))
 from src.gui.selectalldoublespinbox import SelectAllDoubleSpinBox
 

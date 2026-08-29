@@ -1,7 +1,7 @@
 #! /usr/bin/python3.9
 import cProfile
 import sys, serial, logging, threading
-sys.path.extend(["src"])#, "mockups"])
+#sys.path.extend(["src"])#, "simulation"])
 
 from time import gmtime, strftime, sleep
 from datetime import datetime
@@ -10,7 +10,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 
 now = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
 base_path = Path(__file__).resolve().parent
-sys.path.append(str(base_path / 'mockups')) # TODO: Not shure why this is there
+sys.path.append(str(base_path / 'simulation')) # TODO: Not shure why this is there
 
 from src.components.enums.pot_type import PotType
 from src.components.pots.cook_pot import CookPot
@@ -23,6 +23,8 @@ from src.background_services.timer_heat_regulation import PeriodHeatReg
 from src.background_services.timer_pot import PeriodTimePot
 from src.background_services.thread_arduino import ThreadReadSer
 from src.background_services.runtime_environment import DwellRuntimeEnvironment
+
+from simulation.thread_sim_ser import ThreadSimSer
 
 DEBUG = True # TODO: Set false in production
 
@@ -52,32 +54,12 @@ def main():
         root_logger.addHandler(console_handler)
 
 
-    #region Import mockup
-    try:
-        from mockups.thread_mockup_ser import ThreadMockupSer
-        logging.info("Successfully imported ThreadMockupSer")
-    except ImportError as e:
-        logging.error(f"Failed to import ThreadMockupSer: {e}")
+    #region INIT ARD|SIM
+    serial_reader_thread = None # Gets real serial thread or simulation
 
-        class ThreadMockupSer:
-            def __init__(self, mash, fill, cook):
-                # TODO: I think here has to be a logger
-                self.mash = mash
-                self.fill = fill
-                self.cook = cook
-                self.running = True
-            def start(self):
-                logging.info("Mock thread started")
-            def stop(self):
-                self.running = False
-
-    serial_reader_thread = None
-    
-
-    #region ARDUINO INIT
-    def _create_arduino_or_mockup_serial():
+    def _create_brewery_connection():
         global serial_reader_thread
-        logging.info("Starting _create_arduino_or_mockup_serial()...")
+        logging.info("Starting _create_brewery_connection()...")
         try:
             logging.info("Creating ThreadReadSer...")
             serial_reader_thread = ThreadReadSer(mash, fill, cook)
@@ -90,17 +72,16 @@ def main():
             logging.info("Arduino successfully connected")
         except (serial.SerialException, PermissionError) as e:
             logging.error(f"Exception caught: {type(e).__name__}: {str(e)}")
+            serial_reader_thread = ThreadSimSer(mash, fill, cook)
+            serial_reader_thread.start()
             ui.lbl_connection_status.setText("Arduino nicht verbunden. Simulation läuft ...")
             ui.lbl_connection_status.setStyleSheet("QLabel {background-color: darkred; color: lightgray; border-radius: 5;}")
-            serial_reader_thread = ThreadMockupSer(mash, fill, cook)
-            serial_reader_thread.start()
-            logging.error(f"opening serial port: {str(e)}")
 
-    def connect2arduino():
+    def connect_arduino():
         ui.lbl_connection_status.setText("Verbindungsversuch läuft...")
         ui.lbl_connection_status.setStyleSheet("QLabel {background-color: rgb(80, 80, 0); color: lightgray; border-radius: 5;}")
         QtWidgets.QApplication.processEvents()
-        QtCore.QTimer.singleShot(1000, _create_arduino_or_mockup_serial)
+        QtCore.QTimer.singleShot(1000, _create_brewery_connection)
 
 
     #region POTS
@@ -420,7 +401,7 @@ def main():
     # TODO: !!! Hier sicherstellen das alles im Hintergrund funktioniert (Das die Threads laufen)
 
     # region UI - SETTINGS
-    ui.btn_connect2arduino.clicked.connect(connect2arduino)
+    ui.btn_connect2arduino.clicked.connect(connect_arduino)
 
 
     # region UI - DEBUG TAB
@@ -471,8 +452,8 @@ def main():
             def cleanup_threads():
                 global serial_reader_thread
                 heat_regulate_thread.stop()
-                time_mash_thread.pause()
-                time_cook_thread.pause()
+                time_mash_thread.stop()
+                time_cook_thread.stop()
                 if serial_reader_thread is not None:
                     serial_reader_thread.stop()
                 # Give threads a moment to finish
@@ -491,7 +472,7 @@ def main():
     MainWindow.show()
     # MainWindow.showMaximized() # Looks glitchy because MainWindow has a fixed size
 
-    QtCore.QTimer.singleShot(100, connect2arduino)
+    QtCore.QTimer.singleShot(100, connect_arduino)
 
 
     # TODO: I should clean up the dwells from the interface.ui or put some persistant stored dwells in there
@@ -502,7 +483,7 @@ def main():
     sys.exit(app.exec_())
 
 
-if DEBUG:
+if 0: #DEBUG:
     cProfile.run('main()')
 else:
     main()

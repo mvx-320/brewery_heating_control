@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 @dataclass
-class SimulationState:
+class SimState:
     fluid_temperature_c: float
     sensor_temperature_c: float
     measured_temperature_c: float

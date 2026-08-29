@@ -20,7 +20,7 @@ venv/
 .idea/
 *.swp
 
-# Optional: Falls du Mockups als temporäre Dateien speicherst
+# Optional: If I save simulation as temporary data
 *.bak
 *.tmp
 

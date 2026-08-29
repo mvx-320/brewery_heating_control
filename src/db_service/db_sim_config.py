@@ -1,9 +1,9 @@
 from src.components.enums.pot_type import PotType
-from mockups.models.pot_sim_config import PotSimConfig
+from simulation.components.models.sim_pot_config import SimPotConfig
 
 class SimConfigService:
-    pot_sim_config: dict[PotType: PotSimConfig] = {
-        PotType.MASH: PotSimConfig(
+    pot_sim_config: dict[PotType: SimPotConfig] = {
+        PotType.MASH: SimPotConfig(
             temperature_fluid_init_c=20.0,
             temperature_ambient_c=20.0,
             
@@ -30,7 +30,7 @@ class SimConfigService:
             sensor_noise_std_c=0.01,
         ),
 
-        PotType.FILL: PotSimConfig(
+        PotType.FILL: SimPotConfig(
             temperature_fluid_init_c=20.0,
             temperature_ambient_c=20.0,
             
@@ -56,7 +56,7 @@ class SimConfigService:
             sensor_noise_std_c=0.01,
         ),
     
-        PotType.COOK: PotSimConfig(
+        PotType.COOK: SimPotConfig(
             temperature_fluid_init_c=20.0,
             temperature_ambient_c=20.0,
             
