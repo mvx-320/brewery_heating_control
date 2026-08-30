@@ -12,7 +12,7 @@ class ThreadSimSer(QThread):
         self.mash = mash
         self.fill = fill
         self.cook = cook
-        self.simulation_engine = SimEngine(mash, fill, cook)
+        self.sim_engine = SimEngine(mash, fill, cook)
 
         self.running = True
         self.interval = 1  # in s
@@ -21,16 +21,19 @@ class ThreadSimSer(QThread):
     def run(self):
         while self.running:
             try:
-                self.simulation_engine.step_seconds(1)
+                self.sim_engine.step_seconds(1)
 
-                self.logger.info(f"Mock Temp: {self.mash.temp_now:.1f};{self.fill.temp_now:.1f};{self.cook.temp_now:.1f};OK")
+                self.logger.info(f"Simulated temp: {self.mash.temp_now:.1f};{self.fill.temp_now:.1f};{self.cook.temp_now:.1f};OK")
             except Exception as e:
-                self.logger.warning(f"Mock error: {str(e)}")
+                self.logger.warning(f"Simulated error: {str(e)}")
             
             time.sleep(self.interval)
 
-    def jump_to(self, target_s):
-        self.simulation_engine.advance_to(target_s)
+    def advance_to(self, target_s):
+        self.sim_engine.advance_to(target_s)
+
+    def forward(self, delta_s: float):
+        self.sim_engine.forward(delta_s)
 
     def stop(self):
         self.running = False

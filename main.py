@@ -28,6 +28,8 @@ from simulation.thread_sim_ser import ThreadSimSer
 
 DEBUG = True # TODO: Set false in production
 
+serial_reader_thread = None # Gets real serial thread or simulation
+
 
 def main():
     
@@ -55,10 +57,11 @@ def main():
 
 
     #region INIT ARD|SIM
-    serial_reader_thread = None # Gets real serial thread or simulation
-
     def _create_brewery_connection():
         global serial_reader_thread
+        if serial_reader_thread is not None:
+            serial_reader_thread.stop()
+            serial_reader_thread = None
         logging.info("Starting _create_brewery_connection()...")
         try:
             logging.info("Creating ThreadReadSer...")
@@ -72,8 +75,19 @@ def main():
             logging.info("Arduino successfully connected")
         except (serial.SerialException, PermissionError) as e:
             logging.error(f"Exception caught: {type(e).__name__}: {str(e)}")
+
             serial_reader_thread = ThreadSimSer(mash, fill, cook)
             serial_reader_thread.start()
+
+            try:
+                serial_reader_thread.sim_engine.time_s_changed.disconnect()
+                print("Disconnected serial_reader_thead")
+            except TypeError as e:
+                print(f'Not connected / TypeError: {e}')
+            except Exception as e:
+                print(f'Different error / {type(e).__name__}: {e}')
+            serial_reader_thread.sim_engine.time_s_changed.connect(on_time_s_changed)
+
             ui.lbl_connection_status.setText("Arduino nicht verbunden. Simulation läuft ...")
             ui.lbl_connection_status.setStyleSheet("QLabel {background-color: darkred; color: lightgray; border-radius: 5;}")
 
@@ -408,20 +422,23 @@ def main():
     # --- TEMPERATURE OVERRIDE ----------------------------------------------------------------------------------------
     def override_cur_temp_mash():
         new_temp = ui.dbg_dsb_cur_temp_mash.value()
-        if type(new_temp) == float and new_temp > 0:
-            mash.temp_now = new_temp
+        if DEBUG and type(new_temp) == float and new_temp > 0:
+            global serial_reader_thread
+            serial_reader_thread.sim_engine.thermal_systems[PotType.MASH].state.override(new_temp)
     ui.dbg_btn_cur_temp_mash.clicked.connect(override_cur_temp_mash)
 
     def override_cur_temp_fill():
         new_temp = ui.dbg_dsb_cur_temp_fill.value()
-        if type(new_temp) == float and new_temp > 0:
-            fill.temp_now = new_temp
+        if DEBUG and type(new_temp) == float and new_temp > 0:
+            global serial_reader_thread
+            serial_reader_thread.sim_engine.thermal_systems[PotType.FILL].state.override(new_temp)
     ui.dbg_btn_cur_temp_fill.clicked.connect(override_cur_temp_fill)
 
     def override_cur_temp_cook():
         new_temp = ui.dbg_dsb_cur_temp_cook.value()
-        if type(new_temp) == float and new_temp > 0:
-            cook.temp_now = new_temp
+        if DEBUG and type(new_temp) == float and new_temp > 0:
+            global serial_reader_thread
+            serial_reader_thread.sim_engine.thermal_systems[PotType.COOK].state.override(new_temp)
     ui.dbg_btn_cur_temp_cook.clicked.connect(override_cur_temp_cook)
 
     # --- DWELL PERCENTAGE OVERRIDE ----------------------------------------------------------------------------------
@@ -433,6 +450,13 @@ def main():
             mash.set_rest_time_ds_percentage(new_percentage)
     ui.dbg_btn_dwell_percentage.clicked.connect(override_dwell_percentage)
 
+    # --- TIME OVERRIDE ----------------------------------------------------------------------------------------------
+    def on_time_s_changed(time_s):
+        h = int(time_s // 3600)
+        m = int((time_s % 3600)//60)
+        s = int(time_s % 60)
+        ui.dbg_lbl_time_s.setText(f'{h:02d}:{m:02d}:{s:02d}')
+    # connect is in _create_brewery_connection()
         
     #region SHOW UI
     # Override closeEvent to show confirmation dialog

@@ -1,7 +1,7 @@
 import sys, logging
 sys.path.append("src/components")
 
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSignal, QMutex, QMutexLocker
 
 from src.components.enums.pot_type import PotType
 from src.db_service.db_pid_values import PidValuesService
@@ -17,12 +17,15 @@ class Pot(QObject):
         super().__init__()
         self.logger = logging.getLogger(__name__)
         self.pot_type = pot_type
-        self._temp_now = 0.0
+        self.temp_now_lock = QMutex()
+        self._temp_now = 0.0 # Overriten from serial component and Debug -> temp_now_low
         self._temp_tar = 0.0
         self._heat_val = 0.0 # 0.0 - 1.0
         self.heat_regulation = False
         self.debug_enabled = debug_enabled
         self.pid = PidContoller(*PidValuesService.get_pid_values(self.pot_type)) # * = unpacking-operator
+
+        # Thermal System for the pot is in sim_engine.py. It shouldn't be initialized in the deployed state
 
 
     @property
@@ -31,6 +34,7 @@ class Pot(QObject):
     
     @temp_now.setter
     def temp_now(self, new_temp: float):
+        locker = QMutexLocker(self.temp_now_lock)
         if self._temp_now != new_temp:
             self._temp_now = new_temp
             self.temp_now_changed.emit(new_temp)

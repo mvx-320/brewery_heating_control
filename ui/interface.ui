@@ -159,7 +159,7 @@ border-radius: 16px;
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap>../src/assets/cook.png</pixmap>
+                    <pixmap>../src/assets/pot_white.png</pixmap>
                    </property>
                    <property name="scaledContents">
                     <bool>true</bool>
@@ -356,7 +356,7 @@ border-radius: 16px;
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap>../src/assets/cook.png</pixmap>
+                    <pixmap>../src/assets/pot_white.png</pixmap>
                    </property>
                    <property name="scaledContents">
                     <bool>true</bool>
@@ -1908,7 +1908,7 @@ border-radius: 16px;
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap>../src/assets/cook.png</pixmap>
+                    <pixmap>../src/assets/pot_white.png</pixmap>
                    </property>
                    <property name="scaledContents">
                     <bool>true</bool>
@@ -2662,73 +2662,74 @@ border: 4px solid rgb(50,50,70);
 border-radius: 16px;
 }</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_8">
-           <item>
-            <widget class="QGroupBox" name="dbg_grb_temp">
-             <property name="title">
-              <string>GroupBox</string>
+          <layout class="QGridLayout" name="gridLayout_14">
+           <item row="2" column="1">
+            <widget class="QGroupBox" name="dbg_grb_time">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
-             <layout class="QGridLayout" name="gridLayout_12">
-              <item row="0" column="5">
-               <widget class="QLabel" name="dbg_lbl_cur_temp_cook_title">
-                <property name="font">
-                 <font>
-                  <pointsize>13</pointsize>
-                  <bold>true</bold>
-                 </font>
-                </property>
+             <property name="title">
+              <string>Time</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_13">
+              <item row="1" column="0">
+               <widget class="QPushButton" name="dbg_btn_plus_01min">
                 <property name="text">
-                 <string>Kochen</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="4">
-               <widget class="QLabel" name="dbg_lbl_cur_temp_fill">
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>--°C</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="5">
-               <widget class="QLabel" name="dbg_lbl_cur_temp_cook">
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>--°C</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
+                 <string>+1 min</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="2">
-               <widget class="QLabel" name="dbg_lbl_cur_temp_mash">
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                 </font>
-                </property>
+               <widget class="QPushButton" name="dbg_btn_plus_15min">
                 <property name="text">
-                 <string>--°C</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
+                 <string>+15 min</string>
                 </property>
                </widget>
               </item>
-              <item row="5" column="4">
-               <widget class="QPushButton" name="dbg_btn_cur_temp_fill">
+              <item row="0" column="2">
+               <widget class="QPushButton" name="dbg_btn_time_s_write">
+                <property name="text">
+                 <string>Write</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QPushButton" name="dbg_btn_plus_05min">
+                <property name="text">
+                 <string>+5 min</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="dbg_lbl_time_s">
+                <property name="text">
+                 <string>TextLabel</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="SelectAllDoubleSpinBox" name="dbg_dsb_time_s_dist"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QGroupBox" name="dbg_grb_dwell">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>Dwell</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_11">
+              <item row="0" column="2">
+               <widget class="QPushButton" name="dbg_btn_dwell_percentage">
                 <property name="font">
                  <font>
                   <pointsize>13</pointsize>
@@ -2739,8 +2740,40 @@ border-radius: 16px;
                 </property>
                </widget>
               </item>
-              <item row="5" column="2">
-               <widget class="QPushButton" name="dbg_btn_cur_temp_mash">
+              <item row="0" column="0">
+               <widget class="QProgressBar" name="dbg_pgb_dwell_percentage">
+                <property name="maximumSize">
+                 <size>
+                  <width>500</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="value">
+                 <number>0</number>
+                </property>
+                <property name="textVisible">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="SelectAllDoubleSpinBox" name="dbg_dsb_dwell_percentage">
+                <property name="value">
+                 <double>99.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="0" column="0" colspan="2">
+            <widget class="QGroupBox" name="dbg_grb_temp">
+             <property name="title">
+              <string>Temperatur</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_12">
+              <item row="5" column="4">
+               <widget class="QPushButton" name="dbg_btn_cur_temp_fill">
                 <property name="font">
                  <font>
                   <pointsize>13</pointsize>
@@ -2763,8 +2796,8 @@ border-radius: 16px;
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
-               <widget class="QLabel" name="dbg_lbl_cur_temp_mash_title">
+              <item row="0" column="5">
+               <widget class="QLabel" name="dbg_lbl_cur_temp_cook_title">
                 <property name="font">
                  <font>
                   <pointsize>13</pointsize>
@@ -2772,10 +2805,28 @@ border-radius: 16px;
                  </font>
                 </property>
                 <property name="text">
-                 <string>Maische</string>
+                 <string>Kochen</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="4">
+               <widget class="SelectAllDoubleSpinBox" name="dbg_dsb_cur_temp_fill"/>
+              </item>
+              <item row="2" column="5">
+               <widget class="SelectAllDoubleSpinBox" name="dbg_dsb_cur_temp_cook"/>
+              </item>
+              <item row="1" column="4">
+               <widget class="QLabel" name="dbg_lbl_cur_temp_fill">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>--°C</string>
                 </property>
                 <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -2792,6 +2843,52 @@ border-radius: 16px;
                 </property>
                </widget>
               </item>
+              <item row="1" column="5">
+               <widget class="QLabel" name="dbg_lbl_cur_temp_cook">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>--°C</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="dbg_lbl_cur_temp_mash_title">
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Maische</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLabel" name="dbg_lbl_cur_temp_mash">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>--°C</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
               <item row="2" column="2">
                <widget class="SelectAllDoubleSpinBox" name="dbg_dsb_cur_temp_mash">
                 <property name="value">
@@ -2799,23 +2896,8 @@ border-radius: 16px;
                 </property>
                </widget>
               </item>
-              <item row="2" column="4">
-               <widget class="SelectAllDoubleSpinBox" name="dbg_dsb_cur_temp_fill"/>
-              </item>
-              <item row="2" column="5">
-               <widget class="SelectAllDoubleSpinBox" name="dbg_dsb_cur_temp_cook"/>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QGroupBox" name="dbg_grb_dwell">
-             <property name="title">
-              <string>Dwell</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_11">
-              <item row="0" column="2">
-               <widget class="QPushButton" name="dbg_btn_dwell_percentage">
+              <item row="5" column="2">
+               <widget class="QPushButton" name="dbg_btn_cur_temp_mash">
                 <property name="font">
                  <font>
                   <pointsize>13</pointsize>
@@ -2826,27 +2908,10 @@ border-radius: 16px;
                 </property>
                </widget>
               </item>
-              <item row="0" column="0">
-               <widget class="QProgressBar" name="dbg_pgb_dwell_percentage">
-                <property name="value">
-                 <number>0</number>
-                </property>
-                <property name="textVisible">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="SelectAllDoubleSpinBox" name="dbg_dsb_dwell_percentage">
-                <property name="value">
-                 <double>99.000000000000000</double>
-                </property>
-               </widget>
-              </item>
              </layout>
             </widget>
            </item>
-           <item>
+           <item row="4" column="0" colspan="2">
             <spacer name="verticalSpacer_2">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
