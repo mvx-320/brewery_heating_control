@@ -79,13 +79,6 @@ def main():
             serial_reader_thread = ThreadSimSer(mash, fill, cook)
             serial_reader_thread.start()
 
-            try:
-                serial_reader_thread.sim_engine.time_s_changed.disconnect()
-                print("Disconnected serial_reader_thead")
-            except TypeError as e:
-                print(f'Not connected / TypeError: {e}')
-            except Exception as e:
-                print(f'Different error / {type(e).__name__}: {e}')
             serial_reader_thread.sim_engine.time_s_changed.connect(on_time_s_changed)
 
             ui.lbl_connection_status.setText("Arduino nicht verbunden. Simulation läuft ...")
