@@ -17,6 +17,12 @@ if the plate should be on/off and with how much electric power the indution plat
 | 2 | timer runs | green | 
 | 3 | timer finished | red |
 - Time is internal mostly processed as ds (deciseconds) of type int for beeing fast and don't waste space with floats
+## Intervals
+| Component | Interval | Rate | Description |
+|---|---|---|---|
+| `PidValuesService.dt` | 1 s | 1 Hz | Controls how often the PID recalculates `heat_val` for each pot. Liquid doesn't change meaningfully faster. |
+| `ThreadReadSer.interval` | 0.5 s | 2 Hz | Talks synchronized to the Arduino. Runs independently. `cur_temp`should come faster that 1Hz. |
+| `pot.interval_ds` | 0.1 s (`interval_ds = 1`) | 10 Hz | Drives the visible countdown/progress bar for the current dwell. Runs faster purely for UI smoothness. |
 
 ## Get Started
 ### Branch Info

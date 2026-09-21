@@ -1,7 +1,7 @@
 import random
 from src.components.enums.pot_type import PotType
-from src.db_service.db_sim_config import SimConfigService
-from src.db_service.db_pid_values import PidValuesService
+from src.services.db.db_sim_config import SimConfigService
+from src.services.db.db_pid_values import PidValuesService
 from simulation.components.models.sim_state import SimState
 
 class ThermalSystem:

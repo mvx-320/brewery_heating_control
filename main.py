@@ -76,7 +76,7 @@ def main():
         except (serial.SerialException, PermissionError) as e:
             logging.error(f"Exception caught: {type(e).__name__}: {str(e)}")
 
-            serial_reader_thread = ThreadSimSer(mash, fill, cook)
+            serial_reader_thread = ThreadSimSer(mash, fill, cook, heat_regulate_thread.regulation_tick)
             serial_reader_thread.start()
 
             serial_reader_thread.sim_engine.time_s_changed.connect(on_time_s_changed)
@@ -450,6 +450,24 @@ def main():
         s = int(time_s % 60)
         ui.dbg_lbl_time_s.setText(f'{h:02d}:{m:02d}:{s:02d}')
     # connect is in _create_brewery_connection()
+
+    def override_cur_time_plus_01m():
+        if DEBUG:
+            global serial_reader_thread
+            serial_reader_thread.request_forward(60);
+    ui.dbg_btn_plus_01min.clicked.connect(override_cur_time_plus_01m)
+
+    def override_cur_time_plus_05m():
+        if DEBUG:
+            global serial_reader_thread
+            serial_reader_thread.request_forward(5 * 60);
+    ui.dbg_btn_plus_05min.clicked.connect(override_cur_time_plus_05m)
+
+    def override_cur_time_plus_15m():
+        if DEBUG:
+            global serial_reader_thread
+            serial_reader_thread.request_forward(15 * 60);
+    ui.dbg_btn_plus_15min.clicked.connect(override_cur_time_plus_15m)
         
     #region SHOW UI
     # Override closeEvent to show confirmation dialog

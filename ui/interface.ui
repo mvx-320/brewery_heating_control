@@ -2293,7 +2293,7 @@ border-radius: 16px;
 }
 
 QWidget#wdg_settings_left {
-	border: 4px solid lightgray;
+	border: 4px solid gray;
 	border-radius: 16px;
 }</string>
              </property>
@@ -2353,7 +2353,7 @@ QWidget#wdg_settings_left {
 }
 
 QWidget#wdg_settings_right {
-	border: 4px solid lightgray;
+	border: 4px solid gray;
 	border-radius: 16px;
 }</string>
              </property>
@@ -2658,7 +2658,7 @@ background-color: rgb(36, 31, 49);
 }
 
 QWidget#wdg_debug {
-border: 4px solid rgb(50,50,70);
+border: 4px solid rgb(150,50,70);
 border-radius: 16px;
 }</string>
           </property>
@@ -2672,50 +2672,84 @@ border-radius: 16px;
               </sizepolicy>
              </property>
              <property name="title">
-              <string>Time</string>
+              <string>Manipuliert die Zeit nur für den PID! (Nicht für die Töpfe bzw. Rasten)</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_13">
-              <item row="0" column="4">
-               <widget class="QPushButton" name="dbg_btn_time_s_write">
-                <property name="text">
-                 <string>Write</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="dbg_lbl_time_s">
-                <property name="text">
-                 <string>HH:MM:SS</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="3">
-               <widget class="QSpinBox" name="spinBox_2"/>
-              </item>
-              <item row="1" column="0">
+              <item row="1" column="1">
                <widget class="QPushButton" name="dbg_btn_plus_01min">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>80</width>
+                  <height>40</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>+1 min</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
-               <widget class="QSpinBox" name="spinBox"/>
+              <item row="1" column="2" colspan="2">
+               <widget class="QPushButton" name="dbg_btn_plus_05min">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>80</width>
+                  <height>40</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>+5 min</string>
+                </property>
+               </widget>
               </item>
               <item row="1" column="4">
                <widget class="QPushButton" name="dbg_btn_plus_15min">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>80</width>
+                  <height>40</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>+15 min</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QSpinBox" name="spinBox_4"/>
-              </item>
-              <item row="1" column="1" colspan="3">
-               <widget class="QPushButton" name="dbg_btn_plus_05min">
+              <item row="1" column="0">
+               <widget class="QLabel" name="dbg_lbl_time_s">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                 </font>
+                </property>
                 <property name="text">
-                 <string>+5 min</string>
+                 <string>HH:MM:SS</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -2744,18 +2778,24 @@ border-radius: 16px;
               </sizepolicy>
              </property>
              <property name="title">
-              <string>Dwell</string>
+              <string>Rastzeit Maische</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_11">
               <item row="0" column="2">
                <widget class="QPushButton" name="dbg_btn_dwell_percentage">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>40</height>
+                 </size>
+                </property>
                 <property name="font">
                  <font>
                   <pointsize>13</pointsize>
                  </font>
                 </property>
                 <property name="text">
-                 <string>Write</string>
+                 <string>Überschreiben</string>
                 </property>
                </widget>
               </item>
@@ -2777,6 +2817,17 @@ border-radius: 16px;
               </item>
               <item row="0" column="1">
                <widget class="SelectAllDoubleSpinBox" name="dbg_dsb_dwell_percentage">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>40</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
                 <property name="value">
                  <double>99.000000000000000</double>
                 </property>
@@ -2788,7 +2839,7 @@ border-radius: 16px;
            <item row="0" column="0" colspan="2">
             <widget class="QGroupBox" name="dbg_grb_temp">
              <property name="title">
-              <string>Temperatur</string>
+              <string>Temperatur der Töpfe</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_12">
               <item row="5" column="4">
@@ -2799,7 +2850,7 @@ border-radius: 16px;
                  </font>
                 </property>
                 <property name="text">
-                 <string>Write</string>
+                 <string>Überschreiben</string>
                 </property>
                </widget>
               </item>
@@ -2811,7 +2862,7 @@ border-radius: 16px;
                  </font>
                 </property>
                 <property name="text">
-                 <string>Write</string>
+                 <string>Überschreiben</string>
                 </property>
                </widget>
               </item>
@@ -2923,7 +2974,7 @@ border-radius: 16px;
                  </font>
                 </property>
                 <property name="text">
-                 <string>Write</string>
+                 <string>Überschreiben</string>
                 </property>
                </widget>
               </item>
