@@ -3,8 +3,9 @@ sys.path.append("src")
 
 from PyQt5.QtCore import QObject, QMutex, QMutexLocker, pyqtSignal
 
-from gui.dwell_frame import Dwell
-from pots.pots import Pot
+from src.gui.dwell_frame import Dwell
+from src.components.pots.pots import Pot
+from src.components.enums.pot_type import PotType
 
 class DwellPot(Pot):
     dwell_array_mutex = QMutex() # TODO: Maybe use lock() and unlock() if QMutexLocker is not working.
@@ -25,11 +26,10 @@ class DwellPot(Pot):
     dwell_finished = pyqtSignal()
     tar_temp_changed = pyqtSignal(float)
     
-    def __init__(self, name, debug_enabled, interval_ds= 1, dt= 0.1, kp= 0.5, ki= 1.5, kd= 0): # ki war vorher bei 0.2
-       super().__init__(name, debug_enabled, dt= dt, kp= kp, ki= ki, kd= kd)
+    def __init__(self, pot_type: PotType): 
+       super().__init__(pot_type)
        self._rest_time_ds: int = 0
         
-       self.interval_ds = interval_ds  # Dezisekunden (1 ds = 100ms)
        self._run_state = 0
         
     # region getter, setter

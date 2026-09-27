@@ -92,9 +92,9 @@ def main():
 
 
     #region POTS
-    mash = DwellPot(PotType.MASH, DEBUG)
-    fill = Pot(PotType.FILL, DEBUG)
-    cook = CookPot(PotType.COOK, DEBUG) # TODO: Pot must be replaced with HopPot with multiple timers that alarm the brewer on certain times to the end of cooking
+    mash = DwellPot(PotType.MASH)
+    fill = Pot(PotType.FILL)
+    cook = CookPot(PotType.COOK) # TODO: Pot must be replaced with HopPot with multiple timers that alarm the brewer on certain times to the end of cooking
 
 
     #region INTERFACE

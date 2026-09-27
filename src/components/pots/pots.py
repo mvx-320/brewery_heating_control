@@ -13,7 +13,7 @@ class Pot(QObject):
     temp_now_changed = pyqtSignal(float)
     heat_val_changed = pyqtSignal(float)
     
-    def __init__(self, pot_type: PotType, debug_enabled: bool, dt= 0.1, kp= 5, ki= 0.1, kd= 0): # before kp= 2.9, ki= 0.3
+    def __init__(self, pot_type: PotType):
         super().__init__()
         self.logger = logging.getLogger(__name__)
         self.pot_type = pot_type
@@ -22,7 +22,6 @@ class Pot(QObject):
         self._temp_tar = 0.0
         self._heat_val = 0.0 # 0.0 - 1.0
         self.heat_regulation = False
-        self.debug_enabled = debug_enabled
         self.pid = PidContoller(*PidValuesService.get_pid_values(self.pot_type)) # * = unpacking-operator
 
         # Thermal System for the pot is in sim_engine.py. It shouldn't be initialized in the deployed state

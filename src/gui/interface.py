@@ -58,7 +58,7 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QWidget#wdg_cook {\n"
-"border: 4px solid rgb(90,100,0);\n"
+"border: 4px solid rgb(0,100,0);\n"
 "border-radius: 16px;\n"
 "}")
         self.wdg_cook.setObjectName("wdg_cook")
@@ -911,7 +911,7 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QWidget#wdg_timer {\n"
-"border: 4px solid rgb(90,100,0);\n"
+"border: 4px solid rgb(0,100,0);\n"
 "border-radius: 16px;\n"
 "}")
         self.wdg_timer.setObjectName("wdg_timer")
@@ -1506,7 +1506,7 @@ class Ui_MainWindow(object):
         self.dbg_lbl_cur_temp_mash_title.setText(_translate("MainWindow", "Maische"))
         self.dbg_lbl_cur_temp_mash.setText(_translate("MainWindow", "--°C"))
         self.dbg_btn_cur_temp_mash.setText(_translate("MainWindow", "Überschreiben"))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_debug), _translate("MainWindow", "Debug"))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_debug), _translate("MainWindow", "Simulation"))
         self.lbl_connection_status.setText(_translate("MainWindow", "Arduino nicht verbunden. Programm läuft mit Simulation..."))
         self.actionMit_Arduino_verbinden.setText(_translate("MainWindow", "Mit Arduino verbinden..."))
 from src.gui.selectalldoublespinbox import SelectAllDoubleSpinBox

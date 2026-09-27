@@ -1,5 +1,6 @@
 from PyQt5.QtCore import pyqtSignal 
 from src.components.pots.pots import Pot
+from src.components.enums.pot_type import PotType
 
 
 class CookPot(Pot):
@@ -7,11 +8,10 @@ class CookPot(Pot):
    run_state_changed = pyqtSignal(int)
 
     
-   def __init__(self, name, debug_enabled, interval_ds= 1, dt= 0.1, kp= 0.5, ki= 1.5, kd= 0): # ki war vorher bei 0.2
-       super().__init__(name, debug_enabled, dt= dt, kp= kp, ki= ki, kd= kd)
+   def __init__(self, pot_type: PotType):
+       super().__init__(pot_type)
        self._rest_time_ds: int = 0
         
-       self.interval_ds = interval_ds  # Dezisekunden (1 ds = 100ms)
        self._run_state = 0
         
         
