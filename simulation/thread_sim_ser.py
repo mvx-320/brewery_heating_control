@@ -29,12 +29,6 @@ class ThreadSimSer(QThread):
             
             time.sleep(self.interval)
 
-    def advance_to(self, target_s):
-        self.sim_engine.advance_to(target_s)
-
-    def forward(self, delta_s: float):
-        self.sim_engine.forward(delta_s)
-
     def stop(self):
         self.running = False
 

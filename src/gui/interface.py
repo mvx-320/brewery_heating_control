@@ -1019,7 +1019,7 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QWidget#wdg_settings_left {\n"
-"    border: 4px solid lightgray;\n"
+"    border: 4px solid gray;\n"
 "    border-radius: 16px;\n"
 "}")
         self.wdg_settings_left.setObjectName("wdg_settings_left")
@@ -1043,7 +1043,7 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QWidget#wdg_settings_right {\n"
-"    border: 4px solid lightgray;\n"
+"    border: 4px solid gray;\n"
 "    border-radius: 16px;\n"
 "}")
         self.wdg_settings_right.setObjectName("wdg_settings_right")
@@ -1173,7 +1173,7 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QWidget#wdg_debug {\n"
-"border: 4px solid rgb(50,50,70);\n"
+"border: 4px solid rgb(150,50,70);\n"
 "border-radius: 16px;\n"
 "}")
         self.wdg_debug.setObjectName("wdg_debug")
@@ -1188,25 +1188,33 @@ class Ui_MainWindow(object):
         self.dbg_grb_time.setObjectName("dbg_grb_time")
         self.gridLayout_13 = QtWidgets.QGridLayout(self.dbg_grb_time)
         self.gridLayout_13.setObjectName("gridLayout_13")
-        self.dbg_btn_plus_01min = QtWidgets.QPushButton(self.dbg_grb_time)
-        self.dbg_btn_plus_01min.setObjectName("dbg_btn_plus_01min")
-        self.gridLayout_13.addWidget(self.dbg_btn_plus_01min, 1, 0, 1, 1)
-        self.dbg_btn_plus_15min = QtWidgets.QPushButton(self.dbg_grb_time)
-        self.dbg_btn_plus_15min.setObjectName("dbg_btn_plus_15min")
-        self.gridLayout_13.addWidget(self.dbg_btn_plus_15min, 1, 2, 1, 1)
         self.dbg_btn_time_s_write = QtWidgets.QPushButton(self.dbg_grb_time)
         self.dbg_btn_time_s_write.setObjectName("dbg_btn_time_s_write")
-        self.gridLayout_13.addWidget(self.dbg_btn_time_s_write, 0, 2, 1, 1)
-        self.dbg_btn_plus_05min = QtWidgets.QPushButton(self.dbg_grb_time)
-        self.dbg_btn_plus_05min.setObjectName("dbg_btn_plus_05min")
-        self.gridLayout_13.addWidget(self.dbg_btn_plus_05min, 1, 1, 1, 1)
+        self.gridLayout_13.addWidget(self.dbg_btn_time_s_write, 0, 4, 1, 1)
         self.dbg_lbl_time_s = QtWidgets.QLabel(self.dbg_grb_time)
         self.dbg_lbl_time_s.setObjectName("dbg_lbl_time_s")
         self.gridLayout_13.addWidget(self.dbg_lbl_time_s, 0, 0, 1, 1)
-        self.dbg_dsb_time_s_dist = SelectAllDoubleSpinBox(self.dbg_grb_time)
-        self.dbg_dsb_time_s_dist.setObjectName("dbg_dsb_time_s_dist")
-        self.gridLayout_13.addWidget(self.dbg_dsb_time_s_dist, 0, 1, 1, 1)
+        self.spinBox_2 = QtWidgets.QSpinBox(self.dbg_grb_time)
+        self.spinBox_2.setObjectName("spinBox_2")
+        self.gridLayout_13.addWidget(self.spinBox_2, 0, 3, 1, 1)
+        self.dbg_btn_plus_01min = QtWidgets.QPushButton(self.dbg_grb_time)
+        self.dbg_btn_plus_01min.setObjectName("dbg_btn_plus_01min")
+        self.gridLayout_13.addWidget(self.dbg_btn_plus_01min, 1, 0, 1, 1)
+        self.spinBox = QtWidgets.QSpinBox(self.dbg_grb_time)
+        self.spinBox.setObjectName("spinBox")
+        self.gridLayout_13.addWidget(self.spinBox, 0, 2, 1, 1)
+        self.dbg_btn_plus_15min = QtWidgets.QPushButton(self.dbg_grb_time)
+        self.dbg_btn_plus_15min.setObjectName("dbg_btn_plus_15min")
+        self.gridLayout_13.addWidget(self.dbg_btn_plus_15min, 1, 4, 1, 1)
+        self.spinBox_4 = QtWidgets.QSpinBox(self.dbg_grb_time)
+        self.spinBox_4.setObjectName("spinBox_4")
+        self.gridLayout_13.addWidget(self.spinBox_4, 0, 1, 1, 1)
+        self.dbg_btn_plus_05min = QtWidgets.QPushButton(self.dbg_grb_time)
+        self.dbg_btn_plus_05min.setObjectName("dbg_btn_plus_05min")
+        self.gridLayout_13.addWidget(self.dbg_btn_plus_05min, 1, 1, 1, 3)
         self.gridLayout_14.addWidget(self.dbg_grb_time, 2, 1, 1, 1)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_14.addItem(spacerItem1, 4, 0, 1, 2)
         self.dbg_grb_dwell = QtWidgets.QGroupBox(self.wdg_debug)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -1309,8 +1317,6 @@ class Ui_MainWindow(object):
         self.dbg_btn_cur_temp_mash.setObjectName("dbg_btn_cur_temp_mash")
         self.gridLayout_12.addWidget(self.dbg_btn_cur_temp_mash, 5, 2, 1, 1)
         self.gridLayout_14.addWidget(self.dbg_grb_temp, 0, 0, 1, 2)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout_14.addItem(spacerItem1, 4, 0, 1, 2)
         self.gridLayout_3.addWidget(self.wdg_debug, 0, 0, 1, 1)
         self.tab_widget.addTab(self.tab_debug, "")
         self.verticalLayout_11.addWidget(self.tab_widget)
@@ -1482,24 +1488,24 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "45"))
         self.tbl_dwell_names.setSortingEnabled(__sortingEnabled)
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_settings), _translate("MainWindow", "    Einstellungen    "))
-        self.dbg_grb_time.setTitle(_translate("MainWindow", "Time"))
+        self.dbg_grb_time.setTitle(_translate("MainWindow", "Zeit-Manipulation"))
+        self.dbg_btn_time_s_write.setText(_translate("MainWindow", "Überschreiben"))
+        self.dbg_lbl_time_s.setText(_translate("MainWindow", "HH:MM:SS"))
         self.dbg_btn_plus_01min.setText(_translate("MainWindow", "+1 min"))
         self.dbg_btn_plus_15min.setText(_translate("MainWindow", "+15 min"))
-        self.dbg_btn_time_s_write.setText(_translate("MainWindow", "Write"))
         self.dbg_btn_plus_05min.setText(_translate("MainWindow", "+5 min"))
-        self.dbg_lbl_time_s.setText(_translate("MainWindow", "TextLabel"))
-        self.dbg_grb_dwell.setTitle(_translate("MainWindow", "Dwell"))
-        self.dbg_btn_dwell_percentage.setText(_translate("MainWindow", "Write"))
-        self.dbg_grb_temp.setTitle(_translate("MainWindow", "Temperatur"))
-        self.dbg_btn_cur_temp_fill.setText(_translate("MainWindow", "Write"))
-        self.dbg_btn_cur_temp_cook.setText(_translate("MainWindow", "Write"))
+        self.dbg_grb_dwell.setTitle(_translate("MainWindow", "Rastzeit-Maische-Manipulation"))
+        self.dbg_btn_dwell_percentage.setText(_translate("MainWindow", "Überschreiben"))
+        self.dbg_grb_temp.setTitle(_translate("MainWindow", "Temperatur der Töpfe"))
+        self.dbg_btn_cur_temp_fill.setText(_translate("MainWindow", "Überschreiben"))
+        self.dbg_btn_cur_temp_cook.setText(_translate("MainWindow", "Überschreiben"))
         self.dbg_lbl_cur_temp_cook_title.setText(_translate("MainWindow", "Kochen"))
         self.dbg_lbl_cur_temp_fill.setText(_translate("MainWindow", "--°C"))
         self.dbg_lbl_cur_temp_fill_title.setText(_translate("MainWindow", "Nachguss"))
         self.dbg_lbl_cur_temp_cook.setText(_translate("MainWindow", "--°C"))
         self.dbg_lbl_cur_temp_mash_title.setText(_translate("MainWindow", "Maische"))
         self.dbg_lbl_cur_temp_mash.setText(_translate("MainWindow", "--°C"))
-        self.dbg_btn_cur_temp_mash.setText(_translate("MainWindow", "Write"))
+        self.dbg_btn_cur_temp_mash.setText(_translate("MainWindow", "Überschreiben"))
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_debug), _translate("MainWindow", "Debug"))
         self.lbl_connection_status.setText(_translate("MainWindow", "Arduino nicht verbunden. Programm läuft mit Simulation..."))
         self.actionMit_Arduino_verbinden.setText(_translate("MainWindow", "Mit Arduino verbinden..."))

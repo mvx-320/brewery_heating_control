@@ -62,21 +62,6 @@ class SimEngine(QObject):
         self._sync_pots_from_systems()
         return self.time_s
 
-    def advance_to(self, target_s: float):
-        if target_s <= self.time_s:
-            self.logger.info(f'advance_to: Target {target_s}s is not in the future (currently {self.time_s}s).')
-            return self.time_s
-
-        steps = int(round(target_s - self.time_s))
-        self.logger.info(f'Time jump: {self.time_s}s -> {target_s}s ({steps}s simulated)')
-        self.step_seconds(steps)
-        return self.time_s
-
-    def forward(self, delta_s: float):
-        if delta_s <= 0:
-            return self.time_s
-        return self.step_seconds(int(round(delta_s)))
-    
     def reset(self):
         self.time_s = 0.0
         thermal_systems_locker = QMutexLocker(self.thermal_systems_lock)

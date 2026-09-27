@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QTimer, QObject
 
-from src.db_service.db_pid_values import PidValuesService
+from src.services.db.db_pid_values import PidValuesService
 
 
 class PeriodHeatReg(QObject):
@@ -18,7 +18,8 @@ class PeriodHeatReg(QObject):
         self.time_cook_thread = time_cook_thread
 
 
-    def run(self):
+    def regulation_tick(self):
+        # MASH ########################################################################################################
         if self.mash.heat_regulation:
             self.mash.heat_val, _ = self.mash.pid.calculate(self.mash.temp_tar, self.mash.temp_now)
             if self.mash.run_state == 1 and self.mash.temp_now >= self.mash.temp_tar:
@@ -26,15 +27,18 @@ class PeriodHeatReg(QObject):
                     self.time_mash_thread.start()
                     self.mash.run_state = 2
                 else:
+                    self.mash.run_state = 2
                     self.mash.dwell_finished.emit()
         else:
             self.mash.heat_val = 0.0
 
+        # FILL ########################################################################################################
         if self.fill.heat_regulation:
             self.fill.heat_val, _ = self.fill.pid.calculate(self.fill.temp_tar, self.fill.temp_now)
         else:
             self.fill.heat_val = 0.0
 
+        # COOK ########################################################################################################
         if self.cook.heat_regulation:
             self.cook.heat_val, _ = self.cook.pid.calculate(self.cook.temp_tar, self.cook.temp_now)
             if self.cook.run_state == 1 and self.cook.temp_now >= self.cook.temp_tar:
@@ -45,6 +49,11 @@ class PeriodHeatReg(QObject):
                     self.cook.dwell_finished.emit()
         else:
             self.cook.heat_val = 0.0
+        ###############################################################################################################
+
+
+    def run(self):
+        self.regulation_tick()
                     
             
     def start(self):

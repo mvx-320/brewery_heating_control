@@ -2293,7 +2293,7 @@ border-radius: 16px;
 }
 
 QWidget#wdg_settings_left {
-	border: 4px solid lightgray;
+	border: 4px solid gray;
 	border-radius: 16px;
 }</string>
              </property>
@@ -2353,7 +2353,7 @@ QWidget#wdg_settings_left {
 }
 
 QWidget#wdg_settings_right {
-	border: 4px solid lightgray;
+	border: 4px solid gray;
 	border-radius: 16px;
 }</string>
              </property>
@@ -2658,7 +2658,7 @@ background-color: rgb(36, 31, 49);
 }
 
 QWidget#wdg_debug {
-border: 4px solid rgb(50,50,70);
+border: 4px solid rgb(150,50,70);
 border-radius: 16px;
 }</string>
           </property>
@@ -2672,13 +2672,13 @@ border-radius: 16px;
               </sizepolicy>
              </property>
              <property name="title">
-              <string>Time</string>
+              <string>Zeit-Manipulation</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_13">
               <item row="0" column="4">
                <widget class="QPushButton" name="dbg_btn_time_s_write">
                 <property name="text">
-                 <string>Write</string>
+                 <string>Überschreiben</string>
                 </property>
                </widget>
               </item>
@@ -2744,7 +2744,7 @@ border-radius: 16px;
               </sizepolicy>
              </property>
              <property name="title">
-              <string>Dwell</string>
+              <string>Rastzeit-Maische-Manipulation</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_11">
               <item row="0" column="2">
@@ -2755,7 +2755,7 @@ border-radius: 16px;
                  </font>
                 </property>
                 <property name="text">
-                 <string>Write</string>
+                 <string>Überschreiben</string>
                 </property>
                </widget>
               </item>
@@ -2788,7 +2788,7 @@ border-radius: 16px;
            <item row="0" column="0" colspan="2">
             <widget class="QGroupBox" name="dbg_grb_temp">
              <property name="title">
-              <string>Temperatur</string>
+              <string>Temperatur der Töpfe</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_12">
               <item row="5" column="4">
@@ -2799,7 +2799,7 @@ border-radius: 16px;
                  </font>
                 </property>
                 <property name="text">
-                 <string>Write</string>
+                 <string>Überschreiben</string>
                 </property>
                </widget>
               </item>
@@ -2811,7 +2811,7 @@ border-radius: 16px;
                  </font>
                 </property>
                 <property name="text">
-                 <string>Write</string>
+                 <string>Überschreiben</string>
                 </property>
                </widget>
               </item>
@@ -2923,7 +2923,7 @@ border-radius: 16px;
                  </font>
                 </property>
                 <property name="text">
-                 <string>Write</string>
+                 <string>Überschreiben</string>
                 </property>
                </widget>
               </item>

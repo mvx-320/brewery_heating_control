@@ -4,7 +4,7 @@ sys.path.append("src/components")
 from PyQt5.QtCore import QObject, pyqtSignal, QMutex, QMutexLocker
 
 from src.components.enums.pot_type import PotType
-from src.db_service.db_pid_values import PidValuesService
+from src.services.db.db_pid_values import PidValuesService
 from src.components.pid_controller import PidContoller
 
 
