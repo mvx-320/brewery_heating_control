@@ -26,7 +26,8 @@ from src.background_services.runtime_environment import DwellRuntimeEnvironment
 
 from simulation.thread_sim_ser import ThreadSimSer
 
-DEBUG = True # TODO: Set false in production
+SIMULATION = True # TODO: Set False in production
+C_PROFILE = False # Set False in production. Get performance profile. 
 
 serial_reader_thread = None # Gets real serial thread or simulation
 
@@ -44,8 +45,8 @@ def main():
                         force=True
     )
 
-    if DEBUG:
-        # console output for debugging
+    if SIMULATION:
+        # console output for simulation
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.INFO)
         console_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d | %(message)s')
@@ -117,8 +118,8 @@ def main():
     ui = interface.Ui_MainWindow()
     ui.setupUi(MainWindow)
     
-    if not DEBUG:
-        ui.tab_widget.removeTab(ui.tab_widget.indexOf(ui.tab_debug))
+    if not SIMULATION:
+        ui.tab_widget.removeTab(ui.tab_widget.indexOf(ui.tab_simulation))
     
     # Open in full screen look glitchy, because when starting the fixed size gets displayed for a short time
     # screen_rect = QtWidgets.QDesktopWidget().availableGeometry()
@@ -164,17 +165,17 @@ def main():
 
     def mash_temp_changed(new_temp):
         ui.lbl_cur_temp_mash.setText(f'{new_temp :.2f} °C')
-        ui.dbg_lbl_cur_temp_mash.setText(f'{new_temp :.2f} °C') # Shows mash temperature in debug tab
+        ui.dbg_lbl_cur_temp_mash.setText(f'{new_temp :.2f} °C') # Shows mash temperature in simulation tab
     mash.temp_now_changed.connect(mash_temp_changed) # connect
     
     def fill_temp_changed(new_temp):
         ui.lbl_cur_temp_fill.setText(f'{new_temp :.2f} °C')
-        ui.dbg_lbl_cur_temp_fill.setText(f'{new_temp :.2f} °C') # Shows fill temperature in debug tab
+        ui.dbg_lbl_cur_temp_fill.setText(f'{new_temp :.2f} °C') # Shows fill temperature in simulation tab
     fill.temp_now_changed.connect(fill_temp_changed) # connect
     
     def cook_temp_changed(new_temp):
         ui.lbl_cur_temp_cook.setText(f'{new_temp :.2f} °C')
-        ui.dbg_lbl_cur_temp_cook.setText(f'{new_temp :.2f} °C') # Shows cook temperature in debug tab
+        ui.dbg_lbl_cur_temp_cook.setText(f'{new_temp :.2f} °C') # Shows cook temperature in simulation tab
     cook.temp_now_changed.connect(cook_temp_changed) # connect
     
 
@@ -411,25 +412,25 @@ def main():
     ui.btn_connect2arduino.clicked.connect(connect_arduino)
 
 
-    # region UI - DEBUG TAB
+    # region UI - SIMULATION TAB
     # --- TEMPERATURE OVERRIDE ----------------------------------------------------------------------------------------
     def override_cur_temp_mash():
         new_temp = ui.dbg_dsb_cur_temp_mash.value()
-        if DEBUG and type(new_temp) == float and new_temp > 0:
+        if SIMULATION and type(new_temp) == float and new_temp > 0:
             global serial_reader_thread
             serial_reader_thread.sim_engine.thermal_systems[PotType.MASH].state.override(new_temp)
     ui.dbg_btn_cur_temp_mash.clicked.connect(override_cur_temp_mash)
 
     def override_cur_temp_fill():
         new_temp = ui.dbg_dsb_cur_temp_fill.value()
-        if DEBUG and type(new_temp) == float and new_temp > 0:
+        if SIMULATION and type(new_temp) == float and new_temp > 0:
             global serial_reader_thread
             serial_reader_thread.sim_engine.thermal_systems[PotType.FILL].state.override(new_temp)
     ui.dbg_btn_cur_temp_fill.clicked.connect(override_cur_temp_fill)
 
     def override_cur_temp_cook():
         new_temp = ui.dbg_dsb_cur_temp_cook.value()
-        if DEBUG and type(new_temp) == float and new_temp > 0:
+        if SIMULATION and type(new_temp) == float and new_temp > 0:
             global serial_reader_thread
             serial_reader_thread.sim_engine.thermal_systems[PotType.COOK].state.override(new_temp)
     ui.dbg_btn_cur_temp_cook.clicked.connect(override_cur_temp_cook)
@@ -500,7 +501,7 @@ def main():
     sys.exit(app.exec_())
 
 
-if 0: #DEBUG:
+if C_PROFILE:
     cProfile.run('main()')
 else:
     main()

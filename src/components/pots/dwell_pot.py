@@ -55,8 +55,9 @@ class DwellPot(Pot):
         self._rest_time_ds = new_time
         self.rest_time_ds_changed.emit(new_time)
             
+    # SIMULATION ONLY TODO: Move to DwellController later
     def set_rest_time_ds_percentage(self, percentage: float):
-        if not self.debug_enabled: return
+        if not self.simulation_enabled: return # TODO: simulation_enabled is not a thing
 
         locker = QMutexLocker(self.dwell_array_mutex)
         total_time_ds = self._dwell_array[self._current_dwell_index].tar_time_ds

@@ -18,7 +18,7 @@ class Pot(QObject):
         self.logger = logging.getLogger(__name__)
         self.pot_type = pot_type
         self.temp_now_lock = QMutex()
-        self._temp_now = 0.0 # Overriten from serial component and Debug -> temp_now_low
+        self._temp_now = 0.0 # Overriten from serial component and Simulation -> temp_now_low
         self._temp_tar = 0.0
         self._heat_val = 0.0 # 0.0 - 1.0
         self.heat_regulation = False

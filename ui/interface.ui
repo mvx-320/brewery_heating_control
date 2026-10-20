@@ -2645,19 +2645,19 @@ QWidget#wdg_settings_right {
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_debug">
+      <widget class="QWidget" name="tab_simulation">
        <attribute name="title">
         <string>Simulation</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
-         <widget class="QWidget" name="wdg_debug" native="true">
+         <widget class="QWidget" name="wdg_simulation" native="true">
           <property name="styleSheet">
            <string notr="true">* {
 background-color: rgb(36, 31, 49);
 }
 
-QWidget#wdg_debug {
+QWidget#wdg_simulation {
 border: 4px solid rgb(150,50,70);
 border-radius: 16px;
 }</string>

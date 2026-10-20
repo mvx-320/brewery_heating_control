@@ -1163,23 +1163,23 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setStretch(1, 1)
         self.gridLayout_2.addWidget(self.wdg_settings, 0, 0, 1, 1)
         self.tab_widget.addTab(self.tab_settings, "")
-        self.tab_debug = QtWidgets.QWidget()
-        self.tab_debug.setObjectName("tab_debug")
-        self.gridLayout_3 = QtWidgets.QGridLayout(self.tab_debug)
+        self.tab_simulation = QtWidgets.QWidget()
+        self.tab_simulation.setObjectName("tab_simulation")
+        self.gridLayout_3 = QtWidgets.QGridLayout(self.tab_simulation)
         self.gridLayout_3.setObjectName("gridLayout_3")
-        self.wdg_debug = QtWidgets.QWidget(self.tab_debug)
-        self.wdg_debug.setStyleSheet("* {\n"
+        self.wdg_simulation = QtWidgets.QWidget(self.tab_simulation)
+        self.wdg_simulation.setStyleSheet("* {\n"
 "background-color: rgb(36, 31, 49);\n"
 "}\n"
 "\n"
-"QWidget#wdg_debug {\n"
+"QWidget#wdg_simulation {\n"
 "border: 4px solid rgb(150,50,70);\n"
 "border-radius: 16px;\n"
 "}")
-        self.wdg_debug.setObjectName("wdg_debug")
-        self.gridLayout_14 = QtWidgets.QGridLayout(self.wdg_debug)
+        self.wdg_simulation.setObjectName("wdg_simulation")
+        self.gridLayout_14 = QtWidgets.QGridLayout(self.wdg_simulation)
         self.gridLayout_14.setObjectName("gridLayout_14")
-        self.dbg_grb_time = QtWidgets.QGroupBox(self.wdg_debug)
+        self.dbg_grb_time = QtWidgets.QGroupBox(self.wdg_simulation)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -1215,7 +1215,7 @@ class Ui_MainWindow(object):
         self.gridLayout_14.addWidget(self.dbg_grb_time, 2, 1, 1, 1)
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_14.addItem(spacerItem1, 4, 0, 1, 2)
-        self.dbg_grb_dwell = QtWidgets.QGroupBox(self.wdg_debug)
+        self.dbg_grb_dwell = QtWidgets.QGroupBox(self.wdg_simulation)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -1241,7 +1241,7 @@ class Ui_MainWindow(object):
         self.dbg_dsb_dwell_percentage.setObjectName("dbg_dsb_dwell_percentage")
         self.gridLayout_11.addWidget(self.dbg_dsb_dwell_percentage, 0, 1, 1, 1)
         self.gridLayout_14.addWidget(self.dbg_grb_dwell, 2, 0, 1, 1)
-        self.dbg_grb_temp = QtWidgets.QGroupBox(self.wdg_debug)
+        self.dbg_grb_temp = QtWidgets.QGroupBox(self.wdg_simulation)
         self.dbg_grb_temp.setObjectName("dbg_grb_temp")
         self.gridLayout_12 = QtWidgets.QGridLayout(self.dbg_grb_temp)
         self.gridLayout_12.setObjectName("gridLayout_12")
@@ -1317,8 +1317,8 @@ class Ui_MainWindow(object):
         self.dbg_btn_cur_temp_mash.setObjectName("dbg_btn_cur_temp_mash")
         self.gridLayout_12.addWidget(self.dbg_btn_cur_temp_mash, 5, 2, 1, 1)
         self.gridLayout_14.addWidget(self.dbg_grb_temp, 0, 0, 1, 2)
-        self.gridLayout_3.addWidget(self.wdg_debug, 0, 0, 1, 1)
-        self.tab_widget.addTab(self.tab_debug, "")
+        self.gridLayout_3.addWidget(self.wdg_simulation, 0, 0, 1, 1)
+        self.tab_widget.addTab(self.tab_simulation, "")
         self.verticalLayout_11.addWidget(self.tab_widget)
         self.lbl_connection_status = QtWidgets.QLabel(self.centralWidget)
         font = QtGui.QFont()
@@ -1506,7 +1506,7 @@ class Ui_MainWindow(object):
         self.dbg_lbl_cur_temp_mash_title.setText(_translate("MainWindow", "Maische"))
         self.dbg_lbl_cur_temp_mash.setText(_translate("MainWindow", "--°C"))
         self.dbg_btn_cur_temp_mash.setText(_translate("MainWindow", "Überschreiben"))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_debug), _translate("MainWindow", "Simulation"))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_simulation), _translate("MainWindow", "Simulation"))
         self.lbl_connection_status.setText(_translate("MainWindow", "Arduino nicht verbunden. Programm läuft mit Simulation..."))
         self.actionMit_Arduino_verbinden.setText(_translate("MainWindow", "Mit Arduino verbinden..."))
 from src.gui.selectalldoublespinbox import SelectAllDoubleSpinBox
