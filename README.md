@@ -17,6 +17,7 @@ if the plate should be on/off and with how much electric power the indution plat
 | 2 | timer runs | green | 
 | 3 | timer finished | red |
 - Time is internal mostly processed as ds (deciseconds) of type int for beeing fast and don't waste space with floats
+- `DriverSerial` and `DriverSimulation` du a very similar thing to the programm. They get the heating power values and give back the current temperature.
 
 ## Get Started
 ### Branch Info
