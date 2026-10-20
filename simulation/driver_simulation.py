@@ -3,12 +3,12 @@ from PyQt5.QtCore import QThread
 from simulation.sim_engine import SimEngine
 
 
-class ThreadSimSer(QThread):
+class DriverSimulation(QThread):
 
     def __init__(self, mash, fill, cook):
         super().__init__()
         self.logger = logging.getLogger(__name__)
-        self.logger.info('ThreadSimSer initializing...')
+        self.logger.info('DriverSimulation initializing...')
         self.mash = mash
         self.fill = fill
         self.cook = cook

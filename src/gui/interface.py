@@ -1026,14 +1026,14 @@ class Ui_MainWindow(object):
         self.verticalLayout_9 = QtWidgets.QVBoxLayout(self.wdg_settings_left)
         self.verticalLayout_9.setContentsMargins(12, 12, 12, 12)
         self.verticalLayout_9.setObjectName("verticalLayout_9")
-        self.btn_connect2arduino = QtWidgets.QPushButton(self.wdg_settings_left)
-        self.btn_connect2arduino.setMinimumSize(QtCore.QSize(0, 50))
+        self.btn_connect_serial = QtWidgets.QPushButton(self.wdg_settings_left)
+        self.btn_connect_serial.setMinimumSize(QtCore.QSize(0, 50))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(False)
-        self.btn_connect2arduino.setFont(font)
-        self.btn_connect2arduino.setObjectName("btn_connect2arduino")
-        self.verticalLayout_9.addWidget(self.btn_connect2arduino)
+        self.btn_connect_serial.setFont(font)
+        self.btn_connect_serial.setObjectName("btn_connect_serial")
+        self.verticalLayout_9.addWidget(self.btn_connect_serial)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_9.addItem(spacerItem)
         self.horizontalLayout.addWidget(self.wdg_settings_left)
@@ -1333,11 +1333,9 @@ class Ui_MainWindow(object):
         self.lbl_connection_status.setObjectName("lbl_connection_status")
         self.verticalLayout_11.addWidget(self.lbl_connection_status)
         MainWindow.setCentralWidget(self.centralWidget)
-        self.actionMit_Arduino_verbinden = QtWidgets.QAction(MainWindow)
-        self.actionMit_Arduino_verbinden.setObjectName("actionMit_Arduino_verbinden")
 
         self.retranslateUi(MainWindow)
-        self.tab_widget.setCurrentIndex(2)
+        self.tab_widget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -1412,7 +1410,7 @@ class Ui_MainWindow(object):
         self.label_5.setText(_translate("MainWindow", "Hopfengabe 2:"))
         self.label_4.setText(_translate("MainWindow", "Hopfengabe 1:"))
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_control), _translate("MainWindow", "    Steuerung    "))
-        self.btn_connect2arduino.setText(_translate("MainWindow", "Mit Arduino verbinden..."))
+        self.btn_connect_serial.setText(_translate("MainWindow", "Mit Brauerei verbinden..."))
         self.tbl_dwell_names.setSortingEnabled(True)
         item = self.tbl_dwell_names.horizontalHeaderItem(0)
         item.setText(_translate("MainWindow", "Rastname"))
@@ -1507,8 +1505,7 @@ class Ui_MainWindow(object):
         self.dbg_lbl_cur_temp_mash.setText(_translate("MainWindow", "--°C"))
         self.dbg_btn_cur_temp_mash.setText(_translate("MainWindow", "Überschreiben"))
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_simulation), _translate("MainWindow", "Simulation"))
-        self.lbl_connection_status.setText(_translate("MainWindow", "Arduino nicht verbunden. Programm läuft mit Simulation..."))
-        self.actionMit_Arduino_verbinden.setText(_translate("MainWindow", "Mit Arduino verbinden..."))
+        self.lbl_connection_status.setText(_translate("MainWindow", "Brauerei nicht verbunden. Programm läuft mit Simulation..."))
 from src.gui.selectalldoublespinbox import SelectAllDoubleSpinBox
 
 

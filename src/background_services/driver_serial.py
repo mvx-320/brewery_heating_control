@@ -3,12 +3,12 @@ import serial, time, logging
 from PyQt5.QtCore import QThread
 
 
-class ThreadReadSer(QThread):
+class DriverSerial(QThread):
 
     def __init__(self, mash, fill, cook):
         super().__init__()
         self.logger = logging.getLogger(__name__)
-        self.logger.info("ThreadArduino initializing...")
+        self.logger.info("DriverSerial initializing...")
         self.mash = mash
         self.fill = fill
         self.cook = cook

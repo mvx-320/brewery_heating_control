@@ -47,7 +47,7 @@ color: lightgray;
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_control">
        <attribute name="title">
@@ -2311,7 +2311,7 @@ QWidget#wdg_settings_left {
                <number>12</number>
               </property>
               <item>
-               <widget class="QPushButton" name="btn_connect2arduino">
+               <widget class="QPushButton" name="btn_connect_serial">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -2325,7 +2325,7 @@ QWidget#wdg_settings_left {
                  </font>
                 </property>
                 <property name="text">
-                 <string>Mit Arduino verbinden...</string>
+                 <string>Mit Brauerei verbinden...</string>
                 </property>
                </widget>
               </item>
@@ -2952,7 +2952,7 @@ border-radius: 16px;
 }</string>
       </property>
       <property name="text">
-       <string>Arduino nicht verbunden. Programm läuft mit Simulation...</string>
+       <string>Brauerei nicht verbunden. Programm läuft mit Simulation...</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -2961,11 +2961,6 @@ border-radius: 16px;
     </item>
    </layout>
   </widget>
-  <action name="actionMit_Arduino_verbinden">
-   <property name="text">
-    <string>Mit Arduino verbinden...</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>

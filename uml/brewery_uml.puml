@@ -8,7 +8,7 @@ class no_class << main.py >> {
   <font color=blue>from</font> pots <font color=blue>import</font> Pot, TimerPot
   <font color=blue>import</font> interface
   <font color=blue>from</font> periodic_classes <font color=blue>import</font> PeriodHeatReg, PeriodTimePot
-  <font color=blue>from</font> thread_read_ser <font color=blue>import</font> ThreadReadSer
+  <font color=blue>from</font> driver_thread <font color=blue>import</font> DriverSerial
   __
   <font color=gray>### POTS</font>
   +<font color=purple>**mash: TimerPot**</font>
@@ -37,8 +37,8 @@ class no_class << main.py >> {
   <font color=gray>### HEAT REGULATION PERIOD</font>
   +<font color=green>**heat_regulate_thread: PeriodHeatReg**</font>
 
-  <font color=gray>### SERIAL READER THREAD</font>
-  +<font color=darkred>**serial_reader_thread: ThreadReadSer**</font>
+  <font color=gray>### DRIVER THREAD</font>
+  +<font color=darkred>**driver_thread: DriverSerial**</font>
   __
   <font color=gray>### UI CONNECT</font>
   +mash_temp_changed(new_temp: float): void
@@ -162,7 +162,7 @@ class PeriodTimePot << periodic_classes.py >> #d6f0da{
   +<font color=purple>**pot: TimerPot**</font>
 }
 
-class ThreadReadSer << thread_read_ser.py >> #ffc2bb{
+class DriverSerial << driver_serial.py >> #ffc2bb{
   <font color=blue>import</font> serial, time
   <font color=blue>from</font> PyQt5.QtCore <font color=blue>import</font> QThread
   __
@@ -254,7 +254,7 @@ PeriodTimePot --|> QObject
 no_class o-- "2" PeriodTimePot: time_mash_thread\ntime_cook_thread
 PeriodTimePot o-- "1" QTimer: timer
 
-no_class o-- "1" ThreadReadSer: serial_reader_thread
+no_class o-- "1" DriverSerial: driver_serial
 
 Pot --|> QObject
 no_class o-- "3" Pot : mash\nfill\ncook

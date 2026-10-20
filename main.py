@@ -21,15 +21,15 @@ from src.gui import interface, dwell_frame
 from src.gui.splash_screen import create_brewery_splash
 from src.background_services.timer_heat_regulation import PeriodHeatReg
 from src.background_services.timer_pot import PeriodTimePot
-from src.background_services.thread_arduino import ThreadReadSer
+from background_services.driver_serial import DriverSerial
 from src.background_services.runtime_environment import DwellRuntimeEnvironment
 
-from simulation.thread_sim_ser import ThreadSimSer
+from simulation.driver_simulation import DriverSimulation
 
 SIMULATION = True # TODO: Set False in production
 C_PROFILE = False # Set False in production. Get performance profile. 
 
-serial_reader_thread = None # Gets real serial thread or simulation
+driver_thread = None # Gets real serial thread or simulation
 
 
 def main():
@@ -59,33 +59,33 @@ def main():
 
     #region INIT ARD|SIM
     def _create_brewery_connection():
-        global serial_reader_thread
-        if serial_reader_thread is not None:
-            serial_reader_thread.stop()
-            serial_reader_thread = None
+        global driver_thread
+        if driver_thread is not None:
+            driver_thread.stop()
+            driver_thread = None
         logging.info("Starting _create_brewery_connection()...")
         try:
-            logging.info("Creating ThreadReadSer...")
-            serial_reader_thread = ThreadReadSer(mash, fill, cook)
+            logging.info("Creating DriverSerial...")
+            driver_thread = DriverSerial(mash, fill, cook)
             logging.info("Initializing serial port...")
-            serial_reader_thread.initialize_serial()  # Initialize serial port here
+            driver_thread.initialize_serial()  # Initialize serial port here
             logging.info("Starting serial thread...")
-            serial_reader_thread.start()
-            ui.lbl_connection_status.setText("Arduino ist verbunden")
+            driver_thread.start()
+            ui.lbl_connection_status.setText("Brauerei ist verbunden")
             ui.lbl_connection_status.setStyleSheet("QLabel {background-color: darkgreen; color: lightgray; border-radius: 5;}")
-            logging.info("Arduino successfully connected")
+            logging.info("Serial connection successful")
         except (serial.SerialException, PermissionError) as e:
             logging.error(f"Exception caught: {type(e).__name__}: {str(e)}")
 
-            serial_reader_thread = ThreadSimSer(mash, fill, cook)
-            serial_reader_thread.start()
+            driver_thread = DriverSimulation(mash, fill, cook)
+            driver_thread.start()
 
-            serial_reader_thread.sim_engine.time_s_changed.connect(on_time_s_changed)
+            driver_thread.sim_engine.time_s_changed.connect(on_time_s_changed)
 
-            ui.lbl_connection_status.setText("Arduino nicht verbunden. Simulation läuft ...")
+            ui.lbl_connection_status.setText("Brauerei nicht verbunden. Simulation läuft ...")
             ui.lbl_connection_status.setStyleSheet("QLabel {background-color: darkred; color: lightgray; border-radius: 5;}")
 
-    def connect_arduino():
+    def connect_serial_device():
         ui.lbl_connection_status.setText("Verbindungsversuch läuft...")
         ui.lbl_connection_status.setStyleSheet("QLabel {background-color: rgb(80, 80, 0); color: lightgray; border-radius: 5;}")
         QtWidgets.QApplication.processEvents()
@@ -143,8 +143,6 @@ def main():
 #       ui.lbl_prop_switch.setPixmap(pic_prop)
 #       ui.lbl_pump_switch.setPixmap(pic_pump)
 
-# # TODO: Set alarm icons in the dwells
-    
     
     #region TIME POT PERIOD
     time_mash_thread = PeriodTimePot(mash)
@@ -409,7 +407,7 @@ def main():
     # TODO: !!! Hier sicherstellen das alles im Hintergrund funktioniert (Das die Threads laufen)
 
     # region UI - SETTINGS
-    ui.btn_connect2arduino.clicked.connect(connect_arduino)
+    ui.btn_connect_serial.clicked.connect(connect_serial_device)
 
 
     # region UI - SIMULATION TAB
@@ -417,22 +415,22 @@ def main():
     def override_cur_temp_mash():
         new_temp = ui.dbg_dsb_cur_temp_mash.value()
         if SIMULATION and type(new_temp) == float and new_temp > 0:
-            global serial_reader_thread
-            serial_reader_thread.sim_engine.thermal_systems[PotType.MASH].state.override(new_temp)
+            global driver_thread
+            driver_thread.sim_engine.thermal_systems[PotType.MASH].state.override(new_temp)
     ui.dbg_btn_cur_temp_mash.clicked.connect(override_cur_temp_mash)
 
     def override_cur_temp_fill():
         new_temp = ui.dbg_dsb_cur_temp_fill.value()
         if SIMULATION and type(new_temp) == float and new_temp > 0:
-            global serial_reader_thread
-            serial_reader_thread.sim_engine.thermal_systems[PotType.FILL].state.override(new_temp)
+            global driver_thread
+            driver_thread.sim_engine.thermal_systems[PotType.FILL].state.override(new_temp)
     ui.dbg_btn_cur_temp_fill.clicked.connect(override_cur_temp_fill)
 
     def override_cur_temp_cook():
         new_temp = ui.dbg_dsb_cur_temp_cook.value()
         if SIMULATION and type(new_temp) == float and new_temp > 0:
-            global serial_reader_thread
-            serial_reader_thread.sim_engine.thermal_systems[PotType.COOK].state.override(new_temp)
+            global driver_thread
+            driver_thread.sim_engine.thermal_systems[PotType.COOK].state.override(new_temp)
     ui.dbg_btn_cur_temp_cook.clicked.connect(override_cur_temp_cook)
 
     # --- DWELL PERCENTAGE OVERRIDE ----------------------------------------------------------------------------------
@@ -468,12 +466,12 @@ def main():
             
             # Stop threads in background
             def cleanup_threads():
-                global serial_reader_thread
+                global driver_thread
                 heat_regulate_thread.stop()
                 time_mash_thread.stop()
                 time_cook_thread.stop()
-                if serial_reader_thread is not None:
-                    serial_reader_thread.stop()
+                if driver_thread is not None:
+                    driver_thread.stop()
                 # Give threads a moment to finish
                 sleep(0.5)
                 sys.exit(0)
@@ -490,7 +488,7 @@ def main():
     MainWindow.show()
     # MainWindow.showMaximized() # Looks glitchy because MainWindow has a fixed size
 
-    QtCore.QTimer.singleShot(100, connect_arduino)
+    QtCore.QTimer.singleShot(100, connect_serial_device)
 
 
     # TODO: I should clean up the dwells from the interface.ui or put some persistant stored dwells in there
