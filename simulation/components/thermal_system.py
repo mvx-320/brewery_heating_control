@@ -1,12 +1,12 @@
 import random
 from src.components.enums.pot_type import PotType
-from src.services.db.db_sim_config import SimConfigService
-from src.services.db.db_pid_values import PidValuesService
+from src.services.db.db_sim_config import DbSimConfig
+from src.services.db.db_pid_values import DbPidValues
 from simulation.components.models.sim_state import SimState
 
 class ThermalSystem:
     def __init__(self, pot: PotType, seed=42):
-        self.POT_CONFIG = SimConfigService.pot_sim_config[pot]
+        self.POT_CONFIG = DbSimConfig.pot_sim_config[pot]
 
         self.rng = random.Random(seed)
 
@@ -47,13 +47,13 @@ class ThermalSystem:
         heat_loss_w = self.calculate_heat_loss(self.state.fluid_temperature_c)
         net_power_w = delivered_power_w - heat_loss_w
 
-        temperature_change_c = net_power_w * PidValuesService.dt / self.total_heat_capacity_j_per_k
+        temperature_change_c = net_power_w * DbPidValues.dt / self.total_heat_capacity_j_per_k
 
         self.state.fluid_temperature_c += temperature_change_c
         self.state.heater_power_w = heater_power_w
 
         # Model the pysical sensor as a first-order response.
-        sensor_alpha = min(1.0, PidValuesService.dt / self.POT_CONFIG.sensor_time_constant_s)
+        sensor_alpha = min(1.0, DbPidValues.dt / self.POT_CONFIG.sensor_time_constant_s)
 
         self.state.sensor_temperature_c += sensor_alpha * (self.state.fluid_temperature_c - self.state.sensor_temperature_c)
 

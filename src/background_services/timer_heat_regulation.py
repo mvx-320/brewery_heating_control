@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QTimer, QObject
 
-from src.services.db.db_pid_values import PidValuesService
+from src.services.db.db_pid_values import DbPidValues
 
 
 class PeriodHeatReg(QObject):
@@ -57,7 +57,7 @@ class PeriodHeatReg(QObject):
                     
             
     def start(self):
-        self.timer.start(int(PidValuesService.dt * 1000))
+        self.timer.start(int(DbPidValues.dt * 1000))
                  
     def stop(self):
         self.timer.stop()

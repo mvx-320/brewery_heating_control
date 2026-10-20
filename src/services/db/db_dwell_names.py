@@ -1,6 +1,6 @@
 from src.components.models.dwell_name import DwellName
 
-class DwellNameService:
+class DbDwellNames:
     dwell_names: list[DwellName] = [
         DwellName("Gummirast", 35.0, 40.0, 15.0, 30.0),
         DwellName("Weizenrast", 40.0, 48.0, 15.0, 15.0),

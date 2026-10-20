@@ -1,7 +1,7 @@
 from src.components.enums.pot_type import PotType
 from simulation.components.models.sim_pot_config import SimPotConfig
 
-class SimConfigService:
+class DbSimConfig:
     pot_sim_config: dict[PotType: SimPotConfig] = {
         PotType.MASH: SimPotConfig(
             temperature_fluid_init_c=20.0,

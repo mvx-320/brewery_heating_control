@@ -2,7 +2,7 @@ from src.components.enums.pot_type import PotType
 from src.components.models.pid_gains import PidGains
 from src.components.models.pid_cool_factor import PidCoolFactor
 
-class PidValuesService:
+class DbPidValues:
 
     dt = 1
 
