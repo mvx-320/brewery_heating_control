@@ -1,3 +1,4 @@
+from src.components.enums.dwell_state import DwellState
 from src.components.enums.pot_type import PotType
 from src.services.db.db_dwells import DbDwells
 
@@ -9,10 +10,12 @@ class DwellController:
     '''
 
     def __init__(self, pot_type : PotType = PotType.MASH):
+        # TODO: Maybe add Logger here
         self.pot_type = pot_type
 
-        self._current_dwell_index = -1;
-        self._rest_time_s = 0;
+        self._dwell_state = DwellState.IDLE
+        self._current_dwell_index = -1
+        self._rest_time_s = 0
 
         # DB
         self._dwell_array = DbDwells.dwell_array

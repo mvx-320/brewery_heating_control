@@ -9,15 +9,31 @@ These heating plates are HENDI Modell 3500 M with electic power values from 500W
 They have self built in circuit boards which can decide if the plate should be controlled by the Arduino, 
 if the plate should be on/off and with how much electric power the indution plates should heat.
 ## Process info
-- `run_state`:
+- Time is internal handled in seconds (bcs the system is really slow) but interpolated for better UX
+    - All inputs from the UI are handled with signals so it doesn't lag (up to one second).
+- `DriverSerial` and `DriverSimulation` du a very similar thing to the programm. They get the heating power values and give back the current temperature.
+### Enums:
+#### `PotType`:
+| Value | Pot |
+| --- | --- |
+| 0 | Mash |
+| 1 | Fill |
+| 2 | Cook | 
+#### `DwellState`:
+Finite State Machine that determines the State of the DwellController
+<table>
+ <tr>
+  <td><img src="./docs/pictures/DwellStateGraph.drawio.png" width="600"></td>
+ </tr>
+</table>
+
+### `run_state`:
 | Value | Meaning | Color |
 | --- | --- | --- |
 | 0 | pause/ stopped | gray |
 | 1 | wait for heating | yellow |
 | 2 | timer runs | green | 
 | 3 | timer finished | red |
-- Time is internal mostly processed as ds (deciseconds) of type int for beeing fast and don't waste space with floats
-- `DriverSerial` and `DriverSimulation` du a very similar thing to the programm. They get the heating power values and give back the current temperature.
 
 ## Get Started
 ### Branch Info
