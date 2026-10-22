@@ -5,9 +5,11 @@ from src.components.enums.pot_type import PotType
 from src.components.models.dwell import Dwell
 from src.controls.pid_controller import PidController
 from src.dtos.dwell_events import \
+    DwellArrayChangedEvent, \
     DwellProgressChangedEvent, \
     AlarmTriggeredEvent, \
-    DwellArrayChangedEvent
+    DwellAdvancedEvent, \
+    AllDwellsFinishedEvent
 from src.services.db.db_dwells import DbDwells
 
 
@@ -35,6 +37,9 @@ class DwellController:
         if self._dwell_state in [DwellState.IDLE]:
             return self._to_waiting_state()
         return []
+
+    def stop_mash(self) -> list:
+        pass # TODO: Implement stop_mash logic. Add to DwellStateGraph
 
     def confirm_alarm(self) -> list:
         events = []
@@ -72,8 +77,8 @@ class DwellController:
                 self.rest_time_s -= 1
                 events.append(DwellProgressChangedEvent(
                     dwell_index = self._current_dwell_index,
-                    tar_time_s = self._dwell_array[self._current_dwell_index].tar_time_s,
-                    elapsed_s = self._dwell_array[self._current_dwell_index].tar_time_s - self.rest_time_s
+                    rest_time_s = self.rest_time_s,
+                    total_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
                 ))
 
                 # Transition
@@ -123,7 +128,7 @@ class DwellController:
         self._current_dwell_index += 1
         self.rest_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
         self._dwell_state = DwellState.WAITING
-        return []
+        return [DwellAdvancedEvent(dwell_index=self._current_dwell_index)]
 
     def _to_pending_state(self) -> list:
         self._dwell_state = DwellState.PENDING
@@ -137,7 +142,7 @@ class DwellController:
         self._current_dwell_index = -1
         self.rest_time_s = 0
         self._dwell_state = DwellState.FINISHED
-        return []
+        return [AllDwellsFinishedEvent()]
     #endregion Transitions
 
     @property

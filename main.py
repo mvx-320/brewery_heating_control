@@ -25,7 +25,12 @@ from background_services.driver_serial import DriverSerial
 from src.background_services.runtime_environment import DwellRuntimeEnvironment
 # TODO: Remove when DwellPresenter comes
 from src.dtos.dwell_events import \
-    DwellArrayChangedEvent
+    HeatValChangedEvent, \
+    DwellArrayChangedEvent, \
+    DwellProgressChangedEvent, \
+    AlarmTriggeredEvent, \
+    DwellAdvancedEvent, \
+    AllDwellsFinishedEvent
 
 from simulation.driver_simulation import DriverSimulation
 
@@ -136,7 +141,7 @@ def main():
         '255, 121, 121']
     
 
-    # region SET IMAGES
+    # region Set Images
 #       # Old Path: /home/raspberry/FilesBrewery/assets
 #       app.setWindowIcon(icon_brewery)
 #       ui.lbl_alarm_sym.setPixmap(alarm0)
@@ -147,16 +152,18 @@ def main():
 #       ui.lbl_pump_switch.setPixmap(pic_pump)
 
     
-    #region TIME POT PERIOD
+    #region Drivers, Controllers
+    ##region TIME POT PERIOD
     time_mash_thread = PeriodTimePot(mash) # TODO: Replace with DwellDriver
     time_cook_thread = PeriodTimePot(cook)
     
-    #region HEAT REGULATION PERIOD
-    heat_regulate_thread = PeriodHeatReg(mash, fill, cook, time_mash_thread, time_cook_thread) # TODO: 1st Remove mash, later remove all completely
+    ##region HEAT REGULATION PERIOD
+    heat_regulate_thread = PeriodHeatReg(mash, fill, cook, time_mash_thread, time_cook_thread) # TODO: 1st Remove mash✅, later remove all completely
     heat_regulate_thread.start()
     
-    #region RUNTIME ENVIRONMENT (Mash Process Control)
-    mash_runtime = DwellRuntimeEnvironment(mash, time_mash_thread) # TODO: Remove
+    ##region RUNTIME ENVIRONMENT (Mash Process Control)
+    # mash_runtime = DwellRuntimeEnvironment(mash, time_mash_thread) # TODO: Remove
+    
     
     #region UI CONNECT
     # The Connections and the refered Methods have to stay here.
@@ -210,8 +217,18 @@ def main():
     # region UI - DWELLS
     def _handle_events(events: list): # TODO: Move to DwellPresenter
         for event in events:
-            if isinstance(event, DwellArrayChangedEvent):
-                update_steps(event.dwell_array)
+            if isinstance(event, HeatValChangedEvent):
+                mash.heat_val = event.heat_val
+            elif isinstance(event, DwellArrayChangedEvent):
+                update_dwells(event.dwell_array)
+            elif isinstance(event, DwellProgressChangedEvent):
+                on_dwell_progress(event.dwell_index, event.rest_time_s, event.target_time_s)
+            elif isinstance(event, AlarmTriggeredEvent):
+                on_alarm_triggered(event.dwell_index)
+            elif isinstance(event, DwellAdvancedEvent):
+                pass
+            elif isinstance(event, AllDwellsFinishedEvent):
+                pass
 
     def clear_steps():
         layout = ui.dwell_layout
@@ -223,7 +240,7 @@ def main():
                 widget.setParent(None)
                 widget.deleteLater()
 
-    def update_steps(dwell_array):
+    def update_dwells(dwell_array):
         scroll = ui.steps_scroll.verticalScrollBar()
         print(f'Scroll-Value: {scroll.value()}')
         clear_steps()
@@ -260,31 +277,30 @@ def main():
         dwell_controller.set_dwell_time(index, int(value * 60)) # min → s
 
     def up_clicked_handler(obj):
-        update_steps(dwell_controller.dwell_up(obj))
+        update_dwells(dwell_controller.dwell_up(obj))
 
     def down_clicked_handler(obj):
-        update_steps(dwell_controller.dwell_down(obj))
+        update_dwells(dwell_controller.dwell_down(obj))
         
     def new_clicked_handler(obj):
-        update_steps(dwell_controller.dwell_new(obj))
+        update_dwells(dwell_controller.dwell_new(obj))
 
     def delete_clicked_handler(obj):
-        update_steps(dwell_controller.dwell_delete(obj))
+        update_dwells(dwell_controller.dwell_delete(obj))
 
-    def on_dwell_progress(dwell_index, elapsed_ds, total_ds, remaining_ds):
+    def on_dwell_progress(dwell_index, rest_s, total_s): # TODO: Add interpolation in ds for UX
         for i in range(ui.dwell_layout.count()):
             widget = ui.dwell_layout.itemAt(i).widget()
             if hasattr(widget, 'index') and widget.index == dwell_index:
-                total_seconds = total_ds // 10
-                remaining_seconds = remaining_ds // 10
-                minutes = int(remaining_seconds // 60)
-                seconds = int(remaining_seconds % 60)
-                widget.update_progress(elapsed_ds, total_ds, f"{minutes}:{seconds:02d} min")
+                elapsed_s = total_s - rest_s
+                minutes = int(rest_s // 60)
+                seconds = int(rest_s % 60)
+                widget.update_progress(elapsed_s, total_s, f"{minutes}:{seconds:02d} min")
 
-                ui.dbg_pgb_dwell_percentage.setMaximum(total_ds)
-                ui.dbg_pgb_dwell_percentage.setValue(elapsed_ds)
+                ui.dbg_pgb_dwell_percentage.setMaximum(total_s)
+                ui.dbg_pgb_dwell_percentage.setValue(elapsed_s)
 
-    mash.dwell_progress_changed.connect(on_dwell_progress)
+    # mash.dwell_progress_changed.connect(on_dwell_progress)
 
     def mash_start_clicked():
         dwell_controller.start_mash()
@@ -315,7 +331,7 @@ def main():
         if msg.exec() == QtWidgets.QMessageBox.Ok:
             mash_runtime.confirm_alarm()
 
-    mash_runtime.alarm_triggered.connect(on_alarm_triggered)
+    # mash_runtime.alarm_triggered.connect(on_alarm_triggered)
 
     def update_tar_temp_label(): # TODO: Called from handle_events 
         if mash.current_dwell_index >= 0:
@@ -502,7 +518,7 @@ def main():
 
     # TODO: I should clean up the dwells from the interface.ui or put some persistant stored dwells in there
     # clear_steps()
-    update_steps(mash.get_dwell_array()) # TODO: Should be called in the handle_events function
+    update_dwells(mash.get_dwell_array()) # TODO: Should be called in the handle_events function
     
     # Start the application event loop
     sys.exit(app.exec_())

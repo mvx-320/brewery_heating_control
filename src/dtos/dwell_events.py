@@ -9,8 +9,8 @@ class DwellArrayChangedEvent:
 @dataclass
 class DwellProgressChangedEvent:
     dwell_index: int
-    target_time_s: int
-    elapsed_time_s: int
+    rest_time_s: int
+    total_time_s: int
 
 @dataclass
 class AlarmTriggeredEvent:

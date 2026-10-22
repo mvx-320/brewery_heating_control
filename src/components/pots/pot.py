@@ -20,7 +20,7 @@ class Pot(QObject):
         self.pot_type = pot_type
         self.temp_now_lock = QMutex()
         self._temp_now = 0.0 # Overriten from serial component and  -> temp_now_low
-        self._temp_tar = 0.0
+        # self._temp_tar = 0.0
         self._heat_val = 0.0 # 0.0 - 1.0
         self.heat_regulation = False
 
