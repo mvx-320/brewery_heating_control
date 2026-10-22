@@ -19,9 +19,9 @@ class DwellPot(Pot):
     
     def __init__(self, pot_type: PotType): 
        super().__init__(pot_type)
-       self._rest_time_ds: int = 0
+    #    self._rest_time_ds: int = 0
         
-       self._run_state = 0
+    #    self._run_state = 0
         
     # region getter, setter
     @property
@@ -33,18 +33,18 @@ class DwellPot(Pot):
         self._current_dwell_index = new_index
         self.current_dwell_index_changed.emit(new_index)
         
-    @property
-    def rest_time_ds(self):
-        return self._rest_time_ds
+    # @property
+    # def rest_time_ds(self):
+    #     return self._rest_time_ds
         
-    @rest_time_ds.setter
-    def rest_time_ds(self, new_time: int):
-        if new_time < 0:
-            self.run_state = 3
-            new_time = 0
+    # @rest_time_ds.setter
+    # def rest_time_ds(self, new_time: int):
+    #     if new_time < 0:
+    #         self.run_state = 3
+    #         new_time = 0
                 
-        self._rest_time_ds = new_time
-        self.rest_time_ds_changed.emit(new_time)
+    #     self._rest_time_ds = new_time
+    #     self.rest_time_ds_changed.emit(new_time)
             
     # SIMULATION ONLY TODO: Move to DwellController later
     def set_rest_time_ds_percentage(self, percentage: float):
@@ -58,93 +58,30 @@ class DwellPot(Pot):
         self.rest_time_ds = new_rest_time_ds
 
             
-    @property
-    def run_state(self):
-        return self._run_state
+    # @property
+    # def run_state(self):
+    #     return self._run_state
         
-    @run_state.setter
-    def run_state(self, new_state: int):
-        self.run_state_changed.emit(new_state)
-        self._run_state = new_state
-        self.logger.info(f'{self.pot_type.name}.run_state = {new_state}')
+    # @run_state.setter
+    # def run_state(self, new_state: int):
+    #     self.run_state_changed.emit(new_state)
+    #     self._run_state = new_state
+    #     self.logger.info(f'{self.pot_type.name}.run_state = {new_state}')
 
     # TODO: Add getter, setter für dwell_array
-    @property
-    def tar_temp(self):
-        locker = QMutexLocker(self.dwell_array_mutex) # lockers should prevent race conditions on dwell_array.
-        return self._dwell_array[self._current_dwell_index].tar_temp
-
-    @tar_temp.setter
-    def tar_temp(self, new_temp: float):
-        if new_temp < 0:
-            raise ValueError ("new target value < 0")
-        if new_temp > 120:
-            raise ValueError ("new target value > 120")
-
-        locker = QMutexLocker(self.dwell_array_mutex)
-        self._dwell_array[self._current_dwell_index].tar_temp = new_temp
-        self.tar_temp_changed.emit(new_temp)
-        self.logger.info(f'dwell_array[{self._current_dwell_index}].tar_temp = {new_temp}')
-
-    @property
-    def tar_time_ds(self):
-        locker = QMutexLocker(self.dwell_array_mutex)
-        return self._dwell_array[self._current_dwell_index].tar_time_ds
-    
-    @tar_time_ds.setter
-    def tar_time_ds(self, new_time: int):
-        if new_time < 0:
-            raise ValueError ("new target value < 0")
-
-        locker = QMutexLocker(self.dwell_array_mutex)
-        self._dwell_array[self._current_dwell_index].tar_time_ds = new_time
-        self.logger.info(f'dwell_array[{self._current_dwell_index}].tar_time_ds = {new_time}')
     
     # region dwell_array
-    def get_dwell_array(self) -> list[Dwell]:
-        locker = QMutexLocker(self.dwell_array_mutex)
-        return self._dwell_array
+    # def get_dwell_array(self) -> list[Dwell]:
+    #     locker = QMutexLocker(self.dwell_array_mutex)
+    #     return self._dwell_array
 
-    # --- MOVE DWELLS -------------------------------------------------------------------------------------------------
-    def dwell_up(self, obj) -> list[Dwell]:
-        locker = QMutexLocker(self.dwell_array_mutex)
-        index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
-        if index > 1:
-            del self._dwell_array[index]
-            self._dwell_array.insert(index -1, obj)
-        return self._dwell_array
-
-    def dwell_down(self, obj) -> list[Dwell]:
-        locker = QMutexLocker(self.dwell_array_mutex)
-        index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
-        if index < len(self._dwell_array) -2:
-            del self._dwell_array[index]
-            self._dwell_array.insert(index +1, obj)
-        return self._dwell_array
-
-    def dwell_new(self, obj) -> list[Dwell]:
-        locker = QMutexLocker(self.dwell_array_mutex)
-        index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
-        self._dwell_array.insert(index +1, Dwell(None, None, False))
-        return self._dwell_array
-
-    def dwell_delete(self, obj) -> list[Dwell]:
-        locker = QMutexLocker(self.dwell_array_mutex)
-        index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
-        if (len(self._dwell_array) <= 2):
-            print("Error: There can not be less than 2 dwells")
-            map(lambda d: d.makeBound(), self._dwell_array)
-            return
-        del self._dwell_array[index]
-        return self._dwell_array
-    # -----------------------------------------------------------------------------------------------------------------
 
     # region runtime environment
-    def next_dwell(self):
-        locker = QMutexLocker(self.dwell_array_mutex)
-        if self._current_dwell_index < len(self._dwell_array) -1:
-            self.current_dwell_index = self._current_dwell_index + 1
-            self.logger.info(f'{self.pot_type.name} switched to dwell {self._current_dwell_index}')
-        else:
-            # TODO: Change Pause button to Stop button
-            self.logger.info(f'{self.pot_type.name} reached end of dwell array') 
+    # def next_dwell(self):
+    #     locker = QMutexLocker(self.dwell_array_mutex)
+    #     if self._current_dwell_index < len(self._dwell_array) -1:
+    #         self.current_dwell_index = self._current_dwell_index + 1
+    #         self.logger.info(f'{self.pot_type.name} switched to dwell {self._current_dwell_index}')
+    #     else:
+    #         # TODO: Change Pause button to Stop button
+    #         self.logger.info(f'{self.pot_type.name} reached end of dwell array') 

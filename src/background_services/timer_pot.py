@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QObject, QTimer
 
-class PeriodTimePot(QObject):
+# TODO: Will be removed. Shouldn't be used for mash any more
+class PeriodTimePot(QObject): 
     
     def __init__(self, pot):
         super().__init__()        

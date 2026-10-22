@@ -1,5 +1,5 @@
 from PyQt5.QtCore import pyqtSignal 
-from components.pots.pot import Pot
+from src.components.pots.pot import Pot
 from src.components.enums.pot_type import PotType
 
 

@@ -1,11 +1,13 @@
 from typing import Literal
 
 from src.components.enums.dwell_state import DwellState
-from src.components.pots.pot import Pot
+from src.components.enums.pot_type import PotType
+from src.components.models.dwell import Dwell
 from src.controls.pid_controller import PidController
 from src.dtos.dwell_events import \
     DwellProgressChangedEvent, \
-    AlarmTriggeredEvent
+    AlarmTriggeredEvent, \
+    DwellArrayChangedEvent
 from src.services.db.db_dwells import DbDwells
 
 
@@ -15,10 +17,10 @@ class DwellController:
     No event loop just the logic methods to control the dwells.
     '''
 
-    def __init__(self, pot : Pot):
+    def __init__(self, pot_type : PotType):
         # TODO: Maybe add Logger here
-        self._pot = pot
-        self._pid_controller = PidController(pot) 
+        self._pot_type = pot_type
+        self._pid_controller = PidController(self._pot_type) 
 
         self._dwell_state = DwellState.IDLE
         self._current_dwell_index = -1
@@ -28,19 +30,38 @@ class DwellController:
         self._dwell_array = DbDwells.dwell_array
 
 
-    def tick(self):
+    #region API
+    def start_mash(self) -> list:
+        if self._dwell_state in [DwellState.IDLE]:
+            return self._to_waiting_state()
+        return []
+
+    def confirm_alarm(self) -> list:
+        events = []
+        if self._dwell_state in [DwellState.ALARM]:
+            next_state = self._state_after_alarm()
+            match next_state: # TODO: Move the match to a seperate methode that is called with next_state
+                case DwellState.WAITING:
+                    events += self._to_waiting_state()
+                case DwellState.FINISHED:
+                    events += self._to_finished_state()
+        return events
+    #endregion API
+    
+
+    def tick(self, temp_now: float) -> list: 
         '''
         Execute 1/s
         '''
         events = []
-        events += self.pid_controller.tick()
+        events += self.pid_controller.tick(self._dwell_array[self._current_dwell_index].tar_temp, temp_now)
 
         match self._dwell_state:
             case DwellState.IDLE:
                 return events
 
             case DwellState.WAITING:
-                if self._temp_in_tolerance(self._pot.temp_now):
+                if self._temp_in_tolerance(temp_now):
                     next_state = self._state_after_waiting()
                     match next_state:
                         case DwellState.PENDING:
@@ -68,15 +89,6 @@ class DwellController:
                 return events
 
             case DwellState.ALARM:
-
-                # Transition
-                if "alarm_confirmed":
-                    next_state = self._state_after_alarm()
-                    match next_state:
-                        case DwellState.WAITING:
-                            events += self._to_waiting_state()
-                        case DwellState.FINISHED:
-                            events += self._to_finished_state()
                 return events
 
 
@@ -88,7 +100,7 @@ class DwellController:
         tolerance = DbDwells.temp_tolerance
         return abs(temp_now - temp_tar) <= tolerance
 
-    #region State Transitions
+    #region Transitions
     def _state_after_waiting(self) -> Literal[DwellState.PENDING]:
         return DwellState.PENDING
 
@@ -107,33 +119,108 @@ class DwellController:
     def _last_dwell_check(self) -> bool:
         return self._current_dwell_index + 1 >= len(self._dwell_array)
 
-    def _to_waiting_state(self):
+    def _to_waiting_state(self) -> list:
         self._current_dwell_index += 1
         self.rest_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
         self._dwell_state = DwellState.WAITING
         return []
 
-    def _to_pending_state(self):
+    def _to_pending_state(self) -> list:
         self._dwell_state = DwellState.PENDING
         return []
 
-    def _to_alarm_state(self):
+    def _to_alarm_state(self) -> list:
         self._dwell_state = DwellState.ALARM
         return [AlarmTriggeredEvent(dwell_index=self._current_dwell_index)]
     
-    def _to_finished_state(self):
+    def _to_finished_state(self) -> list:
         self._current_dwell_index = -1
         self.rest_time_s = 0
         self._dwell_state = DwellState.FINISHED
         return []
-    #endregion
+    #endregion Transitions
 
     @property
-    def rest_time_s(self):
+    def rest_time_s(self) -> int:
         return self._rest_time_s
 
     @rest_time_s.setter
-    def rest_time_s(self, new_value):
+    def rest_time_s(self, new_value) -> None:
         if new_value < 0:
             raise ValueError ("new rest time value < 0")
         self._rest_time_s = new_value
+
+    #region DwellArray Manipulation
+    @property
+    def tar_temp(self):
+        return self._dwell_array[self._current_dwell_index].tar_temp
+
+    @tar_temp.setter
+    def tar_temp(self, new_temp: float):
+        if new_temp < 0:
+            raise ValueError ("new target value < 0")
+        if new_temp > 120:
+            raise ValueError ("new target value > 120")
+
+        self._dwell_array[self._current_dwell_index].tar_temp = new_temp
+        self.tar_temp_changed.emit(new_temp)
+        self.logger.info(f'dwell_array[{self._current_dwell_index}].tar_temp = {new_temp}')
+
+    def set_dwell_temp(self, dwell_index: int, new_temp: float):
+        if new_temp < 0:
+            raise ValueError ("new target value < 0")
+        if new_temp > 120:
+            raise ValueError ("new target value > 120")
+
+        self._dwell_array[dwell_index].tar_temp = new_temp
+        self.logger.info(f'dwell_array[{dwell_index}].tar_temp = {new_temp}')
+
+    def set_dwell_time(self, dwell_index: int, new_time: int):
+        if new_time < 0:
+            raise ValueError ("new target value < 0")
+
+        self._dwell_array[dwell_index].tar_time_s = new_time
+        self.logger.info(f'dwell_array[{dwell_index}].tar_time_s = {new_time}')
+
+    @property
+    def tar_time_s(self):
+        return self._dwell_array[self._current_dwell_index].tar_time_s
+    
+    @tar_time_s.setter
+    def tar_time_ds(self, new_time: int):
+        if new_time < 0:
+            raise ValueError ("new target value < 0")
+
+        self._dwell_array[self._current_dwell_index].tar_time_ds = new_time
+        self.logger.info(f'dwell_array[{self._current_dwell_index}].tar_time_ds = {new_time}')
+    #endregion DwellArray Manipulation
+
+    #region Move Dwells # TODO: These need to create events 
+    def dwell_up(self, obj) -> list:
+        index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
+        if index > 1:
+            del self._dwell_array[index]
+            self._dwell_array.insert(index -1, obj)
+        return self._dwell_array
+
+    def dwell_down(self, obj) -> list:
+        index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
+        if index < len(self._dwell_array) -2:
+            del self._dwell_array[index]
+            self._dwell_array.insert(index +1, obj)
+        return [DwellArrayChangedEvent(self._dwell_array)]
+
+    def dwell_new(self, obj) -> list:
+        index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
+        self._dwell_array.insert(index +1, Dwell(None, None, False))
+        return [DwellArrayChangedEvent(self._dwell_array)]
+
+    def dwell_delete(self, obj) -> list:
+        index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
+        if (len(self._dwell_array) <= 2):
+            print("Error: There can not be less than 2 dwells")
+            map(lambda d: d.makeBound(), self._dwell_array)
+            return
+        del self._dwell_array[index]
+        return [DwellArrayChangedEvent(self._dwell_array)]
+    #endregion Move Dwells

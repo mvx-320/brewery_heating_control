@@ -1,7 +1,7 @@
 
 class Dwell:
     
-    def __init__(self, tar_temp: float, tar_time_ds:float, alarm: bool):
+    def __init__(self, tar_temp: float, tar_time_s:float, alarm: bool):
         self.tar_temp = tar_temp 
         self.tar_time_s = tar_time_s 
         self.alarm = alarm

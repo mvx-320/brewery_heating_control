@@ -23,6 +23,9 @@ from src.background_services.timer_heat_regulation import PeriodHeatReg
 from src.background_services.timer_pot import PeriodTimePot
 from background_services.driver_serial import DriverSerial
 from src.background_services.runtime_environment import DwellRuntimeEnvironment
+# TODO: Remove when DwellPresenter comes
+from src.dtos.dwell_events import \
+    DwellArrayChangedEvent
 
 from simulation.driver_simulation import DriverSimulation
 
@@ -93,9 +96,9 @@ def main():
 
 
     #region POTS
-    mash = DwellPot(PotType.MASH)
+    mash = DwellPot(PotType.MASH) # TODO: Use normal Pot
     fill = Pot(PotType.FILL)
-    cook = CookPot(PotType.COOK) # TODO: Pot must be replaced with HopPot with multiple timers that alarm the brewer on certain times to the end of cooking
+    cook = CookPot(PotType.COOK)  # TODO: Use normal Pot
 
 
     #region INTERFACE
@@ -145,15 +148,15 @@ def main():
 
     
     #region TIME POT PERIOD
-    time_mash_thread = PeriodTimePot(mash)
+    time_mash_thread = PeriodTimePot(mash) # TODO: Replace with DwellDriver
     time_cook_thread = PeriodTimePot(cook)
     
     #region HEAT REGULATION PERIOD
-    heat_regulate_thread = PeriodHeatReg(mash, fill, cook, time_mash_thread, time_cook_thread)
+    heat_regulate_thread = PeriodHeatReg(mash, fill, cook, time_mash_thread, time_cook_thread) # TODO: 1st Remove mash, later remove all completely
     heat_regulate_thread.start()
     
     #region RUNTIME ENVIRONMENT (Mash Process Control)
-    mash_runtime = DwellRuntimeEnvironment(mash, time_mash_thread)
+    mash_runtime = DwellRuntimeEnvironment(mash, time_mash_thread) # TODO: Remove
     
     #region UI CONNECT
     # The Connections and the refered Methods have to stay here.
@@ -205,6 +208,11 @@ def main():
     # cook.act_time_changed.connect(cook_time_changed) # connect
     
     # region UI - DWELLS
+    def _handle_events(events: list): # TODO: Move to DwellPresenter
+        for event in events:
+            if isinstance(event, DwellArrayChangedEvent):
+                update_steps(event.dwell_array)
+
     def clear_steps():
         layout = ui.dwell_layout
         
@@ -239,27 +247,29 @@ def main():
         ui.dwell_layout.addStretch()
         
     def temp_changed_handler(index, value):
-        if index == mash.current_dwell_index:
-            mash.tar_temp = value  # Setter emittiert tar_temp_changed → Label update
-        else:
-            mash._dwell_array[index].tar_temp = value
-        if index == mash.current_dwell_index:
-            mash.temp_tar = value  # PID update
+        # if index == mash.current_dwell_index:
+        #     mash.tar_temp = value  # Setter emittiert tar_temp_changed → Label update
+        # else:
+        #     mash._dwell_array[index].tar_temp = value
+        # if index == mash.current_dwell_index:
+        #     mash.temp_tar = value  # PID update
+        dwell_controller.set_dwell_temp(index, value)
 
     def time_changed_handler(index, value):
-        mash._dwell_array[index].tar_time_ds = int(value * 600)  # min → ds (min * 60s * 10)
+        # mash.dwell_array[index].tar_time_s = int(value * 600)  # min → ds (min * 60s * 10)
+        dwell_controller.set_dwell_time(index, int(value * 60)) # min → s
 
     def up_clicked_handler(obj):
-        update_steps(mash.dwell_up(obj))
+        update_steps(dwell_controller.dwell_up(obj))
 
     def down_clicked_handler(obj):
-            update_steps(mash.dwell_down(obj))
+        update_steps(dwell_controller.dwell_down(obj))
         
     def new_clicked_handler(obj):
-        update_steps(mash.dwell_new(obj))
+        update_steps(dwell_controller.dwell_new(obj))
 
     def delete_clicked_handler(obj):
-        update_steps(mash.dwell_delete(obj))
+        update_steps(dwell_controller.dwell_delete(obj))
 
     def on_dwell_progress(dwell_index, elapsed_ds, total_ds, remaining_ds):
         for i in range(ui.dwell_layout.count()):
@@ -277,8 +287,7 @@ def main():
     mash.dwell_progress_changed.connect(on_dwell_progress)
 
     def mash_start_clicked():
-        """Startet/Fortsetzt die Mash-Prozess-Sequenz über die Runtime Environment"""
-        mash_runtime.start_mash()
+        dwell_controller.start_mash()
 
     ui.btn_start_mash.clicked.connect(mash_start_clicked)
 
@@ -308,7 +317,7 @@ def main():
 
     mash_runtime.alarm_triggered.connect(on_alarm_triggered)
 
-    def update_tar_temp_label():
+    def update_tar_temp_label(): # TODO: Called from handle_events 
         if mash.current_dwell_index >= 0:
             dwell_array = mash.get_dwell_array()
             if mash.current_dwell_index < len(dwell_array):
@@ -493,7 +502,7 @@ def main():
 
     # TODO: I should clean up the dwells from the interface.ui or put some persistant stored dwells in there
     # clear_steps()
-    update_steps(mash.get_dwell_array())
+    update_steps(mash.get_dwell_array()) # TODO: Should be called in the handle_events function
     
     # Start the application event loop
     sys.exit(app.exec_())
