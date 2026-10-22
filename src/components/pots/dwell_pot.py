@@ -4,7 +4,7 @@ sys.path.append("src")
 from PyQt5.QtCore import QObject, QMutex, QMutexLocker, pyqtSignal
 
 from src.gui.dwell_frame import Dwell
-from src.components.pots.pots import Pot
+from components.pots.pot import Pot
 from src.components.enums.pot_type import PotType
 
 class DwellPot(Pot):

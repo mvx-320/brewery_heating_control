@@ -3,7 +3,7 @@ class Dwell:
     
     def __init__(self, tar_temp: float, tar_time_ds:float, alarm: bool):
         self.tar_temp = tar_temp 
-        self.tar_time_ds = tar_time_ds 
+        self.tar_time_s = tar_time_s 
         self.alarm = alarm
 
     def getName(self, index: int, dwell_amount: int):

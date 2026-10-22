@@ -4,8 +4,6 @@ sys.path.append("src/components")
 from PyQt5.QtCore import QObject, pyqtSignal, QMutex, QMutexLocker
 
 from src.components.enums.pot_type import PotType
-from src.services.db.db_pid_values import DbPidValues
-from src.components.pid_controller import PidContoller
 
 
 class Pot(QObject):
@@ -25,7 +23,6 @@ class Pot(QObject):
         self._temp_tar = 0.0
         self._heat_val = 0.0 # 0.0 - 1.0
         self.heat_regulation = False
-        self.pid = PidContoller(*DbPidValues.get_pid_values(self.pot_type)) # * = unpacking-operator
 
         # Thermal System for the pot is in sim_engine.py. It shouldn't be initialized in the deployed state
 

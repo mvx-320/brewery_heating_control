@@ -15,7 +15,7 @@ sys.path.append(str(base_path / 'simulation')) # TODO: Not shure why this is the
 from src.components.enums.pot_type import PotType
 from src.components.pots.cook_pot import CookPot
 from src.components.pots.dwell_pot import DwellPot
-from src.components.pots.pots import Pot
+from components.pots.pot import Pot
 
 from src.gui import interface, dwell_frame
 from src.gui.splash_screen import create_brewery_splash

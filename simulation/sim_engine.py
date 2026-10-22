@@ -3,7 +3,7 @@ from PyQt5.QtCore import QObject, QMutex, QMutexLocker, pyqtSignal
 
 from simulation.components.thermal_system import ThermalSystem
 from src.components.enums.pot_type import PotType
-from src.components.pots.pots import Pot
+from components.pots.pot import Pot
 
 class SimEngine(QObject):
     '''

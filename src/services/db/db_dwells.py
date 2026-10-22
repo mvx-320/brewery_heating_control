@@ -11,3 +11,6 @@ class DbDwells:
         Dwell(60.0, 12000, False),
         Dwell(60.0, None, False),   # Ausmaischen: keine Zeit
     ]
+
+    # Tolerance to start the dwell timer
+    temp_tolerance = 0.5

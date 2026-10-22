@@ -2,7 +2,7 @@ import logging
 from src.components.models.pid_gains import PidGains
 from src.components.models.pid_cool_factor import PidCoolFactor
 
-class PidContoller:
+class PidAlgorithm:
 
     def __init__(self, dt, gains30: PidGains, gains80: PidGains, coolfactor: PidCoolFactor, tm_lag):
         self.logger = logging.getLogger(__name__)
