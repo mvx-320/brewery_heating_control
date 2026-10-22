@@ -171,6 +171,9 @@ class DwellController:
         self.tar_temp_changed.emit(new_temp)
         self.logger.info(f'dwell_array[{self._current_dwell_index}].tar_temp = {new_temp}')
 
+    def get_dwell_array(self) -> list[Dwell]:
+        return self._dwell_array
+
     def set_dwell_temp(self, dwell_index: int, new_temp: float):
         if new_temp < 0:
             raise ValueError ("new target value < 0")
