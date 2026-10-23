@@ -19,10 +19,14 @@ from components.pots.pot import Pot
 
 from src.gui import interface, dwell_frame
 from src.gui.splash_screen import create_brewery_splash
-from src.background_services.timer_heat_regulation import PeriodHeatReg
-from src.background_services.timer_pot import PeriodTimePot
-from background_services.driver_serial import DriverSerial
-from src.background_services.runtime_environment import DwellRuntimeEnvironment
+from src.runtime.timer_heat_regulation import PeriodHeatReg
+from src.runtime.timer_pot import PeriodTimePot
+from src.runtime.driver_serial import DriverSerial
+from src.runtime.runtime_environment import DwellRuntimeEnvironment
+from src.components.enums.dwell_state import DwellState
+from src.controls.dwell_controller import DwellController
+from src.controls.pid_controller import PidController
+from src.runtime.period_dwell_controller import PeriodDwellController
 # TODO: Remove when DwellPresenter comes
 from src.dtos.dwell_events import \
     HeatValChangedEvent, \
@@ -65,7 +69,7 @@ def main():
         root_logger.addHandler(console_handler)
 
 
-    #region INIT ARD|SIM
+    #region Serial | Simulation
     def _create_brewery_connection():
         global driver_thread
         if driver_thread is not None:
@@ -98,6 +102,7 @@ def main():
         ui.lbl_connection_status.setStyleSheet("QLabel {background-color: rgb(80, 80, 0); color: lightgray; border-radius: 5;}")
         QtWidgets.QApplication.processEvents()
         QtCore.QTimer.singleShot(1000, _create_brewery_connection)
+    #endregion Serial | Simulation
 
 
     #region POTS
@@ -153,12 +158,16 @@ def main():
 
     
     #region Drivers, Controllers
+    dwell_controller = DwellController(mash.pot_type)
+    pid_controller = PidController(mash.pot_type)
+    period_dwell_controller = PeriodDwellController(mash, dwell_controller, pid_controller)
+    period_dwell_controller.start()  # Start the periodic dwell controller thread
     ##region TIME POT PERIOD
-    time_mash_thread = PeriodTimePot(mash) # TODO: Replace with DwellDriver
+    # time_mash_thread = PeriodTimePot(mash) # TODO: Replace with DwellDriver
     time_cook_thread = PeriodTimePot(cook)
     
     ##region HEAT REGULATION PERIOD
-    heat_regulate_thread = PeriodHeatReg(mash, fill, cook, time_mash_thread, time_cook_thread) # TODO: 1st Remove mash✅, later remove all completely
+    heat_regulate_thread = PeriodHeatReg(mash, fill, cook, time_cook_thread) # TODO: 1st Remove mash✅, later remove all completely
     heat_regulate_thread.start()
     
     ##region RUNTIME ENVIRONMENT (Mash Process Control)
@@ -221,12 +230,13 @@ def main():
                 mash.heat_val = event.heat_val
             elif isinstance(event, DwellArrayChangedEvent):
                 update_dwells(event.dwell_array)
+                on_current_dwell_index_changed(None) # Update tar_temp_label
             elif isinstance(event, DwellProgressChangedEvent):
                 on_dwell_progress(event.dwell_index, event.rest_time_s, event.target_time_s)
             elif isinstance(event, AlarmTriggeredEvent):
                 on_alarm_triggered(event.dwell_index)
             elif isinstance(event, DwellAdvancedEvent):
-                pass
+                on_current_dwell_index_changed(event.dwell_index)
             elif isinstance(event, AllDwellsFinishedEvent):
                 pass
 
@@ -303,12 +313,13 @@ def main():
     # mash.dwell_progress_changed.connect(on_dwell_progress)
 
     def mash_start_clicked():
+        logging.info("Starting mash process...")
         dwell_controller.start_mash()
 
     ui.btn_start_mash.clicked.connect(mash_start_clicked)
 
     def mash_stop_clicked():
-        if not mash_runtime.is_running:
+        if not dwell_controller != DwellState.IDLE:
             return
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Warning)
@@ -316,12 +327,12 @@ def main():
         msg.setText('Möchtest du den Maischprozess wirklich stoppen?')
         msg.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
         if msg.exec() == QtWidgets.QMessageBox.Ok:
-            mash_runtime.stop_mash()
+            dwell_controller.stop_mash()
 
     ui.btn_stop_mash.clicked.connect(mash_stop_clicked)
 
     def on_alarm_triggered(dwell_index):
-        dwell_array = mash.get_dwell_array()
+        dwell_array = dwell_controller.get_dwell_array()
         dwell_name = dwell_array[dwell_index].getName(dwell_index, len(dwell_array))
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -329,13 +340,13 @@ def main():
         msg.setText(f'{dwell_name} (Rast {dwell_index + 1}) ist abgelaufen.\nWeiter zum nächsten Schritt?')
         msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
         if msg.exec() == QtWidgets.QMessageBox.Ok:
-            mash_runtime.confirm_alarm()
+            dwell_controller.confirm_alarm()
 
     # mash_runtime.alarm_triggered.connect(on_alarm_triggered)
 
     def update_tar_temp_label(): # TODO: Called from handle_events 
         if mash.current_dwell_index >= 0:
-            dwell_array = mash.get_dwell_array()
+            dwell_array = dwell_controller.get_dwell_array()
             if mash.current_dwell_index < len(dwell_array):
                 tar_temp = dwell_array[mash.current_dwell_index].tar_temp
                 ui.lbl_tar_temp_mash.setText(f'{tar_temp} °C')
@@ -345,7 +356,7 @@ def main():
     def on_current_dwell_index_changed(_):
         update_tar_temp_label()
 
-    mash.current_dwell_index_changed.connect(on_current_dwell_index_changed)
+    # mash.current_dwell_index_changed.connect(on_current_dwell_index_changed)
     mash.tar_temp_changed.connect(on_current_dwell_index_changed)
     
     # -----------------------------------------------------------------------------------------------------------------
@@ -493,7 +504,8 @@ def main():
             def cleanup_threads():
                 global driver_thread
                 heat_regulate_thread.stop()
-                time_mash_thread.stop()
+                # time_mash_thread.stop()
+                period_dwell_controller.stop()
                 time_cook_thread.stop()
                 if driver_thread is not None:
                     driver_thread.stop()
@@ -518,7 +530,7 @@ def main():
 
     # TODO: I should clean up the dwells from the interface.ui or put some persistant stored dwells in there
     # clear_steps()
-    update_dwells(mash.get_dwell_array()) # TODO: Should be called in the handle_events function
+    # update_dwells(mash.get_dwell_array()) # TODO: Should be called in the handle_events function
     
     # Start the application event loop
     sys.exit(app.exec_())

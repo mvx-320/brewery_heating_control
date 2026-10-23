@@ -1,7 +1,9 @@
 from dataclasses import dataclass
-# TODO: Look which event is needed
 @dataclass
-class HeatValChangedEvent:
+class MashStartedEvent:
+    pass
+@dataclass
+class HeatValChangedEvent: # TODO: Add pid_events and move this one out
     heat_val: float
 @dataclass
 class DwellArrayChangedEvent:
@@ -20,6 +22,6 @@ class AlarmTriggeredEvent:
 class DwellAdvancedEvent:
     dwell_index: int
 
-@dataclass
+@dataclass # TODO: Not used yet
 class AllDwellsFinishedEvent:
     pass

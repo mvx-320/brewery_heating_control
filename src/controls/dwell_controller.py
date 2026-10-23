@@ -1,15 +1,17 @@
+import logging
 from typing import Literal
 
 from src.components.enums.dwell_state import DwellState
 from src.components.enums.pot_type import PotType
 from src.components.models.dwell import Dwell
-from src.controls.pid_controller import PidController
 from src.dtos.dwell_events import \
+    HeatValChangedEvent, \
     DwellArrayChangedEvent, \
     DwellProgressChangedEvent, \
     AlarmTriggeredEvent, \
     DwellAdvancedEvent, \
     AllDwellsFinishedEvent
+from src.controls.pid_controller import PidController
 from src.services.db.db_dwells import DbDwells
 
 
@@ -20,12 +22,12 @@ class DwellController:
     '''
 
     def __init__(self, pot_type : PotType):
-        # TODO: Maybe add Logger here
+        self.logger = logging.getLogger(__name__)
         self._pot_type = pot_type
-        self._pid_controller = PidController(self._pot_type) 
+        self._pid_controller = PidController(self._pot_type)
 
         self._dwell_state = DwellState.IDLE
-        self._current_dwell_index = -1
+        self._current_dwell_index = 0
         self._rest_time_s = 0
 
         # DB
@@ -36,6 +38,8 @@ class DwellController:
     def start_mash(self) -> list:
         if self._dwell_state in [DwellState.IDLE]:
             return self._to_waiting_state()
+        else:
+            self.logger.warning(f"start_mash() called but dwell_state is {self._dwell_state}. Ignoring.")
         return []
 
     def stop_mash(self) -> list:
@@ -59,7 +63,11 @@ class DwellController:
         Execute 1/s
         '''
         events = []
-        events += self.pid_controller.tick(self._dwell_array[self._current_dwell_index].tar_temp, temp_now)
+        if self._dwell_state.is_heating:
+            events += self._pid_controller.tick(self._dwell_array[self._current_dwell_index].tar_temp, temp_now)
+        else:
+            events += [HeatValChangedEvent(0.0)]
+
 
         match self._dwell_state:
             case DwellState.IDLE:
@@ -150,7 +158,7 @@ class DwellController:
         return self._rest_time_s
 
     @rest_time_s.setter
-    def rest_time_s(self, new_value) -> None:
+    def rest_time_s(self, new_value : float) -> None:
         if new_value < 0:
             raise ValueError ("new rest time value < 0")
         self._rest_time_s = new_value

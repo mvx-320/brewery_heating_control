@@ -25,7 +25,7 @@ class PeriodDwellController(QObject):
         events = []
         temp_now = self.pot.temp_now
         events += self.dwell_controller.tick(temp_now)
-        events += self.pid_controller.tick(self.dwell_controller.temp_tar, temp_now)
+        # events += self.pid_controller.tick(self.dwell_controller.temp_tar, temp_now) # pid_controller is called from dwell_controller
         self.events_ready.emit(events)
 
     def start(self):

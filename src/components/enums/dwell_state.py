@@ -7,9 +7,10 @@ class DwellState(Enum):
     ALARM = 3
     FINISHED = 4 # Last dwell is finished
 
-    def heating(self, state: DwellState):
-        return state in [
+    @property
+    def is_heating(self) -> bool:
+        return self in (
             DwellState.WAITING, 
             DwellState.PENDING, 
             DwellState.ALARM
-        ]
+        )

@@ -5,7 +5,7 @@ from src.services.db.db_pid_values import DbPidValues
 
 class PeriodHeatReg(QObject):
     
-    def __init__(self, mash, fill, cook, time_mash_thread, time_cook_thread):
+    def __init__(self, mash, fill, cook, time_cook_thread):
         super().__init__()
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.run)
@@ -14,7 +14,7 @@ class PeriodHeatReg(QObject):
         self.fill = fill
         self.cook = cook
         
-        self.time_mash_thread = time_mash_thread
+        # self.time_mash_thread = time_mash_thread
         self.time_cook_thread = time_cook_thread
 
 
