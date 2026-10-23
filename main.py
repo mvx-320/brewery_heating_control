@@ -12,12 +12,14 @@ now = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
 base_path = Path(__file__).resolve().parent
 sys.path.append(str(base_path / 'simulation')) # TODO: Not shure why this is there
 
+from src.gui.dwell_signals import DwellSignals
 from src.components.enums.pot_type import PotType
 from src.components.pots.cook_pot import CookPot
 from src.components.pots.dwell_pot import DwellPot
 from components.pots.pot import Pot
 
-from src.gui import interface, dwell_frame
+from src.gui.interface import Ui_MainWindow
+from src.gui.dwell_frame import DwellFrame
 from src.gui.splash_screen import create_brewery_splash
 from src.runtime.timer_heat_regulation import PeriodHeatReg
 from src.runtime.timer_pot import PeriodTimePot
@@ -43,6 +45,7 @@ C_PROFILE = False # Set False in production. Get performance profile.
 
 driver_thread = None # Gets real serial thread or simulation
 
+# active_dwell_signal = QtCore.pyqtSignal(int)  
 
 def main():
     
@@ -128,7 +131,7 @@ def main():
     app.processEvents()  # Ensure the splash screen is displayed immediately
     
     MainWindow = QtWidgets.QMainWindow()
-    ui = interface.Ui_MainWindow()
+    ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     
     if not SIMULATION:
@@ -224,21 +227,34 @@ def main():
     # cook.act_time_changed.connect(cook_time_changed) # connect
     
     # region UI - DWELLS
+    dwell_signals = DwellSignals() # HACK: Either move later to DwellPresenter or rebuild update_dwells()
+
     def _handle_events(events: list): # TODO: Move to DwellPresenter
+        logging.info(f"Handling {len(events)} events: {[type(event).__name__ for event in events]}")
         for event in events:
             if isinstance(event, HeatValChangedEvent):
                 mash.heat_val = event.heat_val
+
             elif isinstance(event, DwellArrayChangedEvent):
+                # update_tar_temp_label(event.new_tar_temp) # Update tar_temp_label
                 update_dwells(event.dwell_array)
-                on_current_dwell_index_changed(None) # Update tar_temp_label
+
             elif isinstance(event, DwellProgressChangedEvent):
-                on_dwell_progress(event.dwell_index, event.rest_time_s, event.target_time_s)
+                on_dwell_progress(event.dwell_index, event.rest_time_s, event.total_time_s)
+
             elif isinstance(event, AlarmTriggeredEvent):
                 on_alarm_triggered(event.dwell_index)
+
             elif isinstance(event, DwellAdvancedEvent):
-                on_current_dwell_index_changed(event.dwell_index)
+                logging.info(f"Current dwell index changed to {event.dwell_index}, new target temperature: {event.new_tar_temp}")
+                update_tar_temp_label(event.new_tar_temp)
+                dwell_signals.dwell_advanced.emit(event.dwell_index)
+
             elif isinstance(event, AllDwellsFinishedEvent):
                 pass
+
+
+    period_dwell_controller.events_ready.connect(_handle_events)
 
     def clear_steps():
         layout = ui.dwell_layout
@@ -258,7 +274,7 @@ def main():
         dwell_amount = len(dwell_array)
         for i, obj in enumerate(dwell_array):
 
-            frame = dwell_frame.DwellFrame(i, dwell_amount, obj) 
+            frame = DwellFrame(i, dwell_amount, obj) 
 
             frame.temp_changed.connect(temp_changed_handler)
             frame.time_changed.connect(time_changed_handler)
@@ -267,7 +283,8 @@ def main():
             frame.new_clicked.connect(new_clicked_handler)
             frame.delete_clicked.connect(delete_clicked_handler)
             # Signal-Verbindung für Highlight des aktuellen Dwells
-            mash.current_dwell_index_changed.connect(frame.on_current_dwell_changed)
+            # active_dwell_signal.connect(frame.on_current_dwell_changed)
+            dwell_signals.dwell_advanced.connect(frame.on_current_dwell_changed)
             
             ui.dwell_layout.addWidget(frame)
 
@@ -280,7 +297,8 @@ def main():
         #     mash._dwell_array[index].tar_temp = value
         # if index == mash.current_dwell_index:
         #     mash.temp_tar = value  # PID update
-        dwell_controller.set_dwell_temp(index, value)
+        dwell_controller.set_dwell_temp(index, value) # TODO: Maybe trigger event
+        update_tar_temp_label(dwell_controller.tar_temp) # TODO: Check if this needs change bcs not over central source 
 
     def time_changed_handler(index, value):
         # mash.dwell_array[index].tar_time_s = int(value * 600)  # min → ds (min * 60s * 10)
@@ -299,6 +317,10 @@ def main():
         update_dwells(dwell_controller.dwell_delete(obj))
 
     def on_dwell_progress(dwell_index, rest_s, total_s): # TODO: Add interpolation in ds for UX
+        if (total_s is None) or (rest_s is None):
+            # logging.warning(f"on_dwell_progress called with None values: dwell_index={dwell_index}, rest_s={rest_s}, total_s={total_s}")
+            return
+        
         for i in range(ui.dwell_layout.count()):
             widget = ui.dwell_layout.itemAt(i).widget()
             if hasattr(widget, 'index') and widget.index == dwell_index:
@@ -314,20 +336,24 @@ def main():
 
     def mash_start_clicked():
         logging.info("Starting mash process...")
-        dwell_controller.start_mash()
-
+        events = dwell_controller.start_mash()
+        period_dwell_controller.events_ready.emit(events) 
     ui.btn_start_mash.clicked.connect(mash_start_clicked)
 
     def mash_stop_clicked():
         if not dwell_controller != DwellState.IDLE:
             return
         msg = QtWidgets.QMessageBox()
+        # These 2 lines are to hold msg on top of all windows
+        msg.setWindowModality(QtCore.Qt.ApplicationModal)
+        msg.setWindowFlags(msg.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
         msg.setIcon(QtWidgets.QMessageBox.Warning)
         msg.setWindowTitle('Maischprozess stoppen')
         msg.setText('Möchtest du den Maischprozess wirklich stoppen?')
         msg.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
         if msg.exec() == QtWidgets.QMessageBox.Ok:
-            dwell_controller.stop_mash()
+            events = dwell_controller.stop_mash()
+            period_dwell_controller.events_ready.emit(events)
 
     ui.btn_stop_mash.clicked.connect(mash_stop_clicked)
 
@@ -335,29 +361,33 @@ def main():
         dwell_array = dwell_controller.get_dwell_array()
         dwell_name = dwell_array[dwell_index].getName(dwell_index, len(dwell_array))
         msg = QtWidgets.QMessageBox()
+        # These 2 lines are to hold msg on top of all windows
+        msg.setWindowModality(QtCore.Qt.ApplicationModal)
+        msg.setWindowFlags(msg.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
         msg.setIcon(QtWidgets.QMessageBox.Information)
         msg.setWindowTitle('Rast abgelaufen')
         msg.setText(f'{dwell_name} (Rast {dwell_index + 1}) ist abgelaufen.\nWeiter zum nächsten Schritt?')
         msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
         if msg.exec() == QtWidgets.QMessageBox.Ok:
-            dwell_controller.confirm_alarm()
+            events = dwell_controller.confirm_alarm()
+            period_dwell_controller.events_ready.emit(events)
 
     # mash_runtime.alarm_triggered.connect(on_alarm_triggered)
 
-    def update_tar_temp_label(): # TODO: Called from handle_events 
-        if mash.current_dwell_index >= 0:
-            dwell_array = dwell_controller.get_dwell_array()
-            if mash.current_dwell_index < len(dwell_array):
-                tar_temp = dwell_array[mash.current_dwell_index].tar_temp
-                ui.lbl_tar_temp_mash.setText(f'{tar_temp} °C')
+    def update_tar_temp_label(tar_temp : float): # TODO: Called from handle_events 
+        if (tar_temp is not None and tar_temp >= 0):
+            # dwell_array = dwell_controller.get_dwell_array()
+            # if mash.current_dwell_index < len(dwell_array):
+                # tar_temp = dwell_array[mash.current_dwell_index].tar_temp
+            ui.lbl_tar_temp_mash.setText(f'{tar_temp} °C')
         else:
             ui.lbl_tar_temp_mash.setText('--°C')
 
-    def on_current_dwell_index_changed(_):
-        update_tar_temp_label()
+    # def on_current_dwell_index_changed(_):
+    #     update_tar_temp_label()
 
     # mash.current_dwell_index_changed.connect(on_current_dwell_index_changed)
-    mash.tar_temp_changed.connect(on_current_dwell_index_changed)
+    # mash.tar_temp_changed.connect(on_current_dwell_index_changed)
     
     # -----------------------------------------------------------------------------------------------------------------
 #       def mash_start_timer_state_shift():
@@ -490,6 +520,9 @@ def main():
     # Override closeEvent to show confirmation dialog
     def closeEvent(event):
         exit_msg = QtWidgets.QMessageBox()
+        # These 2 lines are to hold msg on top of all windows
+        exit_msg.setWindowModality(QtCore.Qt.ApplicationModal)
+        exit_msg.setWindowFlags(exit_msg.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
         exit_msg.setIcon(QtWidgets.QMessageBox.Warning)
         exit_msg.setWindowTitle('WARNUNG!')
         exit_msg.setText('Programm wird geschlossen!')
@@ -530,7 +563,7 @@ def main():
 
     # TODO: I should clean up the dwells from the interface.ui or put some persistant stored dwells in there
     # clear_steps()
-    # update_dwells(mash.get_dwell_array()) # TODO: Should be called in the handle_events function
+    update_dwells(dwell_controller.get_dwell_array()) # TODO: Should be called in the handle_events function
     
     # Start the application event loop
     sys.exit(app.exec_())

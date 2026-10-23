@@ -101,7 +101,7 @@ class DwellFrame(QtWidgets.QFrame):
             self.dsb_dwell_tar_time.setObjectName("dsb_dwell_tar_time")
             self.dsb_dwell_tar_time.setMinimum(0.0)
             self.dsb_dwell_tar_time.setSpecialValueText(QtCore.QCoreApplication.translate("Form", "Temperatur"))
-            self.dsb_dwell_tar_time.setValue(0.0 if self.obj.tar_time_ds is None else self.obj.tar_time_ds / 600)  # ds → min
+            self.dsb_dwell_tar_time.setValue(0.0 if self.obj.tar_time_s is None else self.obj.tar_time_s / 60)  # ds → min
             #TODO: Maybe add a Focus all onclick (Not that easy)
             self.horizontalInputLayout.addWidget(self.dsb_dwell_tar_time)
 
@@ -230,8 +230,8 @@ class DwellFrame(QtWidgets.QFrame):
             self.setStyleSheet(self.style_inactive)
             self.widget_4.hide()
 
-    def update_progress(self, elapsed_ds: int, total_ds: int, remaining_text: str = ""):
-        self.progressBar.setMaximum(total_ds)
-        self.progressBar.setValue(elapsed_ds)
+    def update_progress(self, elapsed_s: int, total_s: int, remaining_text: str = ""):
+        self.progressBar.setMaximum(total_s)
+        self.progressBar.setValue(elapsed_s)
         if remaining_text:
             self.lbl_dwell_rest_time_ds.setText(remaining_text)

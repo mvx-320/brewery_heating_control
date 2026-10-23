@@ -21,6 +21,7 @@ class AlarmTriggeredEvent:
 @dataclass
 class DwellAdvancedEvent:
     dwell_index: int
+    new_tar_temp: float
 
 @dataclass # TODO: Not used yet
 class AllDwellsFinishedEvent:

@@ -20,7 +20,7 @@ class PidAlgorithm:
         self.err = 0
 
 
-    def calculate(self, set, act):
+    def calculate(self, set, act) -> float:
         '''
         First calculate P & D
         Then the conditional integration (I)
@@ -53,7 +53,7 @@ class PidAlgorithm:
         output = max(self.min, min(raw_output, self.max))
 
         self.last_error = error
-        return output, True
+        return output
 
     def linear_interpolate_value(self, temperature: float, value30: float, value80: float):
         '''

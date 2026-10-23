@@ -1,4 +1,5 @@
 import logging
+from types import NoneType
 from typing import Literal
 
 from src.components.enums.dwell_state import DwellState
@@ -27,7 +28,7 @@ class DwellController:
         self._pid_controller = PidController(self._pot_type)
 
         self._dwell_state = DwellState.IDLE
-        self._current_dwell_index = 0
+        self._current_dwell_index = -1 
         self._rest_time_s = 0
 
         # DB
@@ -74,6 +75,12 @@ class DwellController:
                 return events
 
             case DwellState.WAITING:
+                events.append(DwellProgressChangedEvent(
+                    dwell_index = self._current_dwell_index,
+                    rest_time_s = self.rest_time_s,
+                    total_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
+                ))
+
                 if self._temp_in_tolerance(temp_now):
                     next_state = self._state_after_waiting()
                     match next_state:
@@ -82,6 +89,8 @@ class DwellController:
                 return events
 
             case DwellState.PENDING:
+                if self.rest_time_s is None:
+                    self.rest_time_s = 0 
                 self.rest_time_s -= 1
                 events.append(DwellProgressChangedEvent(
                     dwell_index = self._current_dwell_index,
@@ -102,6 +111,15 @@ class DwellController:
                 return events
 
             case DwellState.ALARM:
+                events.append(DwellProgressChangedEvent(
+                    dwell_index = self._current_dwell_index,
+                    rest_time_s = self.rest_time_s,
+                    total_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
+                ))
+
+                return events
+
+            case DwellState.FINISHED:
                 return events
 
 
@@ -136,10 +154,11 @@ class DwellController:
         self._current_dwell_index += 1
         self.rest_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
         self._dwell_state = DwellState.WAITING
-        return [DwellAdvancedEvent(dwell_index=self._current_dwell_index)]
+        return [DwellAdvancedEvent(dwell_index=self._current_dwell_index, new_tar_temp=self._dwell_array[self._current_dwell_index].tar_temp)]
 
     def _to_pending_state(self) -> list:
         self._dwell_state = DwellState.PENDING
+        self.rest_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
         return []
 
     def _to_alarm_state(self) -> list:
@@ -158,9 +177,11 @@ class DwellController:
         return self._rest_time_s
 
     @rest_time_s.setter
-    def rest_time_s(self, new_value : float) -> None:
-        if new_value < 0:
-            raise ValueError ("new rest time value < 0")
+    def rest_time_s(self, new_value : float | NoneType) -> None:
+        if new_value is None:
+            self._rest_time_s = 0
+        # elif new_value < 0:
+        #     raise ValueError ("new rest time value < 0")
         self._rest_time_s = new_value
 
     #region DwellArray Manipulation
@@ -176,7 +197,7 @@ class DwellController:
             raise ValueError ("new target value > 120")
 
         self._dwell_array[self._current_dwell_index].tar_temp = new_temp
-        self.tar_temp_changed.emit(new_temp)
+        # self.tar_temp_changed.emit(new_temp)
         self.logger.info(f'dwell_array[{self._current_dwell_index}].tar_temp = {new_temp}')
 
     def get_dwell_array(self) -> list[Dwell]:
@@ -234,7 +255,7 @@ class DwellController:
     def dwell_delete(self, obj) -> list:
         index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
         if (len(self._dwell_array) <= 2):
-            print("Error: There can not be less than 2 dwells")
+            self.logger.error("Error: There can not be less than 2 dwells")
             map(lambda d: d.makeBound(), self._dwell_array)
             return
         del self._dwell_array[index]

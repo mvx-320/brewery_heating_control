@@ -18,7 +18,7 @@ class PeriodDwellController(QObject):
         self.timer.setSingleShot(False)
         self.timer.timeout.connect(self._run)
 
-        self.events_ready.emit([DwellArrayChangedEvent(self.dwell_controller.get_dwell_array())])
+        # self.events_ready.emit([DwellArrayChangedEvent(self.dwell_controller.get_dwell_array())])
 
 
     def _run(self):
