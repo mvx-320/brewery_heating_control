@@ -18,14 +18,13 @@ class PeriodDwellController(QObject):
         self.timer.setSingleShot(False)
         self.timer.timeout.connect(self._run)
 
-        # self.events_ready.emit([DwellArrayChangedEvent(self.dwell_controller.get_dwell_array())])
-
 
     def _run(self):
         events = []
         temp_now = self.pot.temp_now
         events += self.dwell_controller.tick(temp_now)
-        # events += self.pid_controller.tick(self.dwell_controller.temp_tar, temp_now) # pid_controller is called from dwell_controller
+        # `pid_controller` is called from dwell_controller
+        # events += self.pid_controller.tick(self.dwell_controller.temp_tar, temp_now) 
         self.events_ready.emit(events)
 
     def start(self):

@@ -32,7 +32,7 @@ class DriverSerial(QThread):
                 if (currentSecs - self.previousSecs >= self.interval):
                     self.previousSecs = currentSecs
 
-                    self.__writeToArd();           
+                    self.__write_serial();           
                     
             except Exception as e:
                 self.logger.warning(f"Error writing serial data: {str(e)}")
@@ -40,7 +40,7 @@ class DriverSerial(QThread):
             ### READ ##################################################################################################
             try:
 
-                self.__readFromArd()
+                self.__read_serial()
                 
             except Exception as e:
                 self.logger.warning(f"Error reading serial data: {str(e)}")
@@ -51,7 +51,7 @@ class DriverSerial(QThread):
         
         #self.serial_port.close()
 
-    def __writeToArd(self):
+    def __write_serial(self):
         send = 0
         mash_val = int(self.mash.heat_val * 7)
         fill_val = int(self.fill.heat_val * 7)
@@ -70,7 +70,7 @@ class DriverSerial(QThread):
         self.serial_port.write(toSend_str.encode('utf-8'))
 
 
-    def __readFromArd(self):
+    def __read_serial(self):
         data = self.serial_port.readline().decode().strip()
         
         if (data == ""):

@@ -77,7 +77,7 @@ class DwellController:
             case DwellState.WAITING:
                 events.append(DwellProgressChangedEvent(
                     dwell_index = self._current_dwell_index,
-                    rest_time_s = self.rest_time_s,
+                    rest_time_s = self._rest_time_s,
                     total_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
                 ))
 
@@ -89,17 +89,17 @@ class DwellController:
                 return events
 
             case DwellState.PENDING:
-                if self.rest_time_s is None:
-                    self.rest_time_s = 0 
-                self.rest_time_s -= 1
+                if self._rest_time_s is None:
+                    self._rest_time_s = 5 # TODO: I don't know what to do here
+                self._rest_time_s -= 1
                 events.append(DwellProgressChangedEvent(
                     dwell_index = self._current_dwell_index,
-                    rest_time_s = self.rest_time_s,
+                    rest_time_s = self._rest_time_s,
                     total_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
                 ))
 
                 # Transition
-                if self.rest_time_s <= 0:
+                if self._rest_time_s <= 0:
                     next_state = self._state_after_pending()
                     match next_state:
                         case DwellState.WAITING:
@@ -113,7 +113,7 @@ class DwellController:
             case DwellState.ALARM:
                 events.append(DwellProgressChangedEvent(
                     dwell_index = self._current_dwell_index,
-                    rest_time_s = self.rest_time_s,
+                    rest_time_s = self._rest_time_s,
                     total_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
                 ))
 
@@ -152,13 +152,13 @@ class DwellController:
 
     def _to_waiting_state(self) -> list:
         self._current_dwell_index += 1
-        self.rest_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
+        self._rest_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
         self._dwell_state = DwellState.WAITING
         return [DwellAdvancedEvent(dwell_index=self._current_dwell_index, new_tar_temp=self._dwell_array[self._current_dwell_index].tar_temp)]
 
     def _to_pending_state(self) -> list:
         self._dwell_state = DwellState.PENDING
-        self.rest_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
+        self._rest_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
         return []
 
     def _to_alarm_state(self) -> list:
@@ -167,7 +167,7 @@ class DwellController:
     
     def _to_finished_state(self) -> list:
         self._current_dwell_index = -1
-        self.rest_time_s = 0
+        self._rest_time_s = 0
         self._dwell_state = DwellState.FINISHED
         return [AllDwellsFinishedEvent()]
     #endregion Transitions

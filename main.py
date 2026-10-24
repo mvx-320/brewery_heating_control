@@ -240,6 +240,7 @@ def main():
                 update_dwells(event.dwell_array)
 
             elif isinstance(event, DwellProgressChangedEvent):
+                logging.info(f"Dwell progress changed: dwell_index={event.dwell_index}, rest_time_s={event.rest_time_s}, total_time_s={event.total_time_s}")
                 on_dwell_progress(event.dwell_index, event.rest_time_s, event.total_time_s)
 
             elif isinstance(event, AlarmTriggeredEvent):
@@ -515,7 +516,34 @@ def main():
         s = int(time_s % 60)
         ui.dbg_lbl_time_s.setText(f'{h:02d}:{m:02d}:{s:02d}')
     # connect is in _create_brewery_connection()
-        
+
+    def override_time_plus_01min():
+        driver_thread.pause()
+        for _ in range(60):
+            driver_thread.sim_engine.step_seconds(1)
+            events = dwell_controller.tick(mash.temp_now)
+            _handle_events(events)
+        driver_thread.resume()
+    ui.dbg_btn_plus_01min.clicked.connect(override_time_plus_01min)
+
+    def override_time_plus_05min():
+        driver_thread.pause()
+        for _ in range(300):
+            driver_thread.sim_engine.step_seconds(1)
+            events = dwell_controller.tick(mash.temp_now)
+            _handle_events(events)
+        driver_thread.resume()
+    ui.dbg_btn_plus_05min.clicked.connect(override_time_plus_05min)
+
+    def override_time_plus_15min():
+        driver_thread.pause()
+        for _ in range(900):
+            driver_thread.sim_engine.step_seconds(1)
+            events = dwell_controller.tick(mash.temp_now)
+            _handle_events(events)
+        driver_thread.resume()
+    ui.dbg_btn_plus_15min.clicked.connect(override_time_plus_15min)
+
     #region SHOW UI
     # Override closeEvent to show confirmation dialog
     def closeEvent(event):
