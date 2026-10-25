@@ -47,7 +47,7 @@ color: lightgray;
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_control">
        <attribute name="title">
@@ -245,12 +245,16 @@ border-radius: 16px;
                    </property>
                    <property name="font">
                     <font>
+                     <family>Monospace</family>
                      <pointsize>10</pointsize>
                      <bold>false</bold>
                     </font>
                    </property>
                    <property name="text">
-                    <string>---- W</string>
+                    <string>Heizleistung:    0 W</string>
+                   </property>
+                   <property name="textFormat">
+                    <enum>Qt::PlainText</enum>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignCenter</set>
@@ -442,12 +446,16 @@ border-radius: 16px;
                    </property>
                    <property name="font">
                     <font>
+                     <family>Monospace</family>
                      <pointsize>10</pointsize>
                      <bold>false</bold>
                     </font>
                    </property>
                    <property name="text">
-                    <string>---- W</string>
+                    <string>Heizleistung:    0 W</string>
+                   </property>
+                   <property name="textFormat">
+                    <enum>Qt::PlainText</enum>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignCenter</set>
@@ -1920,6 +1928,11 @@ border-radius: 16px;
               </item>
               <item>
                <widget class="QWidget" name="widget_6" native="true">
+                <property name="font">
+                 <font>
+                  <family>Monospace</family>
+                 </font>
+                </property>
                 <layout class="QVBoxLayout" name="verticalLayout_2">
                  <item>
                   <widget class="QFrame" name="frame_4">
@@ -2006,12 +2019,16 @@ border-radius: 16px;
                    </property>
                    <property name="font">
                     <font>
+                     <family>Monospace</family>
                      <pointsize>10</pointsize>
                      <bold>false</bold>
                     </font>
                    </property>
                    <property name="text">
-                    <string>---- W</string>
+                    <string>Heizleistung:    0 W</string>
+                   </property>
+                   <property name="textFormat">
+                    <enum>Qt::PlainText</enum>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignCenter</set>

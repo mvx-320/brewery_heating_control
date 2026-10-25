@@ -38,6 +38,10 @@ class DwellController:
 
     #region API
     def start_mash(self) -> list:
+        '''
+        Starting the mash process. This method is called from the UI.
+        '''
+        # If temp_now is in tolerance and alarm is active, the alarm can take up to 3 seconds to occur. This is a accepted edge case.
         if self._dwell_state in [DwellState.IDLE]:
             return self._to_waiting_state()
         else:
@@ -45,7 +49,14 @@ class DwellController:
         return []
 
     def stop_mash(self) -> list:
-        pass # TODO: Implement stop_mash logic. Add to DwellStateGraph
+        '''
+        Stopping the mash process. This method is called from the UI.
+        '''
+        if self._dwell_state in [DwellState.WAITING, DwellState.PENDING]:
+            return self._to_idle_state()
+        else:
+            self.logger.warning(f"stop_mash() called but dwell_state is {self._dwell_state}. Ignoring.")
+        return []
 
     def confirm_alarm(self) -> list:
         events = []
@@ -91,9 +102,11 @@ class DwellController:
                 return events
 
             case DwellState.PENDING:
-                if self._rest_time_s is None:
-                    self._rest_time_s = 5 # TODO: I don't know what to do here
-                self._rest_time_s -= 1
+                if self._rest_time_s is None: # in "Einmaischen" und "Ausmaischen" dwells, there is no time. so rest_time_s = 0
+                    self._rest_time_s = 0 
+                else:
+                    self._rest_time_s -= 1
+
                 events.append(DwellProgressChangedEvent(
                     dwell_index = self._current_dwell_index,
                     rest_time_s = self._rest_time_s,
@@ -151,6 +164,14 @@ class DwellController:
     # Helper methods for state transition
     def _last_dwell_check(self) -> bool:
         return self._current_dwell_index + 1 >= len(self._dwell_array)
+
+    def _to_idle_state(self) -> list:
+        events = []
+        self._current_dwell_index = -1
+        self._rest_time_s = 0
+        self._dwell_state = DwellState.IDLE
+        events += [DwellStateChangedEvent(new_state=self._dwell_state)]
+        return events
 
     def _to_waiting_state(self) -> list:
         events = []

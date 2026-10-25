@@ -192,15 +192,15 @@ def main():
     
 
     def mash_heat_changed(new_temp):
-        ui.lbl_heat_w_mash.setText(f'{new_temp * 3500 :4.0f} W')
+        ui.lbl_heat_w_mash.setText(f'Heizleistung: {new_temp * 3500 :4.0f} W')
     mash.heat_val_changed.connect(mash_heat_changed) # connect
 
     def fill_heat_changed(new_temp):
-        ui.lbl_heat_w_fill.setText(f'{new_temp * 3500 :4.0f} W')
+        ui.lbl_heat_w_fill.setText(f'Heizleistung: {new_temp * 3500 :4.0f} W')
     fill.heat_val_changed.connect(fill_heat_changed) # connect
 
     def cook_heat_changed(new_temp):
-        ui.lbl_heat_w_cook.setText(f'{new_temp * 3500 :4.0f} W')
+        ui.lbl_heat_w_cook.setText(f'Heizleistung: {new_temp * 3500 :4.0f} W')
     cook.heat_val_changed.connect(cook_heat_changed) # connect
 
     # region UI - TIMER
@@ -226,6 +226,9 @@ def main():
 
             elif isinstance(event, DwellStateChangedEvent):
                 dwell_state_changed(event.new_state)
+                if event.new_state == DwellState.IDLE:
+                    update_tar_temp_label(None)
+                    dwell_signals.dwell_advanced.emit(-1)  # Reset dwell advanced signal when going to IDLE
 
             elif isinstance(event, DwellArrayChangedEvent):
                 # update_tar_temp_label(event.new_tar_temp) # Update tar_temp_label
