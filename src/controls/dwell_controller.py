@@ -172,9 +172,24 @@ class DwellController:
         return [AllDwellsFinishedEvent()]
     #endregion Transitions
 
+    #region Properties
+    # These gettter are only allowed to be accessed from `main.py`
+    @property
+    def current_dwell_index(self) -> int:
+        return self._current_dwell_index
+
+    @property
+    def dwell_state(self) -> DwellState:
+        return self._dwell_state
+
+    @property
+    def dwell_array(self) -> list[Dwell]:
+        return self._dwell_array
+
     @property
     def rest_time_s(self) -> int:
         return self._rest_time_s
+    #endregion Properties
 
     @rest_time_s.setter
     def rest_time_s(self, new_value : float | NoneType) -> None:
@@ -199,9 +214,6 @@ class DwellController:
         self._dwell_array[self._current_dwell_index].tar_temp = new_temp
         # self.tar_temp_changed.emit(new_temp)
         self.logger.info(f'dwell_array[{self._current_dwell_index}].tar_temp = {new_temp}')
-
-    def get_dwell_array(self) -> list[Dwell]:
-        return self._dwell_array
 
     def set_dwell_temp(self, dwell_index: int, new_temp: float):
         if new_temp < 0:

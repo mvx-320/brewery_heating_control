@@ -110,7 +110,7 @@ def main():
 
 
     #region POTS
-    mash = DwellPot(PotType.MASH) # TODO: Use normal Pot
+    mash = Pot(PotType.MASH) # TODO: Use normal Pot
     fill = Pot(PotType.FILL)
     cook = CookPot(PotType.COOK)  # TODO: Use normal Pot
 
@@ -299,6 +299,7 @@ def main():
             update_dwells(events[0].dwell_array)
         else:
             logging.error(f"Unexpected event type returned from dwell_up: {type(events[0]).__name__}")
+        dwell_signals.dwell_advanced.emit(dwell_controller.current_dwell_index)
         return events
 
     def down_clicked_handler(obj): #TODO: Fix the others also
@@ -307,6 +308,7 @@ def main():
             update_dwells(events[0].dwell_array)
         else:
             logging.error(f"Unexpected event type returned from dwell_down: {type(events[0]).__name__}")
+        dwell_signals.dwell_advanced.emit(dwell_controller.current_dwell_index)
         return events 
 
     def new_clicked_handler(obj):
@@ -315,6 +317,7 @@ def main():
             update_dwells(events[0].dwell_array)
         else:
             logging.error(f"Unexpected event type returned from dwell_new: {type(events[0]).__name__}")
+        dwell_signals.dwell_advanced.emit(dwell_controller.current_dwell_index)
         return events
 
     def delete_clicked_handler(obj):
@@ -323,6 +326,7 @@ def main():
             update_dwells(events[0].dwell_array)
         else:
             logging.error(f"Unexpected event type returned from dwell_delete: {type(events[0]).__name__}")
+        dwell_signals.dwell_advanced.emit(dwell_controller.current_dwell_index)
         return events
 
     def on_dwell_progress(dwell_index, rest_s, total_s): # TODO: Add interpolation in ds for UX
@@ -361,12 +365,12 @@ def main():
         msg.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
         if msg.exec() == QtWidgets.QMessageBox.Ok:
             events = dwell_controller.stop_mash()
-            period_dwell_controller.events_ready.emit(events)
+            period_dwell_controller.events_ready.emit(events) # TODO: Error while stopping mash
 
     ui.btn_stop_mash.clicked.connect(mash_stop_clicked)
 
     def on_alarm_triggered(dwell_index):
-        dwell_array = dwell_controller.get_dwell_array()
+        dwell_array = dwell_controller.dwell_array
         dwell_name = dwell_array[dwell_index].getName(dwell_index, len(dwell_array))
         msg = QtWidgets.QMessageBox()
         # These 2 lines are to hold msg on top of all windows
@@ -542,7 +546,7 @@ def main():
 
     # TODO: I should clean up the dwells from the interface.ui or put some persistant stored dwells in there
     # clear_steps()
-    update_dwells(dwell_controller.get_dwell_array()) # TODO: Should be called in the handle_events function
+    update_dwells(dwell_controller.dwell_array) # TODO: Should be called in the handle_events function
     
     # Start the application event loop
     sys.exit(app.exec_())

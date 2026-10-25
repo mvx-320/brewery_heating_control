@@ -68,7 +68,7 @@ class DwellRuntimeEnvironment(QObject):
             return
 
         current_index = self.mash_pot.current_dwell_index
-        dwell_array = self.mash_pot.get_dwell_array()
+        dwell_array = self.mash_pot.dwell_array
         current_dwell = dwell_array[current_index]
 
         if current_dwell.alarm:
@@ -78,7 +78,7 @@ class DwellRuntimeEnvironment(QObject):
             self._next_dwell()
 
     def _activate_dwell(self, index):
-        dwell_array = self.mash_pot.get_dwell_array()
+        dwell_array = self.mash_pot.dwell_array
         dwell = dwell_array[index]
 
         self.time_mash_thread.stop()
@@ -99,7 +99,7 @@ class DwellRuntimeEnvironment(QObject):
 
     def _next_dwell(self):
         current_index = self.mash_pot.current_dwell_index
-        dwell_array = self.mash_pot.get_dwell_array()
+        dwell_array = self.mash_pot.dwell_array
 
         if current_index < len(dwell_array) - 1:
             next_index = current_index + 1
