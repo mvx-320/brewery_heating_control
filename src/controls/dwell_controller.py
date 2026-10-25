@@ -7,9 +7,10 @@ from src.components.enums.pot_type import PotType
 from src.components.models.dwell import Dwell
 from src.dtos.dwell_events import \
     HeatValChangedEvent, \
+    DwellStateChangedEvent, \
     DwellArrayChangedEvent, \
     DwellProgressChangedEvent, \
-    AlarmTriggeredEvent, \
+    AlarmToggledEvent, \
     DwellAdvancedEvent, \
     AllDwellsFinishedEvent
 from src.controls.pid_controller import PidController
@@ -49,6 +50,7 @@ class DwellController:
     def confirm_alarm(self) -> list:
         events = []
         if self._dwell_state in [DwellState.ALARM]:
+            events += [AlarmToggledEvent(dwell_index=self._current_dwell_index, alarm_active=False)]
             next_state = self._state_after_alarm()
             match next_state: # TODO: Move the match to a seperate methode that is called with next_state
                 case DwellState.WAITING:
@@ -151,25 +153,36 @@ class DwellController:
         return self._current_dwell_index + 1 >= len(self._dwell_array)
 
     def _to_waiting_state(self) -> list:
+        events = []
         self._current_dwell_index += 1
         self._rest_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
         self._dwell_state = DwellState.WAITING
-        return [DwellAdvancedEvent(dwell_index=self._current_dwell_index, new_tar_temp=self._dwell_array[self._current_dwell_index].tar_temp)]
+        events += [DwellStateChangedEvent(new_state=self._dwell_state)]
+        events += [DwellAdvancedEvent(dwell_index=self._current_dwell_index, new_tar_temp=self._dwell_array[self._current_dwell_index].tar_temp)]
+        return events
 
     def _to_pending_state(self) -> list:
+        events = []
         self._dwell_state = DwellState.PENDING
         self._rest_time_s = self._dwell_array[self._current_dwell_index].tar_time_s
-        return []
+        events += [DwellStateChangedEvent(new_state=self._dwell_state)]
+        return events
 
     def _to_alarm_state(self) -> list:
+        events = []
         self._dwell_state = DwellState.ALARM
-        return [AlarmTriggeredEvent(dwell_index=self._current_dwell_index)]
+        events += [DwellStateChangedEvent(new_state=self._dwell_state)]
+        events += [AlarmToggledEvent(dwell_index=self._current_dwell_index, alarm_active=True)]
+        return events
     
     def _to_finished_state(self) -> list:
+        events = []
         self._current_dwell_index = -1
         self._rest_time_s = 0
         self._dwell_state = DwellState.FINISHED
-        return [AllDwellsFinishedEvent()]
+        events += [DwellStateChangedEvent(new_state=self._dwell_state)]
+        events += [AllDwellsFinishedEvent()]
+        return events
     #endregion Transitions
 
     #region Properties
@@ -185,18 +198,16 @@ class DwellController:
     @property
     def dwell_array(self) -> list[Dwell]:
         return self._dwell_array
+    #endregion Properties
 
     @property
     def rest_time_s(self) -> int:
         return self._rest_time_s
-    #endregion Properties
 
     @rest_time_s.setter
     def rest_time_s(self, new_value : float | NoneType) -> None:
-        if new_value is None:
+        if new_value is None: # No negative value check, because rest_time_s is decremented in tick() always and therefore can be negative
             self._rest_time_s = 0
-        # elif new_value < 0:
-        #     raise ValueError ("new rest time value < 0")
         self._rest_time_s = new_value
 
     #region DwellArray Manipulation

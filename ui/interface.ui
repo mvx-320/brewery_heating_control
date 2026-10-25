@@ -47,7 +47,7 @@ color: lightgray;
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_control">
        <attribute name="title">
@@ -2326,6 +2326,16 @@ QWidget#wdg_settings_left {
                 </property>
                 <property name="text">
                  <string>Mit Brauerei verbinden...</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_17">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:700;&quot;&gt;ToDo:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;- RastNamen Tabelle implementieren&lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:700;&quot;&gt;&lt;br/&gt;ToAdd:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;- Temperaturtolanz Einstellung (Wann läugt die Rast los)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="margin">
+                 <number>10</number>
                 </property>
                </widget>
               </item>

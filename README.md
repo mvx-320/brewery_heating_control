@@ -27,14 +27,6 @@ Finite State Machine that determines the State of the DwellController
  </tr>
 </table>
 
-### `run_state`:
-| Value | Meaning | Color |
-| --- | --- | --- |
-| 0 | pause/ stopped | gray |
-| 1 | wait for heating | yellow |
-| 2 | timer runs | green | 
-| 3 | timer finished | red |
-
 ## Get Started
 ### Branch Info
 The `main` branch is the one that holds the current state of the brewery. **Every** change has to got through a seperate branch and pull request.

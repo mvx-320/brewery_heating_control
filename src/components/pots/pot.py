@@ -20,19 +20,19 @@ class Pot(QObject):
         self.pot_type = pot_type
         self.temp_now_lock = QMutex()
         self._temp_now = 0.0 # Overriten from serial component and  -> temp_now_low
-        # self._temp_tar = 0.0
         self._heat_val = 0.0 # 0.0 - 1.0
-        self.heat_regulation = False
+        self.heat_regulation = False # TODO: Remove this property, it is logic that should be in a controller
+        self._alarm_active = False
 
         # Thermal System for the pot is in sim_engine.py. It shouldn't be initialized in the deployed state
 
 
     @property
-    def temp_now(self):
+    def temp_now(self) -> float:
         return self._temp_now
     
     @temp_now.setter
-    def temp_now(self, new_temp: float):
+    def temp_now(self, new_temp: float) -> None:
         locker = QMutexLocker(self.temp_now_lock)
         if self._temp_now != new_temp:
             self._temp_now = new_temp
@@ -40,11 +40,11 @@ class Pot(QObject):
 
 
     @property
-    def temp_tar(self):
+    def temp_tar(self) -> float:
         return self._temp_tar
     
     @temp_tar.setter
-    def temp_tar(self, new_temp: float):
+    def temp_tar(self, new_temp: float) -> None:
         if new_temp < 0:
             raise ValueError ("new target value < 0")
         if new_temp > 120:
@@ -54,12 +54,20 @@ class Pot(QObject):
 
 
     @property
-    def heat_val(self):
+    def heat_val(self) -> float:
         return self._heat_val
         
     @heat_val.setter
-    def heat_val(self, new_temp: int):
+    def heat_val(self, new_temp: int) -> None:
         if self._heat_val != new_temp:
             self._heat_val = new_temp
             self.heat_val_changed.emit(new_temp)
 
+    @property
+    def alarm_active(self) -> bool:
+        return self._alarm_active
+
+    @alarm_active.setter
+    def alarm_active(self, new_value: bool) -> None:
+        if self._alarm_active != new_value:
+            self._alarm_active = new_value

@@ -57,7 +57,7 @@ class DriverSerial(QThread):
         fill_val = int(self.fill.heat_val * 7)
         cook_val = int(self.cook.heat_val * 7)
         
-        if (self.mash.run_state == 3 or self.cook.run_state == 3):
+        if (self.mash.alarm_active == True or self.cook.alarm_active == True):
             send |= 512
         
         send |= (mash_val << 6)

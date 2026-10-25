@@ -15,7 +15,6 @@ base_path = Path(__file__).resolve().parent
 from src.components.enums.pot_type import PotType
 from src.components.enums.dwell_state import DwellState
 from src.components.pots.cook_pot import CookPot
-from src.components.pots.dwell_pot import DwellPot
 from src.components.pots.pot import Pot
 
 from src.gui.splash_screen import create_brewery_splash
@@ -23,19 +22,20 @@ from src.gui.interface import Ui_MainWindow
 from src.gui.dwell_signals import DwellSignals
 from src.gui.dwell_frame import DwellFrame
 
+from src.runtime.period_dwell_controller import PeriodDwellController
 from src.runtime.timer_heat_regulation import PeriodHeatReg
 from src.runtime.timer_pot import PeriodTimePot
 from src.runtime.driver_serial import DriverSerial
 from src.controls.dwell_controller import DwellController
 from src.controls.pid_controller import PidController
-from src.runtime.period_dwell_controller import PeriodDwellController
 
 # TODO: Remove when DwellPresenter comes
 from src.dtos.dwell_events import \
     HeatValChangedEvent, \
+    DwellStateChangedEvent, \
     DwellArrayChangedEvent, \
     DwellProgressChangedEvent, \
-    AlarmTriggeredEvent, \
+    AlarmToggledEvent, \
     DwellAdvancedEvent, \
     AllDwellsFinishedEvent
 
@@ -47,6 +47,13 @@ C_PROFILE = False # Set False in production. Get performance profile.
 
 driver_thread = None # Gets real serial thread or simulation
 
+string_styleSheet_coloring = 'color: rgb(%s);border-radius: 4px;'
+# colors keys are dwell_state.name.lower() -> cannot be changed
+colors = {
+    'idle':'212, 212, 212',
+    'waiting': '255, 255, 100',
+    'pending': '150, 255, 150',
+    'alarm': '255, 121, 121'}
 
 def main():
     
@@ -138,23 +145,14 @@ def main():
     # screen_rect = QtWidgets.QDesktopWidget().availableGeometry()
     # MainWindow.setGeometry(0, 0, screen_rect.width(), screen_rect.height())
     
-    string_lbl_time_state = 'color: rgb(%s);border-radius: 4px;'
-    colors_lbl_time_state = [
-        '212, 212, 212',
-        '255, 255, 100',
-        '150, 255, 150',
-        '255, 121, 121']
     
 
     # region Set Images
 #       # Old Path: /home/raspberry/FilesBrewery/assets
 #       app.setWindowIcon(icon_brewery)
-#       ui.lbl_alarm_sym.setPixmap(alarm0)
     ui.lbl_mash_switch.setPixmap(pot_white)
     ui.lbl_fill_switch.setPixmap(pot_white)
     ui.lbl_cook_switch.setPixmap(pot_white)
-#       ui.lbl_prop_switch.setPixmap(pic_prop)
-#       ui.lbl_pump_switch.setPixmap(pic_pump)
 
     
     #region Drivers, Controllers
@@ -163,15 +161,12 @@ def main():
     period_dwell_controller = PeriodDwellController(mash, dwell_controller, pid_controller)
     period_dwell_controller.start()  # Start the periodic dwell controller thread
     ##region TIME POT PERIOD
-    # time_mash_thread = PeriodTimePot(mash) # TODO: Replace with DwellDriver
     time_cook_thread = PeriodTimePot(cook)
     
     ##region HEAT REGULATION PERIOD
     heat_regulate_thread = PeriodHeatReg(mash, fill, cook, time_cook_thread) # TODO: 1st Remove mash✅, later remove all completely
     heat_regulate_thread.start()
     
-    ##region RUNTIME ENVIRONMENT (Mash Process Control)
-    # mash_runtime = DwellRuntimeEnvironment(mash, time_mash_thread) # TODO: Remove
     
     
     #region UI CONNECT
@@ -209,14 +204,11 @@ def main():
     cook.heat_val_changed.connect(cook_heat_changed) # connect
 
     # region UI - TIMER
-    def mash_run_state_changed(new_state):
-        ui.frame_4.setStyleSheet(string_lbl_time_state %colors_lbl_time_state[new_state])
-    # mash.run_state_changed.connect(mash_run_state_changed) # Just for recolering
-    
-    # def cook_run_state_changed(new_state):
-    #     ui.lbl_time_cook_state.setStyleSheet(string_lbl_time_state % colors_lbl_time_state[new_state])
-    #     mash_or_cook_time_elapsed()
-    # cook.run_state_changed.connect(cook_run_state_changed)
+    def dwell_state_changed(new_state):
+        ui.frame_4.setStyleSheet(string_styleSheet_coloring %colors[new_state.name.lower()])
+
+    def cook_state_changed(new_state):
+        ui.frame_5.setStyleSheet(string_styleSheet_coloring %colors[new_state.name.lower()])
     # -----------------------------------------------------------------------------------------------------------------
     
     # def cook_time_changed(act_time):
@@ -232,6 +224,9 @@ def main():
             if isinstance(event, HeatValChangedEvent):
                 mash.heat_val = event.heat_val
 
+            elif isinstance(event, DwellStateChangedEvent):
+                dwell_state_changed(event.new_state)
+
             elif isinstance(event, DwellArrayChangedEvent):
                 # update_tar_temp_label(event.new_tar_temp) # Update tar_temp_label
                 update_dwells(event.dwell_array)
@@ -240,8 +235,10 @@ def main():
                 logging.info(f"Dwell progress changed: dwell_index={event.dwell_index}, rest_time_s={event.rest_time_s}, total_time_s={event.total_time_s}")
                 on_dwell_progress(event.dwell_index, event.rest_time_s, event.total_time_s)
 
-            elif isinstance(event, AlarmTriggeredEvent):
-                on_alarm_triggered(event.dwell_index)
+            elif isinstance(event, AlarmToggledEvent):
+                mash.alarm_active = event.alarm_active
+                if event.alarm_active:
+                    on_alarm_triggered(event.dwell_index)
 
             elif isinstance(event, DwellAdvancedEvent):
                 logging.info(f"Current dwell index changed to {event.dwell_index}, new target temperature: {event.new_tar_temp}")

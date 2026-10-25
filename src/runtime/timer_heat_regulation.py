@@ -20,17 +20,7 @@ class PeriodHeatReg(QObject):
 
     def regulation_tick(self):
         # MASH ########################################################################################################
-        # if self.mash.heat_regulation:
-        #     self.mash.heat_val, _ = self.mash.pid.calculate(self.mash.temp_tar, self.mash.temp_now)
-        #     if self.mash.run_state == 1 and self.mash.temp_now >= self.mash.temp_tar:
-        #         if self.mash.rest_time_ds is not None and self.mash.rest_time_ds > 0:
-        #             self.time_mash_thread.start()
-        #             self.mash.run_state = 2
-        #         else:
-        #             self.mash.run_state = 2
-        #             self.mash.dwell_finished.emit()
-        # else:
-        #     self.mash.heat_val = 0.0
+        # Logic is in DwellController and way more clear to read
 
         # FILL ########################################################################################################
         if self.fill.heat_regulation:
