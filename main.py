@@ -1,7 +1,8 @@
-#! /usr/bin/python3.9
+#! /usr/bin/python3.12
+# Only necessary if brewing system calls programm with ./main.py
+
 import cProfile
 import sys, serial, logging, threading
-#sys.path.extend(["src"])#, "simulation"])
 
 from time import gmtime, strftime, sleep
 from datetime import datetime
@@ -10,25 +11,25 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 
 now = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
 base_path = Path(__file__).resolve().parent
-sys.path.append(str(base_path / 'simulation')) # TODO: Not shure why this is there
 
-from src.gui.dwell_signals import DwellSignals
 from src.components.enums.pot_type import PotType
+from src.components.enums.dwell_state import DwellState
 from src.components.pots.cook_pot import CookPot
 from src.components.pots.dwell_pot import DwellPot
-from components.pots.pot import Pot
+from src.components.pots.pot import Pot
 
-from src.gui.interface import Ui_MainWindow
-from src.gui.dwell_frame import DwellFrame
 from src.gui.splash_screen import create_brewery_splash
+from src.gui.interface import Ui_MainWindow
+from src.gui.dwell_signals import DwellSignals
+from src.gui.dwell_frame import DwellFrame
+
 from src.runtime.timer_heat_regulation import PeriodHeatReg
 from src.runtime.timer_pot import PeriodTimePot
 from src.runtime.driver_serial import DriverSerial
-from src.runtime.runtime_environment import DwellRuntimeEnvironment
-from src.components.enums.dwell_state import DwellState
 from src.controls.dwell_controller import DwellController
 from src.controls.pid_controller import PidController
 from src.runtime.period_dwell_controller import PeriodDwellController
+
 # TODO: Remove when DwellPresenter comes
 from src.dtos.dwell_events import \
     HeatValChangedEvent, \
@@ -40,12 +41,12 @@ from src.dtos.dwell_events import \
 
 from simulation.driver_simulation import DriverSimulation
 
+from src.gui.splash_screen import create_brewery_splash
 SIMULATION = True # TODO: Set False in production
 C_PROFILE = False # Set False in production. Get performance profile. 
 
 driver_thread = None # Gets real serial thread or simulation
 
-# active_dwell_signal = QtCore.pyqtSignal(int)  
 
 def main():
     
@@ -119,11 +120,7 @@ def main():
 
 
     #region LOAD IMAGES
-    alarm0 = QtGui.QPixmap("src/assets/alarm0.png")
-    alarm1 = QtGui.QPixmap("src/assets/alarm1.png")
     pot_white = QtGui.QPixmap("src/assets/pot_white.png")
-#       pic_prop = QtGui.QPixmap("assets/propeller.png")
-#       pic_pump = QtGui.QPixmap("assets/water-pump.png")
 
     # region SPLASH SCREEN
     splash = create_brewery_splash()
@@ -214,7 +211,7 @@ def main():
     # region UI - TIMER
     def mash_run_state_changed(new_state):
         ui.frame_4.setStyleSheet(string_lbl_time_state %colors_lbl_time_state[new_state])
-    mash.run_state_changed.connect(mash_run_state_changed) # Just for recolering
+    # mash.run_state_changed.connect(mash_run_state_changed) # Just for recolering
     
     # def cook_run_state_changed(new_state):
     #     ui.lbl_time_cook_state.setStyleSheet(string_lbl_time_state % colors_lbl_time_state[new_state])
@@ -254,8 +251,8 @@ def main():
             elif isinstance(event, AllDwellsFinishedEvent):
                 pass
 
-
     period_dwell_controller.events_ready.connect(_handle_events)
+
 
     def clear_steps():
         layout = ui.dwell_layout
@@ -283,8 +280,6 @@ def main():
             frame.down_clicked.connect(down_clicked_handler)
             frame.new_clicked.connect(new_clicked_handler)
             frame.delete_clicked.connect(delete_clicked_handler)
-            # Signal-Verbindung für Highlight des aktuellen Dwells
-            # active_dwell_signal.connect(frame.on_current_dwell_changed)
             dwell_signals.dwell_advanced.connect(frame.on_current_dwell_changed)
             
             ui.dwell_layout.addWidget(frame)
@@ -292,30 +287,43 @@ def main():
         ui.dwell_layout.addStretch()
         
     def temp_changed_handler(index, value):
-        # if index == mash.current_dwell_index:
-        #     mash.tar_temp = value  # Setter emittiert tar_temp_changed → Label update
-        # else:
-        #     mash._dwell_array[index].tar_temp = value
-        # if index == mash.current_dwell_index:
-        #     mash.temp_tar = value  # PID update
         dwell_controller.set_dwell_temp(index, value) # TODO: Maybe trigger event
         update_tar_temp_label(dwell_controller.tar_temp) # TODO: Check if this needs change bcs not over central source 
 
     def time_changed_handler(index, value):
-        # mash.dwell_array[index].tar_time_s = int(value * 600)  # min → ds (min * 60s * 10)
         dwell_controller.set_dwell_time(index, int(value * 60)) # min → s
 
     def up_clicked_handler(obj):
-        update_dwells(dwell_controller.dwell_up(obj))
+        events = dwell_controller.dwell_up(obj)
+        if isinstance(events[0], DwellArrayChangedEvent):
+            update_dwells(events[0].dwell_array)
+        else:
+            logging.error(f"Unexpected event type returned from dwell_up: {type(events[0]).__name__}")
+        return events
 
-    def down_clicked_handler(obj):
-        update_dwells(dwell_controller.dwell_down(obj))
-        
+    def down_clicked_handler(obj): #TODO: Fix the others also
+        events = dwell_controller.dwell_down(obj)
+        if isinstance(events[0], DwellArrayChangedEvent):
+            update_dwells(events[0].dwell_array)
+        else:
+            logging.error(f"Unexpected event type returned from dwell_down: {type(events[0]).__name__}")
+        return events 
+
     def new_clicked_handler(obj):
-        update_dwells(dwell_controller.dwell_new(obj))
+        events = dwell_controller.dwell_new(obj)
+        if isinstance(events[0], DwellArrayChangedEvent):
+            update_dwells(events[0].dwell_array)
+        else:
+            logging.error(f"Unexpected event type returned from dwell_new: {type(events[0]).__name__}")
+        return events
 
     def delete_clicked_handler(obj):
-        update_dwells(dwell_controller.dwell_delete(obj))
+        events = dwell_controller.dwell_delete(obj)
+        if isinstance(events[0], DwellArrayChangedEvent):
+            update_dwells(events[0].dwell_array)
+        else:
+            logging.error(f"Unexpected event type returned from dwell_delete: {type(events[0]).__name__}")
+        return events
 
     def on_dwell_progress(dwell_index, rest_s, total_s): # TODO: Add interpolation in ds for UX
         if (total_s is None) or (rest_s is None):
@@ -333,7 +341,6 @@ def main():
                 ui.dbg_pgb_dwell_percentage.setMaximum(total_s)
                 ui.dbg_pgb_dwell_percentage.setValue(elapsed_s)
 
-    # mash.dwell_progress_changed.connect(on_dwell_progress)
 
     def mash_start_clicked():
         logging.info("Starting mash process...")
@@ -373,7 +380,6 @@ def main():
             events = dwell_controller.confirm_alarm()
             period_dwell_controller.events_ready.emit(events)
 
-    # mash_runtime.alarm_triggered.connect(on_alarm_triggered)
 
     def update_tar_temp_label(tar_temp : float): # TODO: Called from handle_events 
         if (tar_temp is not None and tar_temp >= 0):
@@ -383,57 +389,6 @@ def main():
             ui.lbl_tar_temp_mash.setText(f'{tar_temp} °C')
         else:
             ui.lbl_tar_temp_mash.setText('--°C')
-
-    # def on_current_dwell_index_changed(_):
-    #     update_tar_temp_label()
-
-    # mash.current_dwell_index_changed.connect(on_current_dwell_index_changed)
-    # mash.tar_temp_changed.connect(on_current_dwell_index_changed)
-    
-    # -----------------------------------------------------------------------------------------------------------------
-#       def mash_start_timer_state_shift():
-#           if mash.run_state == 0:
-#               mash.run_state = 1
-#           elif mash.run_state == 2:
-#               time_mash_thread.start()
-#       ui.btn_start_mash.clicked.connect(mash_start_timer_state_shift) # connect
-    
-    def cook_start_timer_state_shift():
-        if cook.run_state == 0:
-            cook.run_state = 1
-            # ui.lbl_connection_status.setText('button ist gedrückt')
-        elif cook.run_state == 2:
-            time_cook_thread.start()
-            # ui.lbl_connection_status.setText('button wieder gedrückt')
-    # ui.btn_start_cook.clicked.connect(cook_start_timer_state_shift) # connect #!!! DIESE NAMEN HIER NOCH ÄNDERN!!! DAS SIND KEINE CHECKABLE BUTTONS MEHR
-    # -----------------------------------------------------------------------------------------------------------------
-    def cook_pause_clicked():
-        if cook.run_state == 1:
-            cook.run_state = 0
-        elif cook.run_state == 2:
-            time_cook_thread.pause()
-    ui.btn_pause_cook.clicked.connect(cook_pause_clicked) # connect
-    # -----------------------------------------------------------------------------------------------------------------
-#       def mash_act_time_changed():
-#           if mash.run_state != 3:
-#               try:
-#                   mash.act_time = float(ui.lne_time_mash.text().replace(',','.')) * 60
-#                   #print(f'Got mash.act_time = {mash.act_time/60}')
-#               except ValueError as e:
-#                   logging.error(f"ValueError occured from lne_time_mash: {str(e)}")
-#                   print(f"ValueError occured from lne_time_mash: {str(e)}")
-#                   mash.act_time = 0
-#       ui.lne_time_mash.editingFinished.connect(mash_act_time_changed) # connect
-    
-    def cook_act_time_changed():
-        if cook.run_state != 3:
-            try:
-                cook.rest_time_ds = int(float(ui.lne_time_cook.text().replace(',','.')) * 600)  # min → ds
-                #print(f'Got .rest_time_ds = {cook.rest_time_ds}')
-            except ValueError as e:
-                logging.error(f"ValueError occured from lne_time_cook: {str(e)}")
-                cook.rest_time_ds = 0
-    ui.lne_time_cook.editingFinished.connect(cook_act_time_changed) # connect
 
     # --- TEMPERATURE -------------------------------------------------------------------------------------------------
     # Add Suffixes
@@ -500,15 +455,6 @@ def main():
             driver_thread.sim_engine.thermal_systems[PotType.COOK].state.override(new_temp)
     ui.dbg_btn_cur_temp_cook.clicked.connect(override_cur_temp_cook)
 
-    # --- DWELL PERCENTAGE OVERRIDE ----------------------------------------------------------------------------------
-    ui.dbg_dsb_dwell_percentage.setSuffix(" %") # Add Suffix
-    
-    def override_dwell_percentage():
-        new_percentage = ui.dbg_dsb_dwell_percentage.value()
-        if type(new_percentage) == float and new_percentage >= 0 and new_percentage <= 100:
-            mash.set_rest_time_ds_percentage(new_percentage)
-    ui.dbg_btn_dwell_percentage.clicked.connect(override_dwell_percentage)
-
     # --- TIME OVERRIDE ----------------------------------------------------------------------------------------------
     def on_time_s_changed(time_s):
         h = int(time_s // 3600)
@@ -562,21 +508,26 @@ def main():
             event.accept()
             
             # Stop threads in background
-            def cleanup_threads():
-                global driver_thread
-                heat_regulate_thread.stop()
-                # time_mash_thread.stop()
-                period_dwell_controller.stop()
-                time_cook_thread.stop()
-                if driver_thread is not None:
-                    driver_thread.stop()
-                # Give threads a moment to finish
-                sleep(0.5)
-                sys.exit(0)
+            # def cleanup_threads():
+            #     global driver_thread
+
+            heat_regulate_thread.stop()
+            logging.info("Stopped heat_regulate_thread")
+            # time_mash_thread.stop()
+            period_dwell_controller.stop()
+            logging.info("Stopped period_dwell_controller")
+            time_cook_thread.stop()
+            logging.info("Stopped time_cook_thread")
+            if driver_thread is not None:
+                driver_thread.stop()
+            logging.info("Stopped driver_thread")
+            # Give threads a moment to finish
+            # sleep(0.5)
+            sys.exit(0)
             
             # Start cleanup in background thread
-            cleanup_thread = threading.Thread(target=cleanup_threads, daemon=True)
-            cleanup_thread.start()
+            # cleanup_thread = threading.Thread(target=cleanup_threads, daemon=True)
+            # cleanup_thread.start()
         else:
             event.ignore()  # Ignore the close event
     

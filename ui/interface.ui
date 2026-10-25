@@ -47,7 +47,7 @@ color: lightgray;
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab_control">
        <attribute name="title">
@@ -2674,48 +2674,104 @@ border-radius: 16px;
              <property name="title">
               <string>Zeit-Manipulation</string>
              </property>
-             <layout class="QGridLayout" name="gridLayout_13">
-              <item row="0" column="4">
-               <widget class="QPushButton" name="dbg_btn_time_s_write">
-                <property name="text">
-                 <string>Überschreiben</string>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QProgressBar" name="dbg_pgb_dwell_percentage">
+                <property name="maximumSize">
+                 <size>
+                  <width>300</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="value">
+                 <number>0</number>
                 </property>
                </widget>
               </item>
-              <item row="0" column="0">
+              <item>
                <widget class="QLabel" name="dbg_lbl_time_s">
+                <property name="font">
+                 <font>
+                  <pointsize>15</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>HH:MM:SS</string>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
                </widget>
               </item>
-              <item row="0" column="3">
-               <widget class="QSpinBox" name="spinBox_2"/>
-              </item>
-              <item row="1" column="0">
+              <item>
                <widget class="QPushButton" name="dbg_btn_plus_01min">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>150</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>+1 min</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
-               <widget class="QSpinBox" name="spinBox"/>
-              </item>
-              <item row="1" column="4">
-               <widget class="QPushButton" name="dbg_btn_plus_15min">
+              <item>
+               <widget class="QPushButton" name="dbg_btn_plus_05min">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>150</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                 </font>
+                </property>
                 <property name="text">
-                 <string>+15 min</string>
+                 <string>+5 min</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QSpinBox" name="spinBox_4"/>
-              </item>
-              <item row="1" column="1" colspan="3">
-               <widget class="QPushButton" name="dbg_btn_plus_05min">
+              <item>
+               <widget class="QPushButton" name="dbg_btn_plus_15min">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>150</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                 </font>
+                </property>
                 <property name="text">
-                 <string>+5 min</string>
+                 <string>+15 min</string>
                 </property>
                </widget>
               </item>
@@ -2735,56 +2791,6 @@ border-radius: 16px;
              </property>
             </spacer>
            </item>
-           <item row="2" column="0">
-            <widget class="QGroupBox" name="dbg_grb_dwell">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="title">
-              <string>Rastzeit-Maische-Manipulation</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_11">
-              <item row="0" column="2">
-               <widget class="QPushButton" name="dbg_btn_dwell_percentage">
-                <property name="font">
-                 <font>
-                  <pointsize>13</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Überschreiben</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QProgressBar" name="dbg_pgb_dwell_percentage">
-                <property name="maximumSize">
-                 <size>
-                  <width>500</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="value">
-                 <number>0</number>
-                </property>
-                <property name="textVisible">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="SelectAllDoubleSpinBox" name="dbg_dsb_dwell_percentage">
-                <property name="value">
-                 <double>99.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
            <item row="0" column="0" colspan="2">
             <widget class="QGroupBox" name="dbg_grb_temp">
              <property name="title">
@@ -2793,6 +2799,12 @@ border-radius: 16px;
              <layout class="QGridLayout" name="gridLayout_12">
               <item row="5" column="4">
                <widget class="QPushButton" name="dbg_btn_cur_temp_fill">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
                 <property name="font">
                  <font>
                   <pointsize>13</pointsize>
@@ -2805,6 +2817,12 @@ border-radius: 16px;
               </item>
               <item row="5" column="5">
                <widget class="QPushButton" name="dbg_btn_cur_temp_cook">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
                 <property name="font">
                  <font>
                   <pointsize>13</pointsize>
@@ -2917,6 +2935,12 @@ border-radius: 16px;
               </item>
               <item row="5" column="2">
                <widget class="QPushButton" name="dbg_btn_cur_temp_mash">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
                 <property name="font">
                  <font>
                   <pointsize>13</pointsize>

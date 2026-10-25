@@ -238,7 +238,7 @@ class DwellController:
         if index > 1:
             del self._dwell_array[index]
             self._dwell_array.insert(index -1, obj)
-        return self._dwell_array
+        return [DwellArrayChangedEvent(self._dwell_array)]
 
     def dwell_down(self, obj) -> list:
         index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
