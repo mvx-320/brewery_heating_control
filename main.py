@@ -117,7 +117,7 @@ def main():
 
 
     #region POTS
-    mash = Pot(PotType.MASH) # TODO: Use normal Pot
+    mash = Pot(PotType.MASH)
     fill = Pot(PotType.FILL)
     cook = CookPot(PotType.COOK)  # TODO: Use normal Pot
 
@@ -284,8 +284,8 @@ def main():
         ui.dwell_layout.addStretch()
         
     def temp_changed_handler(index, value):
-        dwell_controller.set_dwell_temp(index, value) # TODO: Maybe trigger event
-        update_tar_temp_label(dwell_controller.tar_temp) # TODO: Check if this needs change bcs not over central source 
+        dwell_controller.set_dwell_temp(index, value) 
+        update_tar_temp_label(dwell_controller.tar_temp) 
 
     def time_changed_handler(index, value):
         dwell_controller.set_dwell_time(index, int(value * 60)) # min → s
@@ -326,7 +326,7 @@ def main():
         dwell_signals.dwell_advanced.emit(dwell_controller.current_dwell_index)
         return events
 
-    def on_dwell_progress(dwell_index, rest_s, total_s): # TODO: Add interpolation in ds for UX
+    def on_dwell_progress(dwell_index, rest_s, total_s): # TODO: Maybe add interpolation in ds for UX
         if (total_s is None) or (rest_s is None):
             # logging.warning(f"on_dwell_progress called with None values: dwell_index={dwell_index}, rest_s={rest_s}, total_s={total_s}")
             return
@@ -382,11 +382,8 @@ def main():
             period_dwell_controller.events_ready.emit(events)
 
 
-    def update_tar_temp_label(tar_temp : float): # TODO: Called from handle_events 
+    def update_tar_temp_label(tar_temp : float): 
         if (tar_temp is not None and tar_temp >= 0):
-            # dwell_array = dwell_controller.get_dwell_array()
-            # if mash.current_dwell_index < len(dwell_array):
-                # tar_temp = dwell_array[mash.current_dwell_index].tar_temp
             ui.lbl_tar_temp_mash.setText(f'{tar_temp} °C')
         else:
             ui.lbl_tar_temp_mash.setText('--°C')
@@ -543,7 +540,7 @@ def main():
 
     # TODO: I should clean up the dwells from the interface.ui or put some persistant stored dwells in there
     # clear_steps()
-    update_dwells(dwell_controller.dwell_array) # TODO: Should be called in the handle_events function
+    update_dwells(dwell_controller.dwell_array) 
     
     # Start the application event loop
     sys.exit(app.exec_())

@@ -85,7 +85,6 @@ class DwellFrame(QtWidgets.QFrame):
         self.dsb_dwell_tar_temp.setMinimum(0.0)
         self.dsb_dwell_tar_temp.setSpecialValueText(QtCore.QCoreApplication.translate("Form", "Dauer"))
         self.dsb_dwell_tar_temp.setValue(0.0 if self.obj.tar_temp is None else self.obj.tar_temp)
-        #TODO: Maybe add a Focus all onclick (Not that easy)
         self.horizontalInputLayout.addWidget(self.dsb_dwell_tar_temp)
 
         if (self.index != 0 and self.index != (self.dwell_amount -1)):
@@ -102,7 +101,6 @@ class DwellFrame(QtWidgets.QFrame):
             self.dsb_dwell_tar_time.setMinimum(0.0)
             self.dsb_dwell_tar_time.setSpecialValueText(QtCore.QCoreApplication.translate("Form", "Temperatur"))
             self.dsb_dwell_tar_time.setValue(0.0 if self.obj.tar_time_s is None else self.obj.tar_time_s / 60)  # ds → min
-            #TODO: Maybe add a Focus all onclick (Not that easy)
             self.horizontalInputLayout.addWidget(self.dsb_dwell_tar_time)
 
         self.verticalDataLayout.addWidget(self.frm_widget_2)
@@ -119,8 +117,6 @@ class DwellFrame(QtWidgets.QFrame):
         self.progressBar.setProperty("value", 70)
         self.progressBar.setTextVisible(False)
         self.progressBar.setObjectName("progressBar")
-        # TODO: Find a way to talk to the active dwell and update the progressBar
-        # Popperbly with a pyqtSignal in the Timer (Look for the GPT Thread)
         self.horizontalLayout_3.addWidget(self.progressBar)
         self.lbl_dwell_rest_time_ds = QtWidgets.QLabel(self.widget_4)
         self.lbl_dwell_rest_time_ds.setObjectName("lbl_rest_time_ds")
@@ -161,7 +157,7 @@ class DwellFrame(QtWidgets.QFrame):
             self.dsb_dwell_tar_time.textChanged.connect(self._on_time_changed)
         self.btn_dwell_alarm.clicked.connect(self._on_alarm)
 
-        # TODO: lowPrio: Make it more beautiful with icons in a own QFrame using QtCore.Qt.Popup and move it to the right location
+        # TODO: lowPrio: Make 'Manipulating Dwell' more beautiful with icons in a own QFrame using QtCore.Qt.Popup and move it to the right location
         menu = QtWidgets.QMenu(self)
         font = menu.font()
         font.setPointSize(16)

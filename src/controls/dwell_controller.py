@@ -255,7 +255,7 @@ class DwellController:
         self.logger.info(f'dwell_array[{self._current_dwell_index}].tar_time_ds = {new_time}')
     #endregion DwellArray Manipulation
 
-    #region Move Dwells # TODO: These need to create events 
+    #region Move Dwells
     def dwell_up(self, obj) -> list:
         index = next(i for i, x in enumerate(self._dwell_array) if x is obj)
         if index > 1:
